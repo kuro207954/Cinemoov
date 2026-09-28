@@ -2,31 +2,35 @@ const API_KEY = 'e45956e29bfc581e0131eb6710b738c0';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_URL = 'https://image.tmdb.org/t/p/w500';
 const BACKDROP_URL = 'https://image.tmdb.org/t/p/original';
-const PLACEHOLDER_IMG = 'https://via.placeholder.com/500x750/16181f/FFFFFF?text=CineMoov';
+const PLACEHOLDER_IMG = 'https://via.placeholder.com/500x750/13151b/FFFFFF?text=CineMoov';
+
+// DOM Elements
+const homeView = document.getElementById('homeView');
+const gridView = document.getElementById('gridView');
+const detailView = document.getElementById('detailView');
 
 const rowTrendingMovies = document.getElementById('rowTrendingMovies');
 const rowTrendingTV = document.getElementById('rowTrendingTV');
 const rowTopRated = document.getElementById('rowTopRated');
-
-const homeSections = document.getElementById('homeSections');
-const fullGridSection = document.getElementById('fullGridSection');
-const fullGrid = document.getElementById('fullGrid');
-const fullGridTitle = document.getElementById('fullGridTitle');
-
 const continueWatchingSection = document.getElementById('continueWatchingSection');
 const continueWatchingGrid = document.getElementById('continueWatchingGrid');
+
+const fullGrid = document.getElementById('fullGrid');
+const gridTitle = document.getElementById('gridTitle');
 
 const heroBanner = document.getElementById('heroBanner');
 const heroTitle = document.getElementById('heroTitle');
 const heroOverview = document.getElementById('heroOverview');
 const heroPlayBtn = document.getElementById('heroPlayBtn');
 
-const playerModal = document.getElementById('playerModal');
+const detailHeader = document.getElementById('detailHeader');
+const detailPoster = document.getElementById('detailPoster');
+const detailTitle = document.getElementById('detailTitle');
+const detailOverview = document.getElementById('detailOverview');
 const videoPlayer = document.getElementById('videoPlayer');
-const closeModal = document.querySelector('.close-modal');
-const modalMediaTitle = document.getElementById('modalMediaTitle');
-const tvControlsModal = document.getElementById('tvControlsModal');
-const modalSeasonSelect = document.getElementById('modalSeasonSelect');
+const backBtn = document.getElementById('backBtn');
+const tvControls = document.getElementById('tvControls');
+const seasonSelect = document.getElementById('seasonSelect');
 const episodesList = document.getElementById('episodesList');
 const serverBtns = document.querySelectorAll('.server-btn');
 
@@ -35,38 +39,42 @@ let currentServer = 'vidsrc';
 let currentSeason = 1;
 let currentEpisode = 1;
 
-// بدء الموقع
+// Initialize
 initHome();
 
-async function initHome() {
-    homeSections.style.display = 'block';
-    fullGridSection.style.display = 'none';
+function showView(view) {
+    homeView.style.display = view === 'home' ? 'block' : 'none';
+    gridView.style.display = view === 'grid' ? 'block' : 'none';
+    detailView.style.display = view === 'detail' ? 'block' : 'none';
+    window.scrollTo(0, 0);
+}
 
+async function initHome() {
+    showView('home');
     loadHero();
-    fetchMedia(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}&language=ar`, rowTrendingMovies, 'movie');
-    fetchMedia(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}&language=ar`, rowTrendingTV, 'tv');
-    fetchMedia(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=ar`, rowTopRated, 'movie');
+    fetchMedia(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}&language=en-US`, rowTrendingMovies, 'movie');
+    fetchMedia(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}&language=en-US`, rowTrendingTV, 'tv');
+    fetchMedia(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US`, rowTopRated, 'movie');
     loadContinueWatching();
 }
 
-// البنر الرئيسي
+// Hero Load
 async function loadHero() {
     try {
-        const res = await fetch(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}&language=ar`);
+        const res = await fetch(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}&language=en-US`);
         const data = await res.json();
         const item = data.results[0];
 
         heroBanner.style.backgroundImage = `url(${BACKDROP_URL}${item.backdrop_path})`;
         heroTitle.textContent = item.title || item.name;
-        heroOverview.textContent = item.overview || 'لا يوجد وصف متاح لهذا العرض حالياً.';
-
-        heroPlayBtn.onclick = () => openPlayer(item, 'tv');
+        heroOverview.textContent = item.overview || 'No description available for this show.';
+        heroPlayBtn.onclick = () => openDetail(item, 'tv');
     } catch (e) {
         console.error(e);
     }
 }
 
-// القائمة الجانبية التنقل
+// Sidebar Menu Navigation
 document.querySelectorAll('.nav-item').forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -74,60 +82,58 @@ document.querySelectorAll('.nav-item').forEach(btn => {
         btn.classList.add('active');
 
         const type = btn.dataset.type;
-
         if (type === 'home') {
             initHome();
         } else if (type === 'movie') {
-            showFullGrid('الأفلام الشائعة والعالمية', `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=ar`, 'movie');
+            showGrid('Movies', `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=en-US`, 'movie');
         } else if (type === 'tv') {
-            showFullGrid('المسلسلات العالمية (أمريكية، أوربية، آسيوية)', `${BASE_URL}/tv/popular?api_key=${API_KEY}&language=ar`, 'tv');
+            showGrid('TV Series', `${BASE_URL}/tv/popular?api_key=${API_KEY}&language=en-US`, 'tv');
         } else if (type === 'anime') {
-            showFullGrid('أنمي ياباني وآسيوي', `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&language=ar`, 'tv');
+            showGrid('Anime', `${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&language=en-US`, 'tv');
         }
     });
 });
 
-// زر "المزيد"
+// View All Buttons
 document.querySelectorAll('.see-more-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         const type = btn.dataset.type;
         if (type === 'movie') {
-            showFullGrid('كل الأفلام الرائجة', `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=ar`, 'movie');
+            showGrid('Trending Movies', `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=en-US`, 'movie');
         } else if (type === 'tv') {
-            showFullGrid('كل المسلسلات الرائجة', `${BASE_URL}/tv/popular?api_key=${API_KEY}&language=ar`, 'tv');
+            showGrid('Trending TV Series', `${BASE_URL}/tv/popular?api_key=${API_KEY}&language=en-US`, 'tv');
         } else if (type === 'top_rated') {
-            showFullGrid('الأعلى تقييماً عبر التاريخ', `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=ar`, 'movie');
+            showGrid('Top Rated Movies', `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US`, 'movie');
         }
     });
 });
 
-// البحث المتقدم الشامل (يحل مشكلة مثل البحث عن From)
+// Search
 document.getElementById('searchInput').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') {
         const query = e.target.value.trim();
         if (query) {
-            showFullGrid(`نتائج البحث عن: ${query}`, `${BASE_URL}/search/multi?api_key=${API_KEY}&language=ar&query=${encodeURIComponent(query)}`, 'multi');
+            showGrid(`Search Results for: "${query}"`, `${BASE_URL}/search/multi?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(query)}`, 'multi');
         }
     }
 });
 
-function showFullGrid(title, url, defaultType) {
-    homeSections.style.display = 'none';
-    fullGridSection.style.display = 'block';
-    fullGridTitle.textContent = title;
+function showGrid(title, url, defaultType) {
+    showView('grid');
+    gridTitle.textContent = title;
     fetchMedia(url, fullGrid, defaultType);
 }
 
-// جلب العروض ومعالجة الصور المفقودة
+// Fetch Media
 async function fetchMedia(url, container, forceType) {
-    container.innerHTML = '<p style="color:#aaa;">جاري التحميل...</p>';
+    container.innerHTML = '<p style="color:#aaa;">Loading content...</p>';
     try {
         const res = await fetch(url);
         const data = await res.json();
         container.innerHTML = '';
 
         if (!data.results || data.results.length === 0) {
-            container.innerHTML = '<p style="color:#aaa;">لم نتمكن من العثور على نتائج.</p>';
+            container.innerHTML = '<p style="color:#aaa;">No results found.</p>';
             return;
         }
 
@@ -146,47 +152,63 @@ async function fetchMedia(url, container, forceType) {
                 </div>
             `;
 
-            card.onclick = () => openPlayer(item, type);
+            card.onclick = () => openDetail(item, type);
             container.appendChild(card);
         });
     } catch (e) {
-        container.innerHTML = '<p style="color:red;">حدث خطأ أثناء تحميل البيانات</p>';
+        container.innerHTML = '<p style="color:red;">Failed to load data.</p>';
     }
 }
 
-// المشغل وتخزين المشاهدات
-async function openPlayer(item, type) {
-    currentItem = { id: item.id, type: type, title: item.title || item.name, poster: item.poster_path };
-    modalMediaTitle.textContent = currentItem.title;
+// Dedicated Detail View & Streaming
+async function openDetail(item, type) {
+    currentItem = { 
+        id: item.id, 
+        type: type, 
+        title: item.title || item.name, 
+        poster: item.poster_path,
+        backdrop: item.backdrop_path,
+        overview: item.overview
+    };
+
     saveToContinueWatching(currentItem);
+    showView('detail');
+
+    detailTitle.textContent = currentItem.title;
+    detailOverview.textContent = currentItem.overview || 'No synopsis available.';
+    detailPoster.src = item.poster_path ? `${IMAGE_URL}${item.poster_path}` : PLACEHOLDER_IMG;
+    detailHeader.style.backgroundImage = `url(${BACKDROP_URL}${item.backdrop_path})`;
 
     if (type === 'tv') {
-        tvControlsModal.style.display = 'block';
+        tvControls.style.display = 'block';
         await loadSeasons(item.id);
     } else {
-        tvControlsModal.style.display = 'none';
+        tvControls.style.display = 'none';
         updateVideoSrc();
     }
-
-    playerModal.style.display = 'flex';
 }
+
+backBtn.onclick = () => {
+    videoPlayer.src = '';
+    initHome();
+};
 
 async function loadSeasons(tvId) {
     try {
-        const res = await fetch(`${BASE_URL}/tv/${tvId}?api_key=${API_KEY}&language=ar`);
+        const res = await fetch(`${BASE_URL}/tv/${tvId}?api_key=${API_KEY}&language=en-US`);
         const data = await res.json();
 
-        modalSeasonSelect.innerHTML = '';
+        seasonSelect.innerHTML = '';
         if (data.seasons && data.seasons.length > 0) {
             data.seasons.forEach(s => {
                 if (s.season_number > 0) {
                     const opt = document.createElement('option');
                     opt.value = s.season_number;
-                    opt.textContent = `الموسم ${s.season_number}`;
-                    modalSeasonSelect.appendChild(opt);
+                    opt.textContent = `Season ${s.season_number}`;
+                    seasonSelect.appendChild(opt);
                 }
             });
-            currentSeason = modalSeasonSelect.value || 1;
+            currentSeason = seasonSelect.value || 1;
             loadEpisodes(tvId, currentSeason);
         }
     } catch (e) {
@@ -196,7 +218,7 @@ async function loadSeasons(tvId) {
 
 async function loadEpisodes(tvId, seasonNum) {
     try {
-        const res = await fetch(`${BASE_URL}/tv/${tvId}/season/${seasonNum}?api_key=${API_KEY}&language=ar`);
+        const res = await fetch(`${BASE_URL}/tv/${tvId}/season/${seasonNum}?api_key=${API_KEY}&language=en-US`);
         const data = await res.json();
 
         episodesList.innerHTML = '';
@@ -204,7 +226,7 @@ async function loadEpisodes(tvId, seasonNum) {
             data.episodes.forEach(ep => {
                 const div = document.createElement('div');
                 div.classList.add('ep-item');
-                div.textContent = `الحلقة ${ep.episode_number}: ${ep.name || ''}`;
+                div.textContent = `Episode ${ep.episode_number}: ${ep.name || ''}`;
                 div.onclick = () => {
                     document.querySelectorAll('.ep-item').forEach(d => d.classList.remove('active'));
                     div.classList.add('active');
@@ -221,11 +243,12 @@ async function loadEpisodes(tvId, seasonNum) {
     }
 }
 
-modalSeasonSelect.onchange = () => {
-    currentSeason = modalSeasonSelect.value;
+seasonSelect.onchange = () => {
+    currentSeason = seasonSelect.value;
     loadEpisodes(currentItem.id, currentSeason);
 };
 
+// 4 Multiple Streaming Servers
 serverBtns.forEach(btn => {
     btn.onclick = () => {
         serverBtns.forEach(b => b.classList.remove('active'));
@@ -241,14 +264,20 @@ function updateVideoSrc() {
     const { id, type } = currentItem;
 
     if (type === 'movie') {
-        url = currentServer === 'vidsrc' ? `https://vidsrc.to/embed/movie/${id}` : `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1`;
+        if (currentServer === 'vidsrc') url = `https://vidsrc.to/embed/movie/${id}`;
+        else if (currentServer === 'superembed') url = `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1`;
+        else if (currentServer === 'autoembed') url = `https://player.autoembed.cc/embed/movie/${id}`;
+        else if (currentServer === '2embed') url = `https://www.2embed.cc/embed/${id}`;
     } else {
-        url = currentServer === 'vidsrc' ? `https://vidsrc.to/embed/tv/${id}/${currentSeason}/${currentEpisode}` : `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${currentSeason}&e=${currentEpisode}`;
+        if (currentServer === 'vidsrc') url = `https://vidsrc.to/embed/tv/${id}/${currentSeason}/${currentEpisode}`;
+        else if (currentServer === 'superembed') url = `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${currentSeason}&e=${currentEpisode}`;
+        else if (currentServer === 'autoembed') url = `https://player.autoembed.cc/embed/tv/${id}/${currentSeason}/${currentEpisode}`;
+        else if (currentServer === '2embed') url = `https://www.2embed.cc/embedtv/${id}&s=${currentSeason}&e=${currentEpisode}`;
     }
     videoPlayer.src = url;
 }
 
-// حفظ في "تابع المشاهدة" مع زر الحذف
+// Continue Watching
 function saveToContinueWatching(item) {
     let history = JSON.parse(localStorage.getItem('watchHistory')) || [];
     history = history.filter(i => i.id !== item.id);
@@ -259,7 +288,7 @@ function saveToContinueWatching(item) {
 }
 
 function removeFromHistory(e, id) {
-    e.stopPropagation(); // منع فتح المشغل عند الضغط على الحذف
+    e.stopPropagation();
     let history = JSON.parse(localStorage.getItem('watchHistory')) || [];
     history = history.filter(item => item.id !== id);
     localStorage.setItem('watchHistory', JSON.stringify(history));
@@ -283,15 +312,10 @@ function loadContinueWatching() {
                     <div class="card-title">${item.title}</div>
                 </div>
             `;
-            card.onclick = () => openPlayer(item, item.type);
+            card.onclick = () => openDetail(item, item.type);
             continueWatchingGrid.appendChild(card);
         });
     } else {
         continueWatchingSection.style.display = 'none';
     }
 }
-
-closeModal.onclick = () => {
-    playerModal.style.display = 'none';
-    videoPlayer.src = '';
-};
