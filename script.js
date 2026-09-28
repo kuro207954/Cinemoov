@@ -34,10 +34,29 @@ const seasonSelect = document.getElementById('seasonSelect');
 const episodesList = document.getElementById('episodesList');
 const serverBtns = document.querySelectorAll('.server-btn');
 
+// Mobile Menu Elements
+const menuToggleBtn = document.getElementById('menuToggleBtn');
+const sidebar = document.getElementById('sidebar');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+
 let currentItem = null;
 let currentServer = 'vidsrc';
 let currentSeason = 1;
 let currentEpisode = 1;
+
+// Mobile Menu Logic
+function toggleMobileMenu() {
+    sidebar.classList.toggle('open');
+    sidebarOverlay.classList.toggle('active');
+}
+
+function closeMobileMenu() {
+    sidebar.classList.remove('open');
+    sidebarOverlay.classList.remove('active');
+}
+
+menuToggleBtn.addEventListener('click', toggleMobileMenu);
+sidebarOverlay.addEventListener('click', closeMobileMenu);
 
 // Initialize
 initHome();
@@ -47,6 +66,7 @@ function showView(view) {
     gridView.style.display = view === 'grid' ? 'block' : 'none';
     detailView.style.display = view === 'detail' ? 'block' : 'none';
     window.scrollTo(0, 0);
+    closeMobileMenu();
 }
 
 async function initHome() {
@@ -74,7 +94,7 @@ async function loadHero() {
     }
 }
 
-// Sidebar Menu Navigation
+// Navigation Menu
 document.querySelectorAll('.nav-item').forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.preventDefault();
@@ -160,7 +180,7 @@ async function fetchMedia(url, container, forceType) {
     }
 }
 
-// Dedicated Detail View & Streaming
+// Detail View & Streaming
 async function openDetail(item, type) {
     currentItem = { 
         id: item.id, 
@@ -248,7 +268,7 @@ seasonSelect.onchange = () => {
     loadEpisodes(currentItem.id, currentSeason);
 };
 
-// 4 Multiple Streaming Servers
+// 4 Streaming Servers
 serverBtns.forEach(btn => {
     btn.onclick = () => {
         serverBtns.forEach(b => b.classList.remove('active'));

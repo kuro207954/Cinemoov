@@ -9,10 +9,20 @@
 </head>
 <body>
 
+    <!-- Mobile Header Bar -->
+    <header class="mobile-header">
+        <div class="logo">
+            <i class="fas fa-film"></i> <span>CineMoov</span>
+        </div>
+        <button id="menuToggleBtn" class="menu-toggle-btn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
     <div class="app-layout">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="logo">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo desktop-only">
                 <i class="fas fa-film"></i> <span>CineMoov</span>
             </div>
             
@@ -28,6 +38,9 @@
                 <a href="#" class="nav-item" data-type="anime"><i class="fas fa-mask"></i> Anime</a>
             </nav>
         </aside>
+
+        <!-- Overlay backdrop for mobile menu -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
         <!-- Main Workspace -->
         <main class="main-content">
@@ -103,7 +116,6 @@
                         <div class="detail-meta">
                             <h1 id="detailTitle">Title</h1>
                             <p id="detailOverview" class="detail-overview"></p>
-                            <div class="detail-badges" id="detailBadges"></div>
                         </div>
                     </div>
                 </div>
@@ -127,7 +139,7 @@
                         <div id="tvControls" class="tv-controls" style="display: none;">
                             <h3><i class="fas fa-list"></i> Episodes</h3>
                             <div class="control-group">
-                                <label>Season:</label>
+                                <label style="font-size:13px; color:#aaa;">Season:</label>
                                 <select id="seasonSelect"></select>
                             </div>
                             <div class="episodes-grid" id="episodesList"></div>
