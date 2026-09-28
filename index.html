@@ -10,7 +10,7 @@
 <body>
 
     <div class="app-layout">
-        <!-- القائمة الجانبية (Sidebar) -->
+        <!-- القائمة الجانبية -->
         <aside class="sidebar">
             <div class="logo">
                 <i class="fas fa-film"></i> <span>CineMoov</span>
@@ -18,7 +18,7 @@
             
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="بحث...">
+                <input type="text" id="searchInput" placeholder="بحث عن فيلم أو مسلسل...">
             </div>
 
             <nav class="nav-menu">
@@ -26,14 +26,13 @@
                 <a href="#" class="nav-item" data-type="movie"><i class="fas fa-compact-disc"></i> الأفلام</a>
                 <a href="#" class="nav-item" data-type="tv"><i class="fas fa-tv"></i> المسلسلات</a>
                 <a href="#" class="nav-item" data-type="anime"><i class="fas fa-mask"></i> الأنمي</a>
-                <a href="#" class="nav-item" data-type="top_rated"><i class="fas fa-star"></i> الأعلى تقييماً</a>
             </nav>
         </aside>
 
         <!-- المحتوى الرئيسي -->
         <main class="main-content">
             
-            <!-- واجهة العرض البارزة (Hero Banner) -->
+            <!-- البنر الرئيسي -->
             <div id="heroBanner" class="hero-banner">
                 <div class="hero-overlay"></div>
                 <div class="hero-info">
@@ -46,43 +45,63 @@
             </div>
 
             <div class="sections-container" id="sectionsContainer">
+                
                 <!-- قسم تابع المشاهدة -->
                 <section class="content-section" id="continueWatchingSection" style="display: none;">
                     <h2><i class="fas fa-history"></i> تابع المشاهدة</h2>
                     <div class="horizontal-scroll" id="continueWatchingGrid"></div>
                 </section>
 
-                <!-- قسم الرائج -->
-                <section class="content-section">
-                    <h2 id="section1Title"><i class="fas fa-fire"></i> الأفلام والمسلسلات الرائجة</h2>
-                    <div class="media-grid" id="gridTrending"></div>
+                <!-- الصفوف المنظمة في الصفحة الرئيسية -->
+                <div id="homeSections">
+                    <!-- صف الأفلام الرائجة -->
+                    <section class="content-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-compact-disc"></i> الأفلام الرائجة</h2>
+                            <button class="see-more-btn" data-type="movie">المزيد <i class="fas fa-chevron-left"></i></button>
+                        </div>
+                        <div class="horizontal-scroll" id="rowTrendingMovies"></div>
+                    </section>
+
+                    <!-- صف المسلسلات الرائجة -->
+                    <section class="content-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-tv"></i> المسلسلات الرائجة</h2>
+                            <button class="see-more-btn" data-type="tv">المزيد <i class="fas fa-chevron-left"></i></button>
+                        </div>
+                        <div class="horizontal-scroll" id="rowTrendingTV"></div>
+                    </section>
+
+                    <!-- صف الأعلى تقييماً -->
+                    <section class="content-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-crown"></i> الأعلى تقييماً</h2>
+                            <button class="see-more-btn" data-type="top_rated">المزيد <i class="fas fa-chevron-left"></i></button>
+                        </div>
+                        <div class="horizontal-scroll" id="rowTopRated"></div>
+                    </section>
+                </div>
+
+                <!-- شبكة العرض العامة (تُستخدم عند اختيار قسم معين أو عند البحث) -->
+                <section class="content-section" id="fullGridSection" style="display: none;">
+                    <h2 id="fullGridTitle">النتائج</h2>
+                    <div class="media-grid" id="fullGrid"></div>
                 </section>
 
-                <!-- قسم الأعلى تقييماً -->
-                <section class="content-section" id="topRatedSection">
-                    <h2><i class="fas fa-crown"></i> الأعلى تقييماً</h2>
-                    <div class="media-grid" id="gridTopRated"></div>
-                </section>
             </div>
         </main>
     </div>
 
-    <!-- مشغل الفيديو والنافذة المتقدمة -->
+    <!-- مشغل الفيديو -->
     <div id="playerModal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
-            
             <div class="player-layout">
-                <!-- شاشة الفيديو -->
                 <div class="video-container">
                     <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
                 </div>
-
-                <!-- اللوحة الجانبية للتحكم بالحلقات والسيرفرات -->
                 <div class="player-sidebar">
                     <h3 id="modalMediaTitle">اسم العرض</h3>
-                    
-                    <!-- السيرفرات -->
                     <div class="control-group">
                         <label>السيرفر:</label>
                         <div class="server-buttons">
@@ -90,12 +109,9 @@
                             <button class="server-btn" data-server="superembed">سيرفر 2</button>
                         </div>
                     </div>
-
-                    <!-- خيارات المسلسلات -->
                     <div id="tvControlsModal" class="control-group" style="display: none;">
                         <label>الموسم:</label>
                         <select id="modalSeasonSelect"></select>
-                        
                         <label style="margin-top: 10px;">الحلقات:</label>
                         <div class="episodes-list" id="episodesList"></div>
                     </div>

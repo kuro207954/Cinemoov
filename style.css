@@ -17,7 +17,7 @@ body {
     min-height: 100vh;
 }
 
-/* القائمة الجانبية Sidebar */
+/* Sidebar */
 .sidebar {
     width: 240px;
     background-color: #16181f;
@@ -80,17 +80,16 @@ body {
     color: #fff;
 }
 
-/* المحتوى الرئيسي Main */
+/* Main Content */
 .main-content {
     margin-right: 240px;
     flex: 1;
     padding-bottom: 50px;
 }
 
-/* البنر الرئيسي Hero Banner */
 .hero-banner {
     position: relative;
-    height: 400px;
+    height: 380px;
     background-size: cover;
     background-position: center;
     display: flex;
@@ -112,7 +111,7 @@ body {
 }
 
 .hero-info h1 {
-    font-size: 32px;
+    font-size: 30px;
     margin-bottom: 10px;
 }
 
@@ -140,47 +139,89 @@ body {
     gap: 8px;
 }
 
-/* الأقسام والشبكة */
 .sections-container {
     padding: 20px 40px;
 }
 
 .content-section {
-    margin-bottom: 40px;
+    margin-bottom: 35px;
 }
 
-.content-section h2 {
-    font-size: 20px;
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 15px;
+}
+
+.section-header h2 {
+    font-size: 18px;
     display: flex;
     align-items: center;
     gap: 10px;
-    color: #fff;
 }
 
-.media-grid, .horizontal-scroll {
+.see-more-btn {
+    background: transparent;
+    border: none;
+    color: #e50914;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* التمرير الأفقي للصفوف */
+.horizontal-scroll {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    scroll-behavior: smooth;
+}
+
+.horizontal-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.horizontal-scroll::-webkit-scrollbar-thumb {
+    background: #333;
+    border-radius: 4px;
+}
+
+.media-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 18px;
 }
 
 .card {
+    min-width: 160px;
+    max-width: 160px;
     background: #16181f;
     border-radius: 8px;
     overflow: hidden;
     cursor: pointer;
     transition: transform 0.3s;
     position: relative;
+    flex-shrink: 0;
+}
+
+.media-grid .card {
+    min-width: unset;
+    max-width: unset;
 }
 
 .card:hover {
-    transform: translateY(-6px);
+    transform: translateY(-5px);
 }
 
 .card img {
     width: 100%;
     height: 230px;
     object-fit: cover;
+    background-color: #20232d;
 }
 
 .card-info {
@@ -198,10 +239,34 @@ body {
 .card-rating {
     font-size: 12px;
     color: #ffc107;
-    margin-top: 5px;
+    margin-top: 4px;
 }
 
-/* النافذة المنبثقة والمشغل */
+/* زر الحذف لمتابعة المشاهدة */
+.remove-history-btn {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    z-index: 10;
+    transition: 0.2s;
+}
+
+.remove-history-btn:hover {
+    background: #e50914;
+}
+
+/* Modal */
 .modal {
     display: none;
     position: fixed;
