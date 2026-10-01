@@ -3,13 +3,14 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    direction: ltr !important;
 }
 
-body {
-    background-color: #0b0c10;
-    color: #ffffff;
+html, body {
     direction: ltr !important;
     text-align: left !important;
+    background-color: #0d0f12;
+    color: #ffffff;
 }
 
 /* Navbar */
@@ -18,11 +19,12 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 15px 40px;
-    background-color: rgba(11, 12, 16, 0.95);
+    background-color: rgba(13, 15, 18, 0.95);
     position: sticky;
     top: 0;
     z-index: 1000;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    direction: ltr !important;
 }
 
 .nav-logo {
@@ -51,7 +53,7 @@ body {
 /* Hero Slider */
 .hero-slider-container {
     position: relative;
-    height: 450px;
+    height: 420px;
     overflow: hidden;
 }
 
@@ -71,14 +73,16 @@ body {
 .hero-overlay {
     width: 100%;
     height: 100%;
-    background: linear-gradient(to right, #0b0c10 20%, transparent 100%), linear-gradient(to top, #0b0c10 10%, transparent 50%);
+    background: linear-gradient(to right, #0d0f12 25%, transparent 100%), linear-gradient(to top, #0d0f12 10%, transparent 50%);
     display: flex;
     align-items: center;
     padding: 0 50px;
+    text-align: left !important;
 }
 
 .hero-content {
     max-width: 550px;
+    text-align: left !important;
 }
 
 .hero-badge {
@@ -93,6 +97,7 @@ body {
 .hero-title {
     font-size: 36px;
     margin: 15px 0;
+    text-align: left !important;
 }
 
 .hero-overview {
@@ -104,6 +109,7 @@ body {
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    text-align: left !important;
 }
 
 .btn-primary {
@@ -125,6 +131,7 @@ body {
 /* Sections & Carousels */
 .section-container {
     padding: 20px 40px;
+    text-align: left !important;
 }
 
 .section-header {
@@ -136,6 +143,7 @@ body {
 
 .section-title {
     font-size: 20px;
+    text-align: left !important;
 }
 
 .carousel-controls {
@@ -144,7 +152,7 @@ body {
 }
 
 .scroll-btn-nav {
-    background: #1f2833;
+    background: #1a1d24;
     color: white;
     border: none;
     width: 32px;
@@ -159,21 +167,76 @@ body {
     overflow-x: auto;
     scroll-behavior: smooth;
     padding-bottom: 10px;
+    direction: ltr !important;
 }
 
 .media-carousel::-webkit-scrollbar {
     display: none;
 }
 
+/* Networks & Studios (Same Design as Provided Image) */
+.networks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.studios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.network-card, .studio-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.network-card:hover, .studio-card:hover {
+    transform: translateY(-4px);
+    filter: brightness(1.1);
+}
+
+.network-card img, .studio-card img {
+    max-width: 90%;
+    max-height: 50px;
+    object-fit: contain;
+}
+
+/* Background colors for Networks like image */
+.net-netflix { background: #000000; border: 1px solid #222; }
+.net-disney { background: #008298; }
+.net-prime { background: #ffffff; }
+.net-hbo { background: #000000; border: 1px solid #333; }
+.net-apple { background: #000000; border: 1px solid #333; }
+.net-hulu { background: #1ce783; }
+.net-crunchyroll { background: #f47521; }
+.net-paramount { background: #0064d2; }
+
+/* Studio Cards are all White like image */
+.studio-card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+}
+
 /* Media Card */
 .media-card {
     flex: 0 0 170px;
-    background-color: #1f2833;
+    background-color: #161920;
     border-radius: 8px;
     overflow: hidden;
     cursor: pointer;
     position: relative;
     transition: transform 0.2s;
+    text-align: left !important;
 }
 
 .media-card:hover {
@@ -188,6 +251,7 @@ body {
 
 .card-info {
     padding: 10px;
+    text-align: left !important;
 }
 
 .card-title {
@@ -196,6 +260,7 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: left !important;
 }
 
 .card-meta {
@@ -234,17 +299,19 @@ body {
 /* Search View & Grid */
 .search-view-container {
     padding: 30px 40px;
+    text-align: left !important;
 }
 
 .search-bar-input {
     width: 100%;
     padding: 15px;
-    background-color: #1f2833;
+    background-color: #161920;
     border: 1px solid #333;
     border-radius: 8px;
     color: white;
     font-size: 16px;
     margin-bottom: 25px;
+    text-align: left !important;
 }
 
 .grid-layout {
@@ -268,6 +335,7 @@ body {
     display: flex;
     gap: 25px;
     align-items: flex-end;
+    text-align: left !important;
 }
 
 .watch-poster-img {
@@ -279,6 +347,7 @@ body {
 .watch-title {
     font-size: 32px;
     margin-bottom: 10px;
+    text-align: left !important;
 }
 
 .watch-meta {
@@ -292,10 +361,12 @@ body {
     font-size: 14px;
     color: #ddd;
     max-width: 700px;
+    text-align: left !important;
 }
 
 .watch-page-container {
     padding: 30px 40px;
+    text-align: left !important;
 }
 
 .player-box-wrapper {
@@ -317,6 +388,7 @@ body {
 
 .servers-section {
     margin: 25px 0;
+    text-align: left !important;
 }
 
 .servers-grid {
@@ -327,7 +399,7 @@ body {
 }
 
 .server-btn {
-    background: #1f2833;
+    background: #161920;
     color: white;
     border: 1px solid #333;
     padding: 10px 18px;
