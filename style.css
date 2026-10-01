@@ -174,59 +174,6 @@ html, body {
     display: none;
 }
 
-/* Networks & Studios (Same Design as Provided Image) */
-.networks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 12px;
-    margin-top: 15px;
-}
-
-.studios-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-    gap: 12px;
-    margin-top: 15px;
-}
-
-.network-card, .studio-card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 80px;
-    padding: 12px;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: transform 0.2s ease, filter 0.2s ease;
-}
-
-.network-card:hover, .studio-card:hover {
-    transform: translateY(-4px);
-    filter: brightness(1.1);
-}
-
-.network-card img, .studio-card img {
-    max-width: 90%;
-    max-height: 50px;
-    object-fit: contain;
-}
-
-/* Background colors for Networks like image */
-.net-netflix { background: #000000; border: 1px solid #222; }
-.net-disney { background: #008298; }
-.net-prime { background: #ffffff; }
-.net-hbo { background: #000000; border: 1px solid #333; }
-.net-apple { background: #000000; border: 1px solid #333; }
-.net-hulu { background: #1ce783; }
-.net-crunchyroll { background: #f47521; }
-.net-paramount { background: #0064d2; }
-
-/* Studio Cards are all White like image */
-.studio-card {
-    background: #ffffff;
-    border: 1px solid #e0e0e0;
-}
-
 /* Media Card */
 .media-card {
     flex: 0 0 170px;
