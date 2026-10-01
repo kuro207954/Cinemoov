@@ -60,7 +60,7 @@ async function renderHomePage() {
         ${createSectionHTML('top-movies', 'fa-star', 'الأفلام الأعلى تقييماً')}
         ${createSectionHTML('top-tv', 'fa-crown', 'المسلسلات الأعلى تقييماً')}
 
-        <!-- المنصات والاستوديوهات الشهيرة (طابق الصورة المرفقة) -->
+        <!-- المنصات والاستوديوهات الشهيرة -->
         <section class="section-container">
             <div class="section-header">
                 <h2 class="section-title"><i class="fa-solid fa-tv"></i> Popular Networks</h2>
@@ -89,7 +89,7 @@ async function renderHomePage() {
                 </div>
             </div>
 
-            <div class="section-header" style="margin-top: 30px;">
+            <div class="section-header" style="margin-top: 35px;">
                 <h2 class="section-title"><i class="fa-solid fa-building"></i> Studios</h2>
             </div>
             <div class="studios-grid">
@@ -207,7 +207,7 @@ async function renderCompanyPage(companyId, companyName) {
     } catch(e) { console.error(e); }
 }
 
-// 3. صفحة المشاهدة - محسنة ومضبوطة لحجم الحاسوب مع 6 سيرفرات
+// 3. صفحة المشاهدة - إعادة الهيدر والبوستر خلفية وتضخيم العرض للسيرفرات
 async function renderWatchPage(type, id) {
     const container = document.getElementById('app-container');
     if (!container) return;
@@ -220,45 +220,50 @@ async function renderWatchPage(type, id) {
 
         const title = data.title || data.name;
         const poster = data.poster_path;
-        const backdrop = data.backdrop_path || data.poster_path;
+        const backdrop = data.backdrop_path ? BACKDROP_PATH + data.backdrop_path : (poster ? IMG_PATH + poster : '');
         const rating = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
         
         saveToContinueWatching({ id, type, title, poster, rating });
 
-        // سيرفرات مشغل متعددة لتفادي شاشة "Media is unavailable"
-        const server1 = `https://vidsrc.to/embed/${type}/${id}`;
-        const server2 = `https://vidsrc.me/embed/${type}?tmdb=${id}`;
-        const server3 = `https://vidlink.pro/${type}/${id}`;
+        // سيرفرات مع دعم اللغات الأصلية (مثل الكورية واليابانية)
+        const server1 = `https://vidlink.pro/${type}/${id}?primaryColor=e50914`;
+        const server2 = `https://vidsrc.to/embed/${type}/${id}`;
+        const server3 = `https://vidsrc.me/embed/${type}?tmdb=${id}`;
         const server4 = `https://player.smashystream.com/video/${type}/${id}`;
         const server5 = `https://www.2embed.cc/embed${type === 'movie' ? 'movie' : 'tv'}?id=${id}`;
         const server6 = `https://autoembed.co/${type}/tmdb/${id}`;
 
         container.innerHTML = `
-            <div class="watch-page-container">
-                <!-- تفاصيل الفيلم السريعة -->
-                <div class="watch-header-info">
-                    <h1 class="watch-title">${title}</h1>
-                    <div class="watch-meta">
-                        <span class="badge-rating">⭐ ${rating}</span>
-                        <span>${(data.release_date || data.first_air_date || '').substring(0, 4)}</span>
-                        <span>${type === 'movie' ? 'فيلم' : 'مسلسل'}</span>
+            <!-- خلفية الفيلم العلوية الرئيسية (Banner) -->
+            <div class="watch-backdrop-banner" style="background-image: linear-gradient(to bottom, rgba(11, 12, 16, 0.3), #0b0c10), url('${backdrop}');">
+                <div class="watch-backdrop-content">
+                    <img class="watch-poster-img" src="${poster ? IMG_PATH + poster : NO_IMAGE_URL}" alt="${title}">
+                    <div class="watch-details-info">
+                        <h1 class="watch-title">${title}</h1>
+                        <div class="watch-meta">
+                            <span class="badge-rating">⭐ ${rating}</span>
+                            <span>${(data.release_date || data.first_air_date || '').substring(0, 4)}</span>
+                            <span>${type === 'movie' ? 'فيلم' : 'مسلسل'}</span>
+                        </div>
+                        <p class="watch-overview">${data.overview || 'لا يوجد وصف متاح لهذا العمل.'}</p>
                     </div>
-                    <p class="watch-overview">${data.overview || 'لا يوجد وصف متاح لهذا العمل.'}</p>
                 </div>
+            </div>
 
-                <!-- مشغل الفيديو المضبوط بنسبة 16:9 للحاسوب -->
+            <div class="watch-page-container">
+                <!-- مشغل الفيديو بالحجم الكامل عريض -->
                 <div class="player-box-wrapper">
                     <iframe id="video-iframe" src="${server1}" allowfullscreen frameborder="0" scrolling="no"></iframe>
                 </div>
 
                 <!-- أزرار اختيار السيرفرات -->
                 <div class="servers-section">
-                    <h3 class="servers-title"><i class="fa-solid fa-server"></i> اختر سيرفر المشاهدة:</h3>
+                    <h3 class="servers-title"><i class="fa-solid fa-server"></i> اختر سيرفر المشاهدة (جرّب VidLink أو Smashy للصوت الأصلي/الكوري):</h3>
                     <div class="servers-grid">
-                        <button class="server-btn active" onclick="changeServer('${server1}', this)">سيرفر 1 (VidSrc)</button>
-                        <button class="server-btn" onclick="changeServer('${server2}', this)">سيرفر 2 (Pro)</button>
-                        <button class="server-btn" onclick="changeServer('${server3}', this)">سيرفر 3 (VidLink)</button>
-                        <button class="server-btn" onclick="changeServer('${server4}', this)">سيرفر 4 (Smashy)</button>
+                        <button class="server-btn active" onclick="changeServer('${server1}', this)">سيرفر 1 (VidLink - متعدد اللغات)</button>
+                        <button class="server-btn" onclick="changeServer('${server2}', this)">سيرفر 2 (VidSrc)</button>
+                        <button class="server-btn" onclick="changeServer('${server3}', this)">سيرفر 3 (Pro)</button>
+                        <button class="server-btn" onclick="changeServer('${server4}', this)">سيرفر 4 (SmashyStream)</button>
                         <button class="server-btn" onclick="changeServer('${server5}', this)">سيرفر 5 (2Embed)</button>
                         <button class="server-btn" onclick="changeServer('${server6}', this)">سيرفر 6 (AutoEmbed)</button>
                     </div>
@@ -267,7 +272,7 @@ async function renderWatchPage(type, id) {
                 <!-- الأعمال المقترحة -->
                 ${data.recommendations && data.recommendations.results.length ? `
                     <div class="recommendations-section">
-                        <h2 class="section-title"><i class="fa-solid fa-thumbs-up"></i> أعمال نوصي بها</h2>
+                        <h2 class="section-title" style="margin-bottom:15px;"><i class="fa-solid fa-thumbs-up"></i> أعمال نوصي بها</h2>
                         <div class="grid-layout">
                             ${data.recommendations.results.slice(0, 6).map(item => `
                                 <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/${type}/${item.id}')">
