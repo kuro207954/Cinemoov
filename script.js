@@ -2,7 +2,6 @@ const API_KEY = 'e45956e29bfc581e0131eb6710b738c0';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_PATH = 'https://image.tmdb.org/t/p/w500';
 const BACKDROP_PATH = 'https://image.tmdb.org/t/p/original';
-// صورة افتراضية عند عدم توفر الملصق
 const NO_IMAGE_URL = 'https://via.placeholder.com/300x450/19212b/ffffff?text=%D9%84%D8%A7+%D8%AA%D9%88%D8%AC%D8%AF+%D8%B5%D9%88%D8%B1%D8%A9';
 
 let heroInterval;
@@ -61,29 +60,62 @@ async function renderHomePage() {
         ${createSectionHTML('top-movies', 'fa-star', 'الأفلام الأعلى تقييماً')}
         ${createSectionHTML('top-tv', 'fa-crown', 'المسلسلات الأعلى تقييماً')}
 
-        <!-- شركات الإنتاج -->
+        <!-- المنصات والاستوديوهات الشهيرة (طابق الصورة المرفقة) -->
         <section class="section-container">
             <div class="section-header">
-                <h2 class="section-title"><i class="fa-solid fa-building"></i> استوديوهات وشركات الإنتاج</h2>
+                <h2 class="section-title"><i class="fa-solid fa-tv"></i> Popular Networks</h2>
             </div>
-            <div class="companies-grid">
-                <div class="company-card-logo" onclick="navigateTo('#/company/420/Marvel%20Studios')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Marvel_Logo.svg" alt="Marvel">
-                </div>
-                <div class="company-card-logo" onclick="navigateTo('#/company/2/Walt%20Disney')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Disney_wordmark.svg" alt="Disney">
-                </div>
-                <div class="company-card-logo" onclick="navigateTo('#/company/178464/Netflix')">
+            <div class="networks-grid">
+                <div class="network-card net-netflix" onclick="navigateTo('#/company/178464/Netflix')">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
                 </div>
-                <div class="company-card-logo" onclick="navigateTo('#/company/174/Warner%20Bros')">
+                <div class="network-card net-disney" onclick="navigateTo('#/company/2/Walt%20Disney')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg" alt="Disney+">
+                </div>
+                <div class="network-card net-prime" onclick="navigateTo('#/company/1024/Amazon')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.svg" alt="Prime Video">
+                </div>
+                <div class="network-card net-hbo" onclick="navigateTo('#/company/3268/HBO')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg" alt="HBO Max">
+                </div>
+                <div class="network-card net-apple" onclick="navigateTo('#/company/2552/Apple%20TV')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/28/Apple_TV_Plus_Logo.svg" alt="Apple TV+">
+                </div>
+                <div class="network-card net-hulu" onclick="navigateTo('#/company/453/Hulu')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Hulu_Logo.svg" alt="Hulu">
+                </div>
+                <div class="network-card net-paramount" onclick="navigateTo('#/company/4/Paramount')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Paramount_Plus.svg" alt="Paramount+">
+                </div>
+            </div>
+
+            <div class="section-header" style="margin-top: 30px;">
+                <h2 class="section-title"><i class="fa-solid fa-building"></i> Studios</h2>
+            </div>
+            <div class="studios-grid">
+                <div class="studio-card" onclick="navigateTo('#/company/420/Marvel%20Studios')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Marvel_Logo.svg" alt="Marvel Studios">
+                </div>
+                <div class="studio-card" onclick="navigateTo('#/company/3/Pixar')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/Pixar_Wordmark.svg" alt="Pixar">
+                </div>
+                <div class="studio-card" onclick="navigateTo('#/company/2/Walt%20Disney')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Walt_Disney_Pictures_logo.svg" alt="Walt Disney">
+                </div>
+                <div class="studio-card" onclick="navigateTo('#/company/174/Warner%20Bros')">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/6/64/Warner_Bros_logo.svg" alt="Warner Bros">
                 </div>
-                <div class="company-card-logo" onclick="navigateTo('#/company/3/Pixar')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/40/Pixar_Disney_Logo.svg" alt="Pixar">
+                <div class="studio-card" onclick="navigateTo('#/company/33/Universal')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Universal_Pictures_logo.svg" alt="Universal">
                 </div>
-                <div class="company-card-logo" onclick="navigateTo('#/company/3268/HBO')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/de/HBO_logo.svg" alt="HBO">
+                <div class="studio-card" onclick="navigateTo('#/company/4/Paramount')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Paramount_Pictures_logo.svg" alt="Paramount">
+                </div>
+                <div class="studio-card" onclick="navigateTo('#/company/5/Columbia')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Columbia_Pictures_logo.svg" alt="Columbia Pictures">
+                </div>
+                <div class="studio-card" onclick="navigateTo('#/company/127928/20th%20Century')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/20th_Century_Studios_logo.svg" alt="20th Century Studios">
                 </div>
             </div>
         </section>
@@ -113,7 +145,6 @@ function createSectionHTML(id, icon, title) {
     `;
 }
 
-// عرض قائمة متابعة المشاهدة مع إمكانية مسح العناصر
 function renderSavedList(list, elementId, isContinueWatching = false) {
     const container = document.getElementById(elementId);
     if (!container) return;
@@ -129,7 +160,6 @@ function renderSavedList(list, elementId, isContinueWatching = false) {
     `).join('');
 }
 
-// دالة مسح العنصر من قائمة "متابعة المشاهدة"
 function removeFromContinueWatching(id, type) {
     let list = JSON.parse(localStorage.getItem('continue_watching') || '[]');
     list = list.filter(item => !(item.id == id && item.type == type));
@@ -145,7 +175,7 @@ async function renderCompanyPage(companyId, companyName) {
     container.innerHTML = `
         <div class="search-view-container">
             <h2 class="section-title" style="font-size: 24px; margin-bottom: 20px;">
-                <i class="fa-solid fa-film"></i> جميع أعمال شركة: ${companyName}
+                <i class="fa-solid fa-film"></i> جميع أعمال: ${companyName}
             </h2>
             <div id="company-results" class="grid-layout">جاري التحميل...</div>
         </div>
@@ -177,12 +207,12 @@ async function renderCompanyPage(companyId, companyName) {
     } catch(e) { console.error(e); }
 }
 
-// 3. صفحة المشاهدة
+// 3. صفحة المشاهدة - محسنة ومضبوطة لحجم الحاسوب مع 6 سيرفرات
 async function renderWatchPage(type, id) {
     const container = document.getElementById('app-container');
     if (!container) return;
 
-    container.innerHTML = `<div style="padding: 100px; text-align: center;">جاري تجهيز السينما...</div>`;
+    container.innerHTML = `<div style="padding: 100px; text-align: center;">جاري تجهيز مشغل الفيديو...</div>`;
 
     try {
         const res = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&language=ar-SA&append_to_response=recommendations`);
@@ -195,69 +225,67 @@ async function renderWatchPage(type, id) {
         
         saveToContinueWatching({ id, type, title, poster, rating });
 
+        // سيرفرات مشغل متعددة لتفادي شاشة "Media is unavailable"
+        const server1 = `https://vidsrc.to/embed/${type}/${id}`;
+        const server2 = `https://vidsrc.me/embed/${type}?tmdb=${id}`;
+        const server3 = `https://vidlink.pro/${type}/${id}`;
+        const server4 = `https://player.smashystream.com/video/${type}/${id}`;
+        const server5 = `https://www.2embed.cc/embed${type === 'movie' ? 'movie' : 'tv'}?id=${id}`;
+        const server6 = `https://autoembed.co/${type}/tmdb/${id}`;
+
         container.innerHTML = `
-            <!-- Banner Poster Header -->
-            <div class="netflix-hero" style="background-image: url('${backdrop ? BACKDROP_PATH + backdrop : ''}')">
-                <div class="netflix-overlay">
-                    <img class="netflix-poster" src="${poster ? IMG_PATH + poster : NO_IMAGE_URL}" onerror="this.src='${NO_IMAGE_URL}'" alt="${title}">
-                    <div class="netflix-details">
-                        <h1 class="netflix-title">${title}</h1>
-                        <div class="netflix-meta-bar">
-                            <span class="badge-green">${Math.round((data.vote_average || 7) * 10)}% تطابق</span>
-                            <span>${(data.release_date || data.first_air_date || '').substring(0, 4)}</span>
-                            <span>⭐ ${rating}</span>
-                            <span>${type === 'movie' ? 'فيلم' : 'مسلسل'}</span>
-                        </div>
-                        <p style="color: var(--text-muted); line-height: 1.5; font-size: 13px; max-width: 650px;">${data.overview || 'لا يوجد وصف متاح لهذا العمل.'}</p>
-                        
-                        <div class="action-buttons-group">
-                            <button class="btn-primary" onclick="scrollToPlayer()">
-                                <i class="fa-solid fa-play"></i> مشاهدة الآن
-                            </button>
-                        </div>
+            <div class="watch-page-container">
+                <!-- تفاصيل الفيلم السريعة -->
+                <div class="watch-header-info">
+                    <h1 class="watch-title">${title}</h1>
+                    <div class="watch-meta">
+                        <span class="badge-rating">⭐ ${rating}</span>
+                        <span>${(data.release_date || data.first_air_date || '').substring(0, 4)}</span>
+                        <span>${type === 'movie' ? 'فيلم' : 'مسلسل'}</span>
                     </div>
-                </div>
-            </div>
-
-            <!-- منطقة المشغل -->
-            <div class="player-section" id="player-area">
-                <h2 class="section-title" style="margin-bottom: 15px;"><i class="fa-solid fa-tv"></i> مشغل الفيديو</h2>
-                <div class="player-box">
-                    <iframe id="video-iframe" src="https://vidsrc.me/embed/${type}?tmdb=${id}" allowfullscreen></iframe>
+                    <p class="watch-overview">${data.overview || 'لا يوجد وصف متاح لهذا العمل.'}</p>
                 </div>
 
-                <h3 style="font-size: 14px; margin-bottom: 8px;">اختر سيرفر المشاهدة:</h3>
-                <div class="servers-grid">
-                    <button class="server-btn active" onclick="changeServer('https://vidsrc.me/embed/${type}?tmdb=${id}', this)">سيرفر 1 (سريع)</button>
-                    <button class="server-btn" onclick="changeServer('https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1', this)">سيرفر 2 (VIP)</button>
-                    <button class="server-btn" onclick="changeServer('https://2embed.org/embed/${id}', this)">سيرفر 3</button>
-                    <button class="server-btn" onclick="changeServer('https://autoembed.co/${type}/tmdb/${id}', this)">سيرفر 4</button>
+                <!-- مشغل الفيديو المضبوط بنسبة 16:9 للحاسوب -->
+                <div class="player-box-wrapper">
+                    <iframe id="video-iframe" src="${server1}" allowfullscreen frameborder="0" scrolling="no"></iframe>
+                </div>
+
+                <!-- أزرار اختيار السيرفرات -->
+                <div class="servers-section">
+                    <h3 class="servers-title"><i class="fa-solid fa-server"></i> اختر سيرفر المشاهدة:</h3>
+                    <div class="servers-grid">
+                        <button class="server-btn active" onclick="changeServer('${server1}', this)">سيرفر 1 (VidSrc)</button>
+                        <button class="server-btn" onclick="changeServer('${server2}', this)">سيرفر 2 (Pro)</button>
+                        <button class="server-btn" onclick="changeServer('${server3}', this)">سيرفر 3 (VidLink)</button>
+                        <button class="server-btn" onclick="changeServer('${server4}', this)">سيرفر 4 (Smashy)</button>
+                        <button class="server-btn" onclick="changeServer('${server5}', this)">سيرفر 5 (2Embed)</button>
+                        <button class="server-btn" onclick="changeServer('${server6}', this)">سيرفر 6 (AutoEmbed)</button>
+                    </div>
                 </div>
 
                 <!-- الأعمال المقترحة -->
                 ${data.recommendations && data.recommendations.results.length ? `
-                    <h2 class="section-title" style="margin-top: 30px; margin-bottom: 15px;"><i class="fa-solid fa-thumbs-up"></i> أعمال نوصي بها</h2>
-                    <div class="grid-layout">
-                        ${data.recommendations.results.slice(0, 6).map(item => `
-                            <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/${type}/${item.id}')">
-                                <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
-                                <img class="card-poster" src="${item.poster_path ? IMG_PATH + item.poster_path : NO_IMAGE_URL}" onerror="this.src='${NO_IMAGE_URL}'" alt="${item.title || item.name}">
-                                <div class="card-info">
-                                    <div class="card-title">${item.title || item.name}</div>
+                    <div class="recommendations-section">
+                        <h2 class="section-title"><i class="fa-solid fa-thumbs-up"></i> أعمال نوصي بها</h2>
+                        <div class="grid-layout">
+                            ${data.recommendations.results.slice(0, 6).map(item => `
+                                <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/${type}/${item.id}')">
+                                    <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
+                                    <img class="card-poster" src="${item.poster_path ? IMG_PATH + item.poster_path : NO_IMAGE_URL}" onerror="this.src='${NO_IMAGE_URL}'" alt="${item.title || item.name}">
+                                    <div class="card-info">
+                                        <div class="card-title">${item.title || item.name}</div>
+                                    </div>
                                 </div>
-                            </div>
-                        `).join('')}
+                            `).join('')}
+                        </div>
                     </div>
                 ` : ''}
             </div>
         `;
     } catch(e) {
-        container.innerHTML = `<div style="padding: 50px; text-align: center; color: red;">حدث خطأ في تحميل البيانات.</div>`;
+        container.innerHTML = `<div style="padding: 50px; text-align: center; color: red;">حدث خطأ أثناء تحميل البيانات.</div>`;
     }
-}
-
-function scrollToPlayer() {
-    document.getElementById('player-area')?.scrollIntoView({ behavior: 'smooth' });
 }
 
 async function loadHeroBanner() {
