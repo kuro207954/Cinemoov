@@ -445,4 +445,12 @@ function saveToContinueWatching(item) {
     list = list.filter(i => !(i.id === item.id && i.type === item.type));
     list.unshift(item);
     localStorage.setItem('continue_watching', JSON.stringify(list.slice(0, 10)));
-}
+}// إخفاء الشعارات المكسورة أو غير المتوفرة تلقائياً
+document.addEventListener("DOMContentLoaded", () => {
+    const companyLogos = document.querySelectorAll('.production-company-logo');
+    companyLogos.forEach(img => {
+        img.onerror = function() {
+            this.style.display = 'none';
+        };
+    });
+});
