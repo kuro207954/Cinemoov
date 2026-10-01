@@ -17,17 +17,17 @@
             <a href="#" class="active">الرئيسية</a>
             <a href="#">مسلسلات</a>
             <a href="#">أفلام</a>
-            <a href="#">الأحدث</a>
+            <a href="#">أنمي</a>
             <a href="#">قائمتي</a>
         </nav>
         <div class="nav-actions">
             <div class="search-box">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="ابحث عن فيلم أو مسلسل...">
+                <input type="text" placeholder="ابحث عن فيلم، مسلسل، أنمي...">
             </div>
             <i class="fa-regular fa-bell icon-btn"></i>
             <div class="user-avatar">
-                <img src="https://i.pravatar.cc/100?img=33" alt="المستخدم">
+                <img src="https://picsum.photos/id/64/100/100" alt="المستخدم">
             </div>
         </div>
     </header>
@@ -35,7 +35,7 @@
     <!-- Hero Banner -->
     <section class="hero">
         <div class="hero-bg">
-            <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1200" alt="Hero Background">
+            <img src="https://picsum.photos/id/1059/1600/900" alt="Hero Background">
             <div class="hero-overlay"></div>
         </div>
         <div class="hero-content">
@@ -46,38 +46,74 @@
                 <button class="btn btn-primary" onclick="startVideo()">
                     <i class="fa-solid fa-play"></i> تشغيل الآن
                 </button>
-                <button class="btn btn-secondary" onclick="openModal('As The Crow Flies', 'دراما • تركيا • 2024', 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1200', 'صراع بين مذيعة مخضرمة ومعجبة شابة تتسلل لغرفة الأخبار بكواليس مظلمة.')">
+                <button class="btn btn-secondary" onclick="openModal('As The Crow Flies', 'دراما • تركيا • 2024', 'https://picsum.photos/id/1059/800/450', 'صراع بين مذيعة مخضرمة ومعجبة شابة تتسلل لغرفة الأخبار بكواليس مظلمة.')">
                     <i class="fa-solid fa-circle-info"></i> التفاصيل
                 </button>
             </div>
         </div>
     </section>
 
-    <!-- Content Sections -->
+    <!-- Main Container -->
     <main class="main-container">
         
-        <!-- قسم متابعة المشاهدة -->
+        <!-- قسم الأنمي الرائج -->
         <section class="row">
-            <h2 class="row-title">متابعة المشاهدة لـ أسامة</h2>
+            <h2 class="row-title"><i class="fa-solid fa-bolt" style="color: #e50914;"></i> قسم الأنمي المميز</h2>
             <div class="row-cards">
-                <div class="card" onclick="openModal('Wednesday', 'غموض • خيال • 2022', 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=600', 'تدور الأحداث حول الأربعاء آدامز أثناء سنوات دراستها في أكاديمية نيفرمور.')">
-                    <img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=600" alt="Wednesday">
+                <div class="card" onclick="openModal('Attack on Titan', 'أنمي • أكشن • غموض', 'https://picsum.photos/id/1062/600/400', 'البشرية تحارب العمالقة للبقاء على قيد الحياة خلف أسوار ضخمة.')">
+                    <span class="tag">أنمي</span>
+                    <img src="https://picsum.photos/id/1062/600/400" alt="Attack on Titan">
+                    <div class="card-info">
+                        <h4>Attack on Titan</h4>
+                        <p class="card-sub">4 مواسم • مكتمل</p>
+                    </div>
+                </div>
+
+                <div class="card" onclick="openModal('Demon Slayer', 'أنمي • مغامرة', 'https://picsum.photos/id/1025/600/400', 'فتى يسعى لإنقاذ أخته وتحويلها مجدداً إلى بشرية بعد هجوم الشياطين.')">
+                    <span class="tag">أنمي</span>
+                    <img src="https://picsum.photos/id/1025/600/400" alt="Demon Slayer">
+                    <div class="card-info">
+                        <h4>Demon Slayer</h4>
+                        <p class="card-sub">الموسم الثالث</p>
+                    </div>
+                </div>
+
+                <div class="card" onclick="openModal('Jujutsu Kaisen', 'أنمي • خيال علمي', 'https://picsum.photos/id/1069/600/400', 'طالب يبتلع إصبعاً ملعوناً ويدخل عالم ممارسي السحر واللعنات.')">
+                    <span class="tag">أنمي</span>
+                    <img src="https://picsum.photos/id/1069/600/400" alt="Jujutsu Kaisen">
+                    <div class="card-info">
+                        <h4>Jujutsu Kaisen</h4>
+                        <p class="card-sub">الموسم الثاني</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- قسم المسلسلات -->
+        <section class="row">
+            <h2 class="row-title"><i class="fa-solid fa-tv" style="color: #e50914;"></i> أفضل المسلسلات</h2>
+            <div class="row-cards">
+                <div class="card" onclick="openModal('Wednesday', 'غموض • خيال', 'https://picsum.photos/id/1015/600/400', 'تدور الأحداث حول الأربعاء آدامز أثناء سنوات دراستها في أكاديمية نيفرمور.')">
+                    <span class="tag">مسلسل</span>
+                    <img src="https://picsum.photos/id/1015/600/400" alt="Wednesday">
                     <div class="card-info">
                         <h4>Wednesday</h4>
                         <div class="progress-bar"><div class="progress" style="width: 70%;"></div></div>
                     </div>
                 </div>
 
-                <div class="card" onclick="openModal('Stranger Things', 'خيال علمي • رعب', 'https://images.unsplash.com/photo-1618336753974-aae8e04506aa?q=80&w=600', 'اختفاء صبي صغير يثير سلسلة من الأحداث الغريبة ببلدة صغيرة.')">
-                    <img src="https://images.unsplash.com/photo-1618336753974-aae8e04506aa?q=80&w=600" alt="Stranger Things">
+                <div class="card" onclick="openModal('Stranger Things', 'خيال علمي • رعب', 'https://picsum.photos/id/1043/600/400', 'اختفاء صبي صغير يثير سلسلة من الأحداث الغريبة ببلدة صغيرة.')">
+                    <span class="tag">مسلسل</span>
+                    <img src="https://picsum.photos/id/1043/600/400" alt="Stranger Things">
                     <div class="card-info">
                         <h4>Stranger Things</h4>
                         <div class="progress-bar"><div class="progress" style="width: 40%;"></div></div>
                     </div>
                 </div>
 
-                <div class="card" onclick="openModal('Dark', 'غموض • إثارة', 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=600', 'اختفاء طفلين يكشف عن العلاقات المزدوجة والحياة المزدوجة لأربع عائلات.')">
-                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=600" alt="Dark">
+                <div class="card" onclick="openModal('Dark', 'غموض • إثارة', 'https://picsum.photos/id/1050/600/400', 'اختفاء طفلين يكشف عن العلاقات المزدوجة لأربع عائلات عبر الزمن.')">
+                    <span class="tag">مسلسل</span>
+                    <img src="https://picsum.photos/id/1050/600/400" alt="Dark">
                     <div class="card-info">
                         <h4>Dark</h4>
                         <div class="progress-bar"><div class="progress" style="width: 85%;"></div></div>
@@ -86,39 +122,34 @@
             </div>
         </section>
 
-        <!-- قسم الأكثر شيوعاً Top 10 -->
+        <!-- قسم الأفلام الأكثر شيوعاً Top 10 -->
         <section class="row">
-            <h2 class="row-title">الأعلى تقييماً هذا الأسبوع</h2>
+            <h2 class="row-title"><i class="fa-solid fa-film" style="color: #e50914;"></i> الأفلام الأعلى تقييماً</h2>
             <div class="row-cards">
-                <div class="card" onclick="openModal('The King', 'تاريخي • دراما', 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=600', 'أمير يعتلي العرش بعد وفاة والده ويتعلم كيفية إدارة الحرب والسياسة.')">
+                <div class="card" onclick="openModal('The King', 'تاريخي • دراما', 'https://picsum.photos/id/1060/600/400', 'أمير يعتلي العرش بعد وفاة والده ويتعلم كيفية إدارة الحرب والسياسة.')">
                     <span class="top-badge">TOP 1</span>
-                    <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=600" alt="The King">
+                    <img src="https://picsum.photos/id/1060/600/400" alt="The King">
                     <div class="card-info">
                         <h4>The King</h4>
+                        <p class="card-sub">فيلم • 2h 20m</p>
                     </div>
                 </div>
 
-                <div class="card" onclick="openModal('Cyberpunk', 'أنيميشن • أكشن', 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600', 'شاب يحاول البقاء على قيد الحياة في مدينة مستقبلية مهووسة بالتكنولوجيا.')">
+                <div class="card" onclick="openModal('Interstellar', 'خيال علمي • فضاء', 'https://picsum.photos/id/1039/600/400', 'فريق من المستكشفين يسافر عبر ثقب دودي في الفضاء لضمان بقاء البشرية.')">
                     <span class="top-badge">TOP 2</span>
-                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600" alt="Cyberpunk">
-                    <div class="card-info">
-                        <h4>Cyberpunk</h4>
-                    </div>
-                </div>
-
-                <div class="card" onclick="openModal('Interstellar', 'خيال علمي • فضاء', 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600', 'فريق من المستكشفين يسافر عبر ثقب دودي في الفضاء لضمان بقاء البشرية.')">
-                    <span class="top-badge">TOP 3</span>
-                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600" alt="Interstellar">
+                    <img src="https://picsum.photos/id/1039/600/400" alt="Interstellar">
                     <div class="card-info">
                         <h4>Interstellar</h4>
+                        <p class="card-sub">فيلم • 2h 49m</p>
                     </div>
                 </div>
 
-                <div class="card" onclick="openModal('Inception', 'إثارة • ذكاء', 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=600', 'لص يسرق الأسرار المؤسسية من خلال استخدام تكنولوجيا مشاركة الأحلام.')">
-                    <span class="top-badge">TOP 4</span>
-                    <img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=600" alt="Inception">
+                <div class="card" onclick="openModal('Inception', 'إثارة • ذكاء', 'https://picsum.photos/id/1035/600/400', 'لص يسرق الأسرار المؤسسية من خلال استخدام تكنولوجيا مشاركة الأحلام.')">
+                    <span class="top-badge">TOP 3</span>
+                    <img src="https://picsum.photos/id/1035/600/400" alt="Inception">
                     <div class="card-info">
                         <h4>Inception</h4>
+                        <p class="card-sub">فيلم • 2h 28m</p>
                     </div>
                 </div>
             </div>
@@ -134,24 +165,24 @@
                 <img id="modalImg" src="" alt="Cover">
                 <div class="modal-hero-overlay"></div>
                 <div class="modal-title-area">
-                    <h2 id="modalTitle">اسم الفيلم</h2>
+                    <h2 id="modalTitle">اسم العمل</h2>
                     <p id="modalMeta">التصنيف • السنة</p>
                     <div class="modal-actions">
-                        <button class="btn btn-primary" onclick="startVideo()"><i class="fa-solid fa-play"></i> تشغيل</button>
+                        <button class="btn btn-primary" onclick="startVideo()"><i class="fa-solid fa-play"></i> تشغيل الآن</button>
                         <button class="btn-icon" id="addListBtn" onclick="toggleList()"><i class="fa-solid fa-plus"></i></button>
-                        <button class="btn-icon"><i class="fa-solid fa-download"></i></button>
+                        <button class="btn-icon" title="تحميل"><i class="fa-solid fa-download"></i></button>
                     </div>
                 </div>
             </div>
             <div class="modal-body">
-                <p id="modalDesc" class="modal-description">وصف التفاصيل يظهر هنا...</p>
+                <p id="modalDesc" class="modal-description">وصف العمل يظهر هنا بالتفصيل...</p>
                 <div class="episodes-section">
-                    <h3>الحلقات / السيرفرات</h3>
+                    <h3>سيرفرات المشاهدة والتحميل</h3>
                     <div class="episode-item" onclick="startVideo()">
                         <span class="ep-num">1</span>
                         <div class="ep-info">
-                            <h4>السيرفر الرئيسي (FHD 1080p)</h4>
-                            <p>جودة عالية • مشاهدة مباشرة</p>
+                            <h4>السيرفر السريع (FHD 1080p)</h4>
+                            <p>جودة عالية • بدون إعلانات</p>
                         </div>
                         <i class="fa-solid fa-play ep-play"></i>
                     </div>
@@ -160,7 +191,7 @@
         </div>
     </div>
 
-    <!-- Video Player -->
+    <!-- Video Player Modal -->
     <div class="player-modal" id="playerModal">
         <button class="close-player" onclick="closePlayer()"><i class="fa-solid fa-xmark"></i> إغلاق المشغل</button>
         <div class="video-wrapper">

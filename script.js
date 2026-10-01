@@ -2,7 +2,7 @@ function id(elemId) {
     return document.getElementById(elemId);
 }
 
-// فتح نافذة تفاصيل الفيلم/المسلسل
+// فتح نافذة تفاصيل الفيلم أو المسلسل أو الأنمي
 function openModal(title, meta, imgSrc, desc) {
     id('modalTitle').innerText = title;
     id('modalMeta').innerText = meta;
@@ -16,7 +16,7 @@ function closeModal() {
     id('detailModal').style.display = 'none';
 }
 
-// زر المفضلة
+// إضافة للحفظ / المفضلة
 let isAdded = false;
 function toggleList() {
     const btn = id('addListBtn');
@@ -30,12 +30,11 @@ function toggleList() {
     }
 }
 
-// تشغيل الفيديو
+// تشغيل المشغل
 function startVideo() {
     closeModal();
     const player = id('playerModal');
     const iframe = id('videoIframe');
-    // رابط مقطع تجريبي
     iframe.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1";
     player.style.display = 'block';
 }
