@@ -3,200 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CINEMA - المنصة السينمائية</title>
+    <title>CineMoov - المنصة السينمائية الاحترافية</title>
+    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Navbar -->
-    <header class="navbar" id="navbar">
-        <div class="logo">CINEMA<span>.</span></div>
-        <nav class="nav-links">
-            <a href="#" class="active">الرئيسية</a>
-            <a href="#">مسلسلات</a>
-            <a href="#">أفلام</a>
-            <a href="#">أنمي</a>
-            <a href="#">قائمتي</a>
-        </nav>
-        <div class="nav-actions">
-            <div class="search-box">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="ابحث عن فيلم، مسلسل، أنمي...">
-            </div>
-            <i class="fa-regular fa-bell icon-btn"></i>
-            <div class="user-avatar">
-                <img src="https://picsum.photos/id/64/100/100" alt="المستخدم">
-            </div>
+    <!-- Header للهواتف -->
+    <header class="mobile-header">
+        <div class="logo">
+            <i class="fas fa-film"></i> <span>CineMoov</span>
         </div>
+        <button id="menuToggleBtn" class="menu-toggle-btn">
+            <i class="fas fa-bars"></i>
+        </button>
     </header>
 
-    <!-- Hero Banner -->
-    <section class="hero">
-        <div class="hero-bg">
-            <img src="https://picsum.photos/id/1059/1600/900" alt="Hero Background">
-            <div class="hero-overlay"></div>
-        </div>
-        <div class="hero-content">
-            <span class="badge"><i class="fa-solid fa-fire"></i> الأكثر مشاهدة اليوم</span>
-            <h1 class="hero-title">AS THE CROW FLIES</h1>
-            <p class="hero-desc">في عالم الصحافة والإعلام الشرس، تصطدم النجومية الصاعدة بالطموح الأعمى. قصة صراع أجيال وتضحيات بين الشهرة والحقيقة.</p>
-            <div class="hero-btns">
-                <button class="btn btn-primary" onclick="startVideo()">
-                    <i class="fa-solid fa-play"></i> تشغيل الآن
-                </button>
-                <button class="btn btn-secondary" onclick="openModal('As The Crow Flies', 'دراما • تركيا • 2024', 'https://picsum.photos/id/1059/800/450', 'صراع بين مذيعة مخضرمة ومعجبة شابة تتسلل لغرفة الأخبار بكواليس مظلمة.')">
-                    <i class="fa-solid fa-circle-info"></i> التفاصيل
-                </button>
+    <div class="app-layout">
+        <!-- القائمة الجانبية Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="logo desktop-only">
+                <i class="fas fa-film"></i> <span>CineMoov</span>
             </div>
-        </div>
-    </section>
-
-    <!-- Main Container -->
-    <main class="main-container">
-        
-        <!-- قسم الأنمي الرائج -->
-        <section class="row">
-            <h2 class="row-title"><i class="fa-solid fa-bolt" style="color: #e50914;"></i> قسم الأنمي المميز</h2>
-            <div class="row-cards">
-                <div class="card" onclick="openModal('Attack on Titan', 'أنمي • أكشن • غموض', 'https://picsum.photos/id/1062/600/400', 'البشرية تحارب العمالقة للبقاء على قيد الحياة خلف أسوار ضخمة.')">
-                    <span class="tag">أنمي</span>
-                    <img src="https://picsum.photos/id/1062/600/400" alt="Attack on Titan">
-                    <div class="card-info">
-                        <h4>Attack on Titan</h4>
-                        <p class="card-sub">4 مواسم • مكتمل</p>
-                    </div>
-                </div>
-
-                <div class="card" onclick="openModal('Demon Slayer', 'أنمي • مغامرة', 'https://picsum.photos/id/1025/600/400', 'فتى يسعى لإنقاذ أخته وتحويلها مجدداً إلى بشرية بعد هجوم الشياطين.')">
-                    <span class="tag">أنمي</span>
-                    <img src="https://picsum.photos/id/1025/600/400" alt="Demon Slayer">
-                    <div class="card-info">
-                        <h4>Demon Slayer</h4>
-                        <p class="card-sub">الموسم الثالث</p>
-                    </div>
-                </div>
-
-                <div class="card" onclick="openModal('Jujutsu Kaisen', 'أنمي • خيال علمي', 'https://picsum.photos/id/1069/600/400', 'طالب يبتلع إصبعاً ملعوناً ويدخل عالم ممارسي السحر واللعنات.')">
-                    <span class="tag">أنمي</span>
-                    <img src="https://picsum.photos/id/1069/600/400" alt="Jujutsu Kaisen">
-                    <div class="card-info">
-                        <h4>Jujutsu Kaisen</h4>
-                        <p class="card-sub">الموسم الثاني</p>
-                    </div>
-                </div>
+            
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="ابحث عن فيلم، مسلسل، أنمي...">
             </div>
-        </section>
 
-        <!-- قسم المسلسلات -->
-        <section class="row">
-            <h2 class="row-title"><i class="fa-solid fa-tv" style="color: #e50914;"></i> أفضل المسلسلات</h2>
-            <div class="row-cards">
-                <div class="card" onclick="openModal('Wednesday', 'غموض • خيال', 'https://picsum.photos/id/1015/600/400', 'تدور الأحداث حول الأربعاء آدامز أثناء سنوات دراستها في أكاديمية نيفرمور.')">
-                    <span class="tag">مسلسل</span>
-                    <img src="https://picsum.photos/id/1015/600/400" alt="Wednesday">
-                    <div class="card-info">
-                        <h4>Wednesday</h4>
-                        <div class="progress-bar"><div class="progress" style="width: 70%;"></div></div>
-                    </div>
-                </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-type="home"><i class="fas fa-home"></i> الرئيسية</a>
+                <a href="#" class="nav-item" data-type="movie"><i class="fas fa-compact-disc"></i> الأفلام</a>
+                <a href="#" class="nav-item" data-type="tv"><i class="fas fa-tv"></i> المسلسلات</a>
+                <a href="#" class="nav-item" data-type="anime"><i class="fas fa-mask"></i> الأنمي</a>
+            </nav>
+        </aside>
 
-                <div class="card" onclick="openModal('Stranger Things', 'خيال علمي • رعب', 'https://picsum.photos/id/1043/600/400', 'اختفاء صبي صغير يثير سلسلة من الأحداث الغريبة ببلدة صغيرة.')">
-                    <span class="tag">مسلسل</span>
-                    <img src="https://picsum.photos/id/1043/600/400" alt="Stranger Things">
-                    <div class="card-info">
-                        <h4>Stranger Things</h4>
-                        <div class="progress-bar"><div class="progress" style="width: 40%;"></div></div>
-                    </div>
-                </div>
+        <!-- الخلفية المظلمة للهاتف عند فتح القائمة -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-                <div class="card" onclick="openModal('Dark', 'غموض • إثارة', 'https://picsum.photos/id/1050/600/400', 'اختفاء طفلين يكشف عن العلاقات المزدوجة لأربع عائلات عبر الزمن.')">
-                    <span class="tag">مسلسل</span>
-                    <img src="https://picsum.photos/id/1050/600/400" alt="Dark">
-                    <div class="card-info">
-                        <h4>Dark</h4>
-                        <div class="progress-bar"><div class="progress" style="width: 85%;"></div></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- قسم الأفلام الأكثر شيوعاً Top 10 -->
-        <section class="row">
-            <h2 class="row-title"><i class="fa-solid fa-film" style="color: #e50914;"></i> الأفلام الأعلى تقييماً</h2>
-            <div class="row-cards">
-                <div class="card" onclick="openModal('The King', 'تاريخي • دراما', 'https://picsum.photos/id/1060/600/400', 'أمير يعتلي العرش بعد وفاة والده ويتعلم كيفية إدارة الحرب والسياسة.')">
-                    <span class="top-badge">TOP 1</span>
-                    <img src="https://picsum.photos/id/1060/600/400" alt="The King">
-                    <div class="card-info">
-                        <h4>The King</h4>
-                        <p class="card-sub">فيلم • 2h 20m</p>
-                    </div>
-                </div>
-
-                <div class="card" onclick="openModal('Interstellar', 'خيال علمي • فضاء', 'https://picsum.photos/id/1039/600/400', 'فريق من المستكشفين يسافر عبر ثقب دودي في الفضاء لضمان بقاء البشرية.')">
-                    <span class="top-badge">TOP 2</span>
-                    <img src="https://picsum.photos/id/1039/600/400" alt="Interstellar">
-                    <div class="card-info">
-                        <h4>Interstellar</h4>
-                        <p class="card-sub">فيلم • 2h 49m</p>
-                    </div>
-                </div>
-
-                <div class="card" onclick="openModal('Inception', 'إثارة • ذكاء', 'https://picsum.photos/id/1035/600/400', 'لص يسرق الأسرار المؤسسية من خلال استخدام تكنولوجيا مشاركة الأحلام.')">
-                    <span class="top-badge">TOP 3</span>
-                    <img src="https://picsum.photos/id/1035/600/400" alt="Inception">
-                    <div class="card-info">
-                        <h4>Inception</h4>
-                        <p class="card-sub">فيلم • 2h 28m</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Modal التفاصيل -->
-    <div class="modal-backdrop" id="detailModal">
-        <div class="modal-container">
-            <button class="close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
-            <div class="modal-hero">
-                <img id="modalImg" src="" alt="Cover">
-                <div class="modal-hero-overlay"></div>
-                <div class="modal-title-area">
-                    <h2 id="modalTitle">اسم العمل</h2>
-                    <p id="modalMeta">التصنيف • السنة</p>
-                    <div class="modal-actions">
-                        <button class="btn btn-primary" onclick="startVideo()"><i class="fa-solid fa-play"></i> تشغيل الآن</button>
-                        <button class="btn-icon" id="addListBtn" onclick="toggleList()"><i class="fa-solid fa-plus"></i></button>
-                        <button class="btn-icon" title="تحميل"><i class="fa-solid fa-download"></i></button>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-body">
-                <p id="modalDesc" class="modal-description">وصف العمل يظهر هنا بالتفصيل...</p>
-                <div class="episodes-section">
-                    <h3>سيرفرات المشاهدة والتحميل</h3>
-                    <div class="episode-item" onclick="startVideo()">
-                        <span class="ep-num">1</span>
-                        <div class="ep-info">
-                            <h4>السيرفر السريع (FHD 1080p)</h4>
-                            <p>جودة عالية • بدون إعلانات</p>
+        <!-- مساحة العرض الرئيسية -->
+        <main class="main-content">
+            
+            <!-- HOME VIEW -->
+            <div id="homeView">
+                <!-- البانر الرئيسي Hero Banner -->
+                <div id="heroBanner" class="hero-banner">
+                    <div class="hero-overlay"></div>
+                    <div class="hero-info">
+                        <span class="hero-badge"><i class="fas fa-fire"></i> الأبرز هذا الأسبوع</span>
+                        <h1 id="heroTitle">جاري التحميل...</h1>
+                        <p id="heroOverview"></p>
+                        <div class="hero-buttons">
+                            <button id="heroPlayBtn" class="btn btn-primary"><i class="fas fa-play"></i> شاهد الآن</button>
                         </div>
-                        <i class="fa-solid fa-play ep-play"></i>
+                    </div>
+                </div>
+
+                <div class="sections-container">
+                    <!-- قسم متابعة المشاهدة -->
+                    <section class="content-section" id="continueWatchingSection" style="display: none;">
+                        <div class="section-header">
+                            <h2><i class="fas fa-history"></i> متابعة المشاهدة</h2>
+                        </div>
+                        <div class="horizontal-scroll" id="continueWatchingGrid"></div>
+                    </section>
+
+                    <!-- الأفلام الرائجة -->
+                    <section class="content-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-compact-disc"></i> الأفلام الأكثر شهرة</h2>
+                            <button class="see-more-btn" data-type="movie">عرض الكل <i class="fas fa-chevron-left"></i></button>
+                        </div>
+                        <div class="horizontal-scroll" id="rowTrendingMovies"></div>
+                    </section>
+
+                    <!-- المسلسلات الرائجة -->
+                    <section class="content-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-tv"></i> المسلسلات الأكثر شهرة</h2>
+                            <button class="see-more-btn" data-type="tv">عرض الكل <i class="fas fa-chevron-left"></i></button>
+                        </div>
+                        <div class="horizontal-scroll" id="rowTrendingTV"></div>
+                    </section>
+
+                    <!-- الأعلى تقييماً -->
+                    <section class="content-section">
+                        <div class="section-header">
+                            <h2><i class="fas fa-crown"></i> الأعلى تقييماً</h2>
+                            <button class="see-more-btn" data-type="top_rated">عرض الكل <i class="fas fa-chevron-left"></i></button>
+                        </div>
+                        <div class="horizontal-scroll" id="rowTopRated"></div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- GRID / CATEGORY / SEARCH VIEW -->
+            <div id="gridView" class="sections-container" style="display: none;">
+                <div class="section-header" style="margin-bottom: 25px;">
+                    <h2 id="gridTitle">الأفلام</h2>
+                </div>
+                <div class="media-grid" id="fullGrid"></div>
+            </div>
+
+            <!-- DETAIL & PLAYER VIEW -->
+            <div id="detailView" class="detail-page" style="display: none;">
+                <button id="backBtn" class="back-btn"><i class="fas fa-arrow-right"></i> العودة للرئيسية</button>
+                
+                <div class="detail-header" id="detailHeader">
+                    <div class="detail-header-overlay"></div>
+                    <div class="detail-header-content">
+                        <img id="detailPoster" src="" alt="Poster" class="detail-poster">
+                        <div class="detail-meta">
+                            <h1 id="detailTitle">العنوان</h1>
+                            <p id="detailOverview" class="detail-overview"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- مشغل الفيديو والتحكم -->
+                <div class="player-wrapper">
+                    <div class="video-container">
+                        <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
+                    </div>
+
+                    <!-- لوحة خيارات السيرفر والحلقات -->
+                    <div class="player-controls-panel">
+                        <h3><i class="fas fa-server"></i> اختر سيرفر المشاهدة</h3>
+                        <div class="server-grid">
+                            <button class="server-btn active" data-server="vidsrc">سيرفر 1 (أساسي)</button>
+                            <button class="server-btn" data-server="superembed">سيرفر 2 (سريع HD)</button>
+                            <button class="server-btn" data-server="autoembed">سيرفر 3 (بديل)</button>
+                            <button class="server-btn" data-server="2embed">سيرفر 4 (احتياطي)</button>
+                        </div>
+
+                        <div id="tvControls" class="tv-controls" style="display: none;">
+                            <h3><i class="fas fa-list"></i> قائمة الحلقات</h3>
+                            <div class="control-group">
+                                <label style="font-size:13px; color:#aaa; margin-bottom: 5px; display:block;">الموسم:</label>
+                                <select id="seasonSelect"></select>
+                            </div>
+                            <div class="episodes-grid" id="episodesList"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Video Player Modal -->
-    <div class="player-modal" id="playerModal">
-        <button class="close-player" onclick="closePlayer()"><i class="fa-solid fa-xmark"></i> إغلاق المشغل</button>
-        <div class="video-wrapper">
-            <iframe id="videoIframe" src="" frameborder="0" allowfullscreen></iframe>
-        </div>
+        </main>
     </div>
 
     <script src="script.js"></script>
