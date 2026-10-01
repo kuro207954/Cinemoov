@@ -3,181 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineMoov - منصتك السينمائية</title>
-    <link rel="stylesheet" href="style.css">
+    <title>CineMoov - متعتك السينمائية</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Top Navigation Bar (Netflix Style) -->
-    <header class="navbar" id="navbar">
-        <div class="nav-container">
-            <div class="nav-left">
-                <div class="logo" id="logoBtn">
-                    <i class="fas fa-film"></i> <span>CineMoov</span>
-                </div>
-                <nav class="desktop-nav">
-                    <a href="#" class="nav-link active" data-type="home">الرئيسية</a>
-                    <a href="#" class="nav-link" data-type="movie">الأفلام</a>
-                    <a href="#" class="nav-link" data-type="tv">المسلسلات</a>
-                    <a href="#" class="nav-link" data-type="anime">الأنمي</a>
-                </nav>
-            </div>
-            
-            <div class="nav-right">
-                <div class="search-wrapper" id="searchWrapper">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="searchInput" placeholder="ابحث عن فيلم، مسلسل...">
-                </div>
-                <button class="mobile-menu-btn" id="menuToggleBtn">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
+    <!-- الهيدر الرئيسي -->
+    <header class="main-header">
+        <div class="logo-container" onclick="navigateTo('#/')">
+            <span class="logo-text">CineMoov</span>
+            <i class="fa-solid fa-film logo-icon"></i>
         </div>
+
+        <nav class="nav-links">
+            <a href="#/" class="nav-item active" id="nav-home">الرئيسية</a>
+            <a href="#/movies" class="nav-item" id="nav-movies">الأفلام</a>
+            <a href="#/tv" class="nav-item" id="nav-tv">المسلسلات</a>
+            <a href="#/anime" class="nav-item" id="nav-anime">الأنمي</a>
+            <a href="#/search" class="nav-item search-btn" id="nav-search">
+                <i class="fa-solid fa-magnifying-glass"></i> البحث
+            </a>
+        </nav>
     </header>
 
-    <!-- Sidebar Mobile Drawer -->
-    <div class="mobile-drawer" id="mobileDrawer">
-        <div class="drawer-header">
-            <div class="logo"><i class="fas fa-film"></i> CineMoov</div>
-            <button class="close-drawer" id="closeDrawerBtn"><i class="fas fa-times"></i></button>
-        </div>
-        <nav class="drawer-nav">
-            <a href="#" class="drawer-link active" data-type="home"><i class="fas fa-home"></i> الرئيسية</a>
-            <a href="#" class="drawer-link" data-type="movie"><i class="fas fa-compact-disc"></i> الأفلام</a>
-            <a href="#" class="drawer-link" data-type="tv"><i class="fas fa-tv"></i> المسلسلات</a>
-            <a href="#" class="drawer-link" data-type="anime"><i class="fas fa-mask"></i> الأنمي</a>
-        </nav>
-    </div>
-    <div class="drawer-overlay" id="drawerOverlay"></div>
-
-    <!-- Main Container -->
-    <main class="main-wrapper">
-        
-        <!-- HOME VIEW -->
-        <div id="homeView" class="view-page">
-            <!-- Featured Hero Banner -->
-            <div id="heroBanner" class="hero">
-                <div class="hero-bg" id="heroBg"></div>
-                <div class="hero-gradient"></div>
-                <div class="hero-content">
-                    <span class="hero-badge"><i class="fas fa-fire"></i> الأبرز حالياً</span>
-                    <h1 id="heroTitle">جاري التحميل...</h1>
-                    <div class="hero-meta">
-                        <span id="heroRating" class="rating-tag"><i class="fas fa-star"></i> --</span>
-                        <span id="heroYear" class="year-tag">----</span>
-                    </div>
-                    <p id="heroOverview"></p>
-                    <div class="hero-actions">
-                        <button id="heroPlayBtn" class="btn btn-primary"><i class="fas fa-play"></i> تشغيل الآن</button>
-                        <button id="heroMoreBtn" class="btn btn-secondary"><i class="fas fa-info-circle"></i> تفاصيل أكثر</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="rows-container">
-                <!-- سجل المشاهدة -->
-                <section class="media-row-section" id="continueWatchingSection" style="display: none;">
-                    <h2 class="row-title"><i class="fas fa-history"></i> متابعة المشاهدة</h2>
-                    <div class="row-slider" id="continueWatchingGrid"></div>
-                </section>
-
-                <!-- الأفلام الشائعة -->
-                <section class="media-row-section">
-                    <div class="row-header">
-                        <h2 class="row-title"><i class="fas fa-fire"></i> الأفلام الرائجة</h2>
-                        <button class="see-more" data-type="movie_trending">عرض الكل <i class="fas fa-chevron-left"></i></button>
-                    </div>
-                    <div class="row-slider" id="rowTrendingMovies"></div>
-                </section>
-
-                <!-- المسلسلات الشائعة -->
-                <section class="media-row-section">
-                    <div class="row-header">
-                        <h2 class="row-title"><i class="fas fa-tv"></i> المسلسلات الرائجة</h2>
-                        <button class="see-more" data-type="tv_trending">عرض الكل <i class="fas fa-chevron-left"></i></button>
-                    </div>
-                    <div class="row-slider" id="rowTrendingTV"></div>
-                </section>
-
-                <!-- الأفلام الأعلى تقييماً -->
-                <section class="media-row-section">
-                    <div class="row-header">
-                        <h2 class="row-title"><i class="fas fa-crown"></i> الأفلام الأعلى تقييماً</h2>
-                        <button class="see-more" data-type="movie_top">عرض الكل <i class="fas fa-chevron-left"></i></button>
-                    </div>
-                    <div class="row-slider" id="rowTopMovies"></div>
-                </section>
-
-                <!-- المسلسلات الأعلى تقييماً -->
-                <section class="media-row-section">
-                    <div class="row-header">
-                        <h2 class="row-title"><i class="fas fa-award"></i> المسلسلات الأعلى تقييماً</h2>
-                        <button class="see-more" data-type="tv_top">عرض الكل <i class="fas fa-chevron-left"></i></button>
-                    </div>
-                    <div class="row-slider" id="rowTopTV"></div>
-                </section>
-            </div>
-        </div>
-
-        <!-- GRID & SEARCH VIEW -->
-        <div id="gridView" class="view-page" style="display: none;">
-            <div class="grid-header">
-                <h2 id="gridTitle">الأفلام</h2>
-            </div>
-            <div class="media-grid" id="fullGrid"></div>
-        </div>
-
-        <!-- DETAIL & STREAMING VIEW -->
-        <div id="detailView" class="view-page" style="display: none;">
-            <button id="backBtn" class="back-link"><i class="fas fa-arrow-right"></i> العودة للرئيسية</button>
-
-            <div class="backdrop-hero" id="detailBackdrop">
-                <div class="backdrop-overlay"></div>
-                <div class="backdrop-details">
-                    <img id="detailPoster" class="poster-img" src="" alt="Poster">
-                    <div class="info-meta">
-                        <h1 id="detailTitle">--</h1>
-                        <div class="tags-group">
-                            <span id="detailRating" class="badge gold"><i class="fas fa-star"></i> --</span>
-                            <span id="detailYear" class="badge">----</span>
-                            <span id="detailType" class="badge red">--</span>
-                        </div>
-                        <p id="detailOverview" class="overview-text">--</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Player & Controls Section -->
-            <div class="player-section">
-                <div class="video-frame-container">
-                    <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
-                </div>
-
-                <div class="controls-card">
-                    <h3><i class="fas fa-server"></i> اختر سيرفر التشغيل</h3>
-                    <div class="server-list">
-                        <button class="server-btn active" data-server="vidsrc">سيرفر 1 (أساسي HD)</button>
-                        <button class="server-btn" data-server="superembed">سيرفر 2 (سريع VIP)</button>
-                        <button class="server-btn" data-server="autoembed">سيرفر 3 (بديل)</button>
-                        <button class="server-btn" data-server="2embed">سيرفر 4 (احتياطي)</button>
-                    </div>
-
-                    <div id="tvControlsPanel" class="tv-panel" style="display: none;">
-                        <hr class="divider">
-                        <h3><i class="fas fa-list-ol"></i> التواسم والحلقات</h3>
-                        <div class="form-group">
-                            <label>اختر الموسم:</label>
-                            <select id="seasonSelect" class="custom-select"></select>
-                        </div>
-                        <label style="display:block; margin: 10px 0 5px; font-size: 13px; color:#aaa;">اختر الحلقة:</label>
-                        <div class="episodes-container" id="episodesList"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+    <!-- حاوية العرض الرئيسية -->
+    <main id="app-container">
+        <!-- يتم تحميل كل شيء هنا ديناميكياً -->
     </main>
 
     <script src="script.js"></script>
