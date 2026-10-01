@@ -1,12 +1,11 @@
-// مفتاح TMDB API
-const API_KEY = 'YOUR_TMDB_API_KEY'; // 👈 ضع مفتاح API الخاص بك هنا
+
+const API_KEY = 'e45956e29bfc581e0131eb6710b738c0';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_PATH = 'https://image.tmdb.org/t/p/w500';
 const BACKDROP_PATH = 'https://image.tmdb.org/t/p/original';
 
 let heroInterval;
 
-// Router للتحكم في التنقل ودعم زر الرجوع بالمتصفح دون إغلاق الموقع
 window.addEventListener('hashchange', handleRoute);
 window.addEventListener('load', handleRoute);
 
@@ -15,16 +14,26 @@ function navigateTo(hash) {
 }
 
 function handleRoute() {
-    clearInterval(heroInterval);
+    if (heroInterval) clearInterval(heroInterval);
     const hash = window.location.hash || '#/';
     
-    // تحديث الأزرار النشطة في الهيدر
     document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-    if (hash.startsWith('#/movies')) document.getElementById('nav-movies')?.classList.add('active');
-    else if (hash.startsWith('#/tv')) document.getElementById('nav-tv')?.classList.add('active');
-    else if (hash.startsWith('#/anime')) document.getElementById('nav-anime')?.classList.add('active');
-    else if (hash.startsWith('#/search')) document.getElementById('nav-search')?.classList.add('active');
-    else if (hash === '#/') document.getElementById('nav-home')?.classList.add('active');
+    if (hash.startsWith('#/movies')) {
+        const el = document.getElementById('nav-movies');
+        if (el) el.classList.add('active');
+    } else if (hash.startsWith('#/tv')) {
+        const el = document.getElementById('nav-tv');
+        if (el) el.classList.add('active');
+    } else if (hash.startsWith('#/anime')) {
+        const el = document.getElementById('nav-anime');
+        if (el) el.classList.add('active');
+    } else if (hash.startsWith('#/search')) {
+        const el = document.getElementById('nav-search');
+        if (el) el.classList.add('active');
+    } else if (hash === '#/') {
+        const el = document.getElementById('nav-home');
+        if (el) el.classList.add('active');
+    }
 
     if (hash.startsWith('#/watch/')) {
         const parts = hash.split('/');
@@ -42,9 +51,18 @@ function handleRoute() {
     }
 }
 
-// 1. الصفحة الرئيسية
 async function renderHomePage() {
     const container = document.getElementById('app-container');
+    if (!container) return;
+
+    if (!API_KEY || API_KEY === 'YOUR_TMDB_API_KEY') {
+        container.innerHTML = `<div style="padding: 100px 20px; text-align: center; color: #ff4d4d; font-size: 20px;">
+            <i class="fa-solid fa-triangle-exclamation" style="font-size: 50px; margin-bottom: 20px;"></i><br>
+            يرجى وضع مفتاح TMDB API الخاص بك في السطر الأول من ملف script.js ليعمل الموقع بجلب الأفلام والمسلسلات.
+        </div>`;
+        return;
+    }
+
     const continueWatching = JSON.parse(localStorage.getItem('continue_watching') || '[]');
 
     container.innerHTML = `
@@ -95,13 +113,15 @@ async function renderHomePage() {
     fetchMediaList(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=ar-SA`, 'top-list');
 }
 
-// تحميل سلايدر "الأبرز حالياً" (6 أعمال على الأقل وتتحول تلقائياً)
 async function loadHeroBanner() {
     try {
         const res = await fetch(`${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=ar-SA`);
         const data = await res.json();
+        if (!data.results || !data.results.length) return;
+        
         const items = data.results.slice(0, 6);
         const heroBanner = document.getElementById('hero-banner');
+        if (!heroBanner) return;
 
         heroBanner.innerHTML = items.map((item, idx) => `
             <div class="hero-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${BACKDROP_PATH + item.backdrop_path}')">
@@ -134,18 +154,23 @@ async function loadHeroBanner() {
     }
 }
 
-// جلب قوائم السلايدرات
 async function fetchMediaList(url, containerId, customType = null) {
     try {
         const res = await fetch(url);
         const data = await res.json();
         const container = document.getElementById(containerId);
+        if (!container) return;
         
+        if (!data.results || data.results.length === 0) {
+            container.innerHTML = '<p style="padding:10px; color:#aaa;">لا تتوفر نتائج حالياً.</p>';
+            return;
+        }
+
         container.innerHTML = data.results.map(item => {
             const type = customType || item.media_type || (item.title ? 'movie' : 'tv');
             return `
                 <div class="media-card" onclick="navigateTo('#/watch/${type}/${item.id}')">
-                    <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average?.toFixed(1) || 'N/A'}</span>
+                    <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
                     <img class="card-poster" src="${item.poster_path ? IMG_PATH + item.poster_path : 'https://via.placeholder.com/160x230?text=No+Poster'}" alt="${item.title || item.name}">
                     <div class="card-info">
                         <div class="card-title">${item.title || item.name}</div>
@@ -162,9 +187,10 @@ async function fetchMediaList(url, containerId, customType = null) {
     }
 }
 
-// 2. صفحات التصنيفات المنظمة (أفلام / مسلسلات)
 async function renderCategoryPage(type, title) {
     const container = document.getElementById('app-container');
+    if (!container) return;
+
     container.innerHTML = `
         <div class="section-container">
             <h1 style="margin-bottom: 20px;">قسم ${title}</h1>
@@ -189,9 +215,10 @@ async function renderCategoryPage(type, title) {
     fetchMediaList(`${BASE_URL}/${type}/top_rated?api_key=${API_KEY}&language=ar-SA`, 'cat-top', type);
 }
 
-// قسم الأنمي
 function renderAnimePage() {
     const container = document.getElementById('app-container');
+    if (!container) return;
+
     container.innerHTML = `
         <div class="section-container">
             <h1 style="margin-bottom: 20px;">قسم الأنمي</h1>
@@ -205,9 +232,10 @@ function renderAnimePage() {
     fetchMediaList(`${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&language=ar-SA`, 'anime-list', 'tv');
 }
 
-// 3. واجهة البحث الاحترافية
 function renderSearchPage() {
     const container = document.getElementById('app-container');
+    if (!container) return;
+
     container.innerHTML = `
         <div class="search-view-container">
             <input type="text" class="search-bar-input" id="search-input" placeholder="ابحث في جميع المحتويات (أفلام، مسلسلات، أنمي)..." oninput="handleSearch(this.value)">
@@ -219,12 +247,13 @@ function renderSearchPage() {
 }
 
 async function handleSearch(query) {
+    const titleEl = document.getElementById('search-title');
     if (!query.trim()) {
-        document.getElementById('search-title').innerText = 'الأكثر رواجاً الآن';
+        if (titleEl) titleEl.innerText = 'الأكثر رواجاً الآن';
         fetchGridMedia(`${BASE_URL}/trending/all/day?api_key=${API_KEY}&language=ar-SA`);
         return;
     }
-    document.getElementById('search-title').innerText = 'نتائج البحث';
+    if (titleEl) titleEl.innerText = 'نتائج البحث';
     fetchGridMedia(`${BASE_URL}/search/multi?api_key=${API_KEY}&language=ar-SA&query=${encodeURIComponent(query)}`);
 }
 
@@ -233,13 +262,19 @@ async function fetchGridMedia(url) {
         const res = await fetch(url);
         const data = await res.json();
         const container = document.getElementById('search-results');
+        if (!container) return;
+
+        if (!data.results || !data.results.length) {
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding: 20px;">لا توجد نتائج مطابقة.</p>';
+            return;
+        }
 
         container.innerHTML = data.results.map(item => {
             if (!item.poster_path && !item.backdrop_path) return '';
             const type = item.media_type || (item.title ? 'movie' : 'tv');
             return `
                 <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/${type}/${item.id}')">
-                    <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average?.toFixed(1) || 'N/A'}</span>
+                    <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
                     <img class="card-poster" src="${item.poster_path ? IMG_PATH + item.poster_path : 'https://via.placeholder.com/160x230?text=No+Poster'}" alt="${item.title || item.name}">
                     <div class="card-info">
                         <div class="card-title">${item.title || item.name}</div>
@@ -250,22 +285,22 @@ async function fetchGridMedia(url) {
     } catch(e) { console.error(e); }
 }
 
-// 4. واجهة المشاهدة الأنيقة والمشغل الاحترافي
 async function renderWatchPage(type, id) {
     const container = document.getElementById('app-container');
-    container.innerHTML = `<div style="padding: 50px; text-align: center;">جاري تجهيز المشغل والمعلومات...</div>`;
+    if (!container) return;
+
+    container.innerHTML = `<div style="padding: 100px; text-align: center;">جاري تجهيز المشغل والمعلومات...</div>`;
 
     try {
         const res = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&language=ar-SA&append_to_response=credits,recommendations`);
         const data = await res.json();
 
-        // حفظ في "متابعة المشاهدة"
         saveToContinueWatching({
             id: data.id,
             type: type,
             title: data.title || data.name,
             poster: data.poster_path,
-            rating: data.vote_average?.toFixed(1)
+            rating: data.vote_average ? data.vote_average.toFixed(1) : 'N/A'
         });
 
         const cast = data.credits?.cast?.slice(0, 6) || [];
@@ -308,7 +343,7 @@ async function renderWatchPage(type, id) {
                                 <img src="${item.poster_path ? IMG_PATH + item.poster_path : 'https://via.placeholder.com/80x110'}" style="width: 70px; height: 95px; object-fit: cover;">
                                 <div style="padding: 5px;">
                                     <div class="card-title">${item.title || item.name}</div>
-                                    <div style="font-size: 11px; color: #ffd700; margin-top: 5px;">⭐ ${item.vote_average?.toFixed(1)}</div>
+                                    <div style="font-size: 11px; color: #ffd700; margin-top: 5px;">⭐ ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</div>
                                 </div>
                             </div>
                         `).join('')}
@@ -321,15 +356,16 @@ async function renderWatchPage(type, id) {
     }
 }
 
-// الدوال المساعدة
 function scrollCarousel(id, distance) {
-    document.getElementById(id)?.scrollBy({ left: distance, behavior: 'smooth' });
+    const el = document.getElementById(id);
+    if (el) el.scrollBy({ left: distance, behavior: 'smooth' });
 }
 
 function changeServer(url, btn) {
-    document.getElementById('video-iframe').src = url;
+    const iframe = document.getElementById('video-iframe');
+    if (iframe) iframe.src = url;
     document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    if (btn) btn.classList.add('active');
 }
 
 function saveToContinueWatching(item) {
