@@ -1,154 +1,143 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineMoov - Streaming Platform</title>
-    <link rel="stylesheet" href="style.css">
+    <title>CINEMA - المنصة السينمائية</title>
+    <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- خط Tajawal لتصميم عربي فاخر -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- Mobile Header Bar -->
-    <header class="mobile-header">
-        <div class="logo">
-            <i class="fas fa-film"></i> <span>CineMoov</span>
+    <!-- القائمة العلوية Header -->
+    <header class="navbar" id="navbar">
+        <div class="logo">CINEMA<span>.</span></div>
+        <nav class="nav-links">
+            <a href="#" class="active">الرئيسية</a>
+            <a href="#">مسلسلات</a>
+            <a href="#">أفلام</a>
+            <a href="#">الأحدث</a>
+            <a href="#">قائمتي</a>
+        </nav>
+        <div class="nav-actions">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="ابحث عن فيلم أو مسلسل...">
+            </div>
+            <i class="fa-regular fa-bell icon-btn"></i>
+            <div class="user-avatar">
+                <img src="https://i.pravatar.cc/100?img=33" alt="المستخدم">
+            </div>
         </div>
-        <button id="menuToggleBtn" class="menu-toggle-btn">
-            <i class="fas fa-bars"></i>
-        </button>
     </header>
 
-    <div class="app-layout">
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar" id="sidebar">
-            <div class="logo desktop-only">
-                <i class="fas fa-film"></i> <span>CineMoov</span>
+    <!-- الواجهة الرئيسية Hero Banner -->
+    <section class="hero">
+        <div class="hero-bg">
+            <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1920" alt="Hero Background">
+            <div class="hero-overlay"></div>
+        </div>
+        <div class="hero-content">
+            <span class="badge"><i class="fa-solid fa-fire"></i> الأوان الأكثر مشاهدة اليوم</span>
+            <h1 class="hero-title">AS THE CROW FLIES</h1>
+            <p class="hero-desc">في عالم الصحافة والإعلام الشرس، تصطدم النجومية الصاعدة بالطموح الأعمى. قصة صراع أجيال وتضحيات بين الشهرة والحقيقة.</p>
+            <div class="hero-btns">
+                <button class="btn btn-primary" onclick="openModal('As The Crow Flies', 'دراما • تركيا • 2024', 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1920', 'صراع بين مذيعة مخضرمة ومعجبة شابة تتسلل لغرفة الأخبار بكواليس مظلمة.')">
+                    <i class="fa-solid fa-play"></i> تشغيل الآن
+                </button>
+                <button class="btn btn-secondary" onclick="openModal('As The Crow Flies', 'دراما • تركيا • 2024', 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1920', 'صراع بين مذيعة مخضرمة ومعجبة شابة تتسلل لغرفة الأخبار بكواليس مظلمة.')">
+                    <i class="fa-solid fa-circle-info"></i> التفاصيل
+                </button>
             </div>
-            
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Search movies, series...">
-            </div>
+        </div>
+    </section>
 
-            <nav class="nav-menu">
-                <a href="#" class="nav-item active" data-type="home"><i class="fas fa-home"></i> Home</a>
-                <a href="#" class="nav-item" data-type="movie"><i class="fas fa-compact-disc"></i> Movies</a>
-                <a href="#" class="nav-item" data-type="tv"><i class="fas fa-tv"></i> TV Series</a>
-                <a href="#" class="nav-item" data-type="anime"><i class="fas fa-mask"></i> Anime</a>
-            </nav>
-        </aside>
-
-        <!-- Overlay backdrop for mobile menu -->
-        <div class="sidebar-overlay" id="sidebarOverlay"></div>
-
-        <!-- Main Workspace -->
-        <main class="main-content">
-            
-            <!-- HOME VIEW -->
-            <div id="homeView">
-                <!-- Hero Banner -->
-                <div id="heroBanner" class="hero-banner">
-                    <div class="hero-overlay"></div>
-                    <div class="hero-info">
-                        <h1 id="heroTitle">Loading...</h1>
-                        <p id="heroOverview"></p>
-                        <div class="hero-buttons">
-                            <button id="heroPlayBtn" class="btn btn-primary"><i class="fas fa-play"></i> Watch Now</button>
-                        </div>
+    <!-- الأقسام والتصنيفات -->
+    <main class="main-container">
+        
+        <!-- قسم متابعة المشاهدة -->
+        <section class="row">
+            <h2 class="row-title">متابعة المشاهدة لـ أسامة</h2>
+            <div class="row-cards">
+                <div class="card" onclick="openModal('Wednesday', 'غموض • خيال • 2022', 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=600', 'تدور الأحداث حول الأربعاء آدامز أثناء سنوات دراستها في أكاديمية نيفرمور.')">
+                    <img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=600" alt="Wednesday">
+                    <div class="card-overlay">
+                        <div class="play-icon"><i class="fa-solid fa-play"></i></div>
+                        <h4>Wednesday</h4>
+                        <div class="progress-bar"><div class="progress" style="width: 70%;"></div></div>
                     </div>
                 </div>
 
-                <div class="sections-container">
-                    <!-- Continue Watching -->
-                    <section class="content-section" id="continueWatchingSection" style="display: none;">
-                        <div class="section-header">
-                            <h2><i class="fas fa-history"></i> Continue Watching</h2>
-                        </div>
-                        <div class="horizontal-scroll" id="continueWatchingGrid"></div>
-                    </section>
-
-                    <!-- Trending Movies -->
-                    <section class="content-section">
-                        <div class="section-header">
-                            <h2><i class="fas fa-compact-disc"></i> Trending Movies</h2>
-                            <button class="see-more-btn" data-type="movie">View All <i class="fas fa-chevron-right"></i></button>
-                        </div>
-                        <div class="horizontal-scroll" id="rowTrendingMovies"></div>
-                    </section>
-
-                    <!-- Trending TV Series -->
-                    <section class="content-section">
-                        <div class="section-header">
-                            <h2><i class="fas fa-tv"></i> Trending TV Series</h2>
-                            <button class="see-more-btn" data-type="tv">View All <i class="fas fa-chevron-right"></i></button>
-                        </div>
-                        <div class="horizontal-scroll" id="rowTrendingTV"></div>
-                    </section>
-
-                    <!-- Top Rated -->
-                    <section class="content-section">
-                        <div class="section-header">
-                            <h2><i class="fas fa-crown"></i> Top Rated</h2>
-                            <button class="see-more-btn" data-type="top_rated">View All <i class="fas fa-chevron-right"></i></button>
-                        </div>
-                        <div class="horizontal-scroll" id="rowTopRated"></div>
-                    </section>
-                </div>
-            </div>
-
-            <!-- GRID / CATEGORY / SEARCH VIEW -->
-            <div id="gridView" class="sections-container" style="display: none;">
-                <div class="section-header" style="margin-bottom: 25px;">
-                    <h2 id="gridTitle">Movies</h2>
-                </div>
-                <div class="media-grid" id="fullGrid"></div>
-            </div>
-
-            <!-- DEDICATED MEDIA DETAIL & PLAYER VIEW -->
-            <div id="detailView" class="detail-page" style="display: none;">
-                <button id="backBtn" class="back-btn"><i class="fas fa-arrow-left"></i> Back</button>
-                
-                <div class="detail-header" id="detailHeader">
-                    <div class="detail-header-overlay"></div>
-                    <div class="detail-header-content">
-                        <img id="detailPoster" src="" alt="Poster" class="detail-poster">
-                        <div class="detail-meta">
-                            <h1 id="detailTitle">Title</h1>
-                            <p id="detailOverview" class="detail-overview"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Video Player Container -->
-                <div class="player-wrapper">
-                    <div class="video-container">
-                        <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
-                    </div>
-
-                    <!-- Player Options Sidebar -->
-                    <div class="player-controls-panel">
-                        <h3><i class="fas fa-server"></i> Select Server</h3>
-                        <div class="server-grid">
-                            <button class="server-btn active" data-server="vidsrc">Server 1 (Primary)</button>
-                            <button class="server-btn" data-server="superembed">Server 2 (Fast)</button>
-                            <button class="server-btn" data-server="autoembed">Server 3 (HD)</button>
-                            <button class="server-btn" data-server="2embed">Server 4 (Backup)</button>
-                        </div>
-
-                        <div id="tvControls" class="tv-controls" style="display: none;">
-                            <h3><i class="fas fa-list"></i> Episodes</h3>
-                            <div class="control-group">
-                                <label style="font-size:13px; color:#aaa;">Season:</label>
-                                <select id="seasonSelect"></select>
-                            </div>
-                            <div class="episodes-grid" id="episodesList"></div>
-                        </div>
+                <div class="card" onclick="openModal('Stranger Things', 'خيال علمي • رعب', 'https://images.unsplash.com/photo-1618336753974-aae8e04506aa?q=80&w=600', 'اختفاء صبي صغير يثير سلسلة من الأحداث الغريبة ببلدة صغيرة.')">
+                    <img src="https://images.unsplash.com/photo-1618336753974-aae8e04506aa?q=80&w=600" alt="Stranger Things">
+                    <div class="card-overlay">
+                        <div class="play-icon"><i class="fa-solid fa-play"></i></div>
+                        <h4>Stranger Things</h4>
+                        <div class="progress-bar"><div class="progress" style="width: 40%;"></div></div>
                     </div>
                 </div>
             </div>
+        </section>
 
-        </main>
+        <!-- قسم الأكثر شيوعاً Top 10 -->
+        <section class="row">
+            <h2 class="row-title">الأعلى تقييماً هذا الأسبوع</h2>
+            <div class="row-cards">
+                <div class="card" onclick="openModal('The King', 'تاريخي • دراما', 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=600', 'أمير يعتلي العرش بعد وفاة والده ويتعلم كيفية إدارة الحرب والسياسة.')">
+                    <span class="top-badge">TOP 1</span>
+                    <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=600" alt="The King">
+                    <div class="card-overlay">
+                        <div class="play-icon"><i class="fa-solid fa-play"></i></div>
+                        <h4>The King</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- النافذة المنبثقة للتفاصيل الاحترافية (Modal) -->
+    <div class="modal-backdrop" id="detailModal">
+        <div class="modal-container">
+            <button class="close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-hero">
+                <img id="modalImg" src="" alt="Cover">
+                <div class="modal-hero-overlay"></div>
+                <div class="modal-title-area">
+                    <h2 id="modalTitle">اسم الفيلم</h2>
+                    <p id="modalMeta">التصنيف • السنة</p>
+                    <div class="modal-actions">
+                        <button class="btn btn-primary" onclick="startVideo()"><i class="fa-solid fa-play"></i> تشغيل</button>
+                        <button class="btn-icon" title="إضافة لقائمتي" id="addListBtn" onclick="toggleList()"><i class="fa-solid fa-plus"></i></button>
+                        <button class="btn-icon" title="تحميل"><i class="fa-solid fa-download"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <p id="modalDesc" class="modal-description">وصف الفيلم أو المسلسل يظهر هنا بالتفصيل...</p>
+                <div class="episodes-section">
+                    <h3>الحلقات</h3>
+                    <div class="episode-item" onclick="startVideo()">
+                        <span class="ep-num">1</span>
+                        <div class="ep-info">
+                            <h4>الحلقة الأولى: البداية</h4>
+                            <p>45 دقيقة</p>
+                        </div>
+                        <i class="fa-solid fa-play ep-play"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة مشغل الفيديو (Video Player Modal) -->
+    <div class="player-modal" id="playerModal">
+        <button class="close-player" onclick="closePlayer()"><i class="fa-solid fa-xmark"></i> إغلاق المشغل</button>
+        <div class="video-wrapper">
+            <iframe id="videoIframe" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
     </div>
 
     <script src="script.js"></script>
