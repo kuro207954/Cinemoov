@@ -28,7 +28,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 40px;
+    padding: 15px 30px;
     background: rgba(11, 12, 16, 0.95);
     backdrop-filter: blur(10px);
     position: sticky;
@@ -45,26 +45,26 @@ body {
 }
 
 .logo-text {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: bold;
     color: var(--text-color);
 }
 
 .logo-icon {
     color: var(--primary);
-    font-size: 22px;
+    font-size: 20px;
 }
 
 .nav-links {
     display: flex;
-    gap: 20px;
+    gap: 15px;
     align-items: center;
 }
 
 .nav-item {
     color: var(--text-muted);
     text-decoration: none;
-    font-size: 15px;
+    font-size: 14px;
     transition: all 0.3s;
 }
 
@@ -75,15 +75,15 @@ body {
 
 .search-btn {
     background: #1f2833;
-    padding: 8px 18px;
+    padding: 6px 14px;
     border-radius: 20px;
     border: 1px solid #333;
 }
 
-/* Hero Carousel Slider (البانر الرئيسي المتغير) */
+/* Hero Carousel Slider */
 .hero-slider-container {
     position: relative;
-    height: 70vh;
+    height: 65vh;
     width: 100%;
     overflow: hidden;
 }
@@ -106,20 +106,20 @@ body {
 .hero-overlay {
     width: 100%;
     height: 100%;
-    background: linear-gradient(to top, var(--bg-color) 10%, rgba(11, 12, 16, 0.4) 60%, transparent);
+    background: linear-gradient(to top, var(--bg-color) 10%, rgba(11, 12, 16, 0.5) 60%, transparent);
     display: flex;
     align-items: flex-end;
-    padding: 40px;
+    padding: 30px;
 }
 
 .hero-content {
-    max-width: 650px;
+    max-width: 600px;
 }
 
 .hero-badge {
     background: var(--primary);
     color: white;
-    padding: 4px 12px;
+    padding: 4px 10px;
     border-radius: 4px;
     font-size: 12px;
     font-weight: bold;
@@ -128,96 +128,96 @@ body {
 }
 
 .hero-title {
-    font-size: 38px;
+    font-size: 32px;
     font-weight: bold;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
 .hero-overview {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text-muted);
-    line-height: 1.6;
-    margin-bottom: 20px;
+    line-height: 1.5;
+    margin-bottom: 18px;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-.hero-btns {
-    display: flex;
-    gap: 15px;
-}
-
-.btn-primary, .btn-secondary {
-    padding: 10px 24px;
+.btn-primary {
+    padding: 10px 22px;
     border-radius: 8px;
     border: none;
     font-weight: bold;
     cursor: pointer;
+    background: var(--primary);
+    color: white;
     display: flex;
     align-items: center;
     gap: 8px;
     transition: 0.3s;
 }
 
-.btn-primary { background: var(--primary); color: white; }
 .btn-primary:hover { background: var(--primary-hover); }
-.btn-secondary { background: rgba(255, 255, 255, 0.2); color: white; backdrop-filter: blur(5px); }
 
-/* Carousels & Horizontal Lists */
+/* Carousels & Horizontal Lists Header */
 .section-container {
-    padding: 25px 40px;
+    padding: 20px 30px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
 }
 
 .section-title {
-    font-size: 20px;
-    margin-bottom: 15px;
+    font-size: 18px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
 }
 
-.carousel-wrapper {
-    position: relative;
+.carousel-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.scroll-btn-nav {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: center;
+    transition: 0.3s;
+}
+
+.scroll-btn-nav:hover {
+    background: var(--primary);
+    border-color: var(--primary);
 }
 
 .media-carousel {
     display: flex;
-    gap: 16px;
+    gap: 14px;
     overflow-x: auto;
     scroll-behavior: smooth;
-    padding: 10px 0;
+    padding: 5px 0 15px 0;
     scrollbar-width: none;
 }
 
 .media-carousel::-webkit-scrollbar { display: none; }
 
-.scroll-btn {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    border: 1px solid #444;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    z-index: 10;
-    transition: 0.3s;
-}
-
-.scroll-btn:hover { background: var(--primary); border-color: var(--primary); }
-.scroll-btn.left { left: -15px; }
-.scroll-btn.right { right: -15px; }
-
 /* Media Card */
 .media-card {
-    min-width: 160px;
-    width: 160px;
+    min-width: 145px;
+    width: 145px;
     background-color: var(--card-bg);
     border-radius: var(--radius);
     overflow: hidden;
@@ -228,54 +228,81 @@ body {
 }
 
 .media-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.6);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.5);
 }
 
 .card-poster {
     width: 100%;
-    height: 230px;
+    height: 210px;
     object-fit: cover;
     background-color: #151515;
 }
 
-.card-info { padding: 10px; }
-.card-title { font-size: 13px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.card-meta { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-top: 5px; }
-.badge-rating { position: absolute; top: 10px; right: 10px; background: rgba(0, 0, 0, 0.85); padding: 3px 7px; border-radius: 6px; font-size: 11px; color: #ffd700; }
+.card-info { padding: 8px; }
+.card-title { font-size: 12px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-meta { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+.badge-rating { position: absolute; top: 8px; right: 8px; background: rgba(0, 0, 0, 0.85); padding: 2px 6px; border-radius: 5px; font-size: 10px; color: #ffd700; }
+
+/* Companies Section (قسم الشركات) */
+.companies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.company-card {
+    background: #151c24;
+    border: 1px solid #2a3441;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.company-card:hover, .company-card.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
 
 /* Search View */
-.search-view-container { padding: 30px 40px; }
+.search-view-container { padding: 25px 30px; }
 .search-bar-input {
     width: 100%;
-    padding: 16px 20px;
-    font-size: 18px;
+    padding: 14px 18px;
+    font-size: 16px;
     border-radius: var(--radius);
     border: 1px solid #333;
     background: #1f2833;
     color: white;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     outline: none;
 }
 .search-bar-input:focus { border-color: var(--primary); }
 
 .grid-layout {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
 }
 
-/* Watch Page Layout (واجهة المشاهدة الأنيقة) */
+/* Watch Page */
 .watch-container {
-    padding: 25px 40px;
+    padding: 20px 30px;
     display: grid;
     grid-template-columns: 3fr 1fr;
-    gap: 30px;
+    gap: 25px;
 }
 
 .player-box {
     position: relative;
-    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    padding-top: 56.25%;
     background: black;
     border-radius: var(--radius);
     overflow: hidden;
@@ -289,21 +316,20 @@ body {
 
 .servers-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 10px;
-    margin: 20px 0;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+    margin: 15px 0;
 }
 
 .server-btn {
     background: #1f2833;
     color: white;
     border: 1px solid #333;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 8px;
+    border-radius: 6px;
     cursor: pointer;
     text-align: center;
-    font-size: 13px;
-    transition: 0.3s;
+    font-size: 12px;
 }
 
 .server-btn.active, .server-btn:hover {
@@ -311,36 +337,18 @@ body {
     border-color: var(--primary);
 }
 
-.cast-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 12px;
-    margin-top: 15px;
-}
-
-.cast-card img {
-    width: 100%;
-    height: 110px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-.cast-card p {
-    font-size: 11px;
-    text-align: center;
-    margin-top: 4px;
-}
-
-/* Responsive Handling (لأجهزة الهاتف) */
+/* Responsive Phone Adjustments */
 @media (max-width: 768px) {
-    .main-header { padding: 12px 15px; }
-    .nav-links { gap: 10px; }
-    .nav-item { font-size: 13px; }
-    .hero-slider-container { height: 50vh; }
-    .hero-title { font-size: 24px; }
-    .section-container, .watch-container, .search-view-container { padding: 15px; }
+    .main-header { padding: 10px 12px; }
+    .logo-text { font-size: 18px; }
+    .nav-links { gap: 8px; }
+    .nav-item { font-size: 12px; }
+    .hero-slider-container { height: 45vh; }
+    .hero-title { font-size: 20px; }
+    .hero-overview { font-size: 11px; -webkit-line-clamp: 2; }
+    .section-container, .watch-container, .search-view-container { padding: 12px; }
     .watch-container { grid-template-columns: 1fr; }
-    .scroll-btn { display: none; }
-    .media-card { min-width: 130px; width: 130px; }
-    .card-poster { height: 185px; }
+    .media-card { min-width: 120px; width: 120px; }
+    .card-poster { height: 170px; }
+    .companies-grid { grid-template-columns: repeat(3, 1fr); }
 }
