@@ -1,13 +1,3 @@
-// تغيير لون القائمة عند التمرير
-window.addEventListener('scroll', () => {
-    const navbar = id('navbar');
-    if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
-    }
-});
-
 function id(elemId) {
     return document.getElementById(elemId);
 }
@@ -21,12 +11,12 @@ function openModal(title, meta, imgSrc, desc) {
     id('detailModal').style.display = 'flex';
 }
 
-// إغلاق النافذة المنبثقة
+// إغلاق النافذة
 function closeModal() {
     id('detailModal').style.display = 'none';
 }
 
-// تشغيل/إيقاف الزر في القائمة (حفظ في القائمة)
+// زر المفضلة
 let isAdded = false;
 function toggleList() {
     const btn = id('addListBtn');
@@ -40,17 +30,17 @@ function toggleList() {
     }
 }
 
-// فتح مشغل الفيديو
+// تشغيل الفيديو
 function startVideo() {
     closeModal();
     const player = id('playerModal');
     const iframe = id('videoIframe');
-    // رابط فيديو لتجربة المشغل
+    // رابط مقطع تجريبي
     iframe.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1";
     player.style.display = 'block';
 }
 
-// إغلاق مشغل الفيديو
+// إغلاق المشغل
 function closePlayer() {
     const player = id('playerModal');
     const iframe = id('videoIframe');

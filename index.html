@@ -4,15 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CINEMA - المنصة السينمائية</title>
-    <!-- FontAwesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- خط Tajawal لتصميم عربي فاخر -->
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <!-- القائمة العلوية Header -->
+    <!-- Navbar -->
     <header class="navbar" id="navbar">
         <div class="logo">CINEMA<span>.</span></div>
         <nav class="nav-links">
@@ -34,28 +32,28 @@
         </div>
     </header>
 
-    <!-- الواجهة الرئيسية Hero Banner -->
+    <!-- Hero Banner -->
     <section class="hero">
         <div class="hero-bg">
-            <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1920" alt="Hero Background">
+            <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1200" alt="Hero Background">
             <div class="hero-overlay"></div>
         </div>
         <div class="hero-content">
-            <span class="badge"><i class="fa-solid fa-fire"></i> الأوان الأكثر مشاهدة اليوم</span>
+            <span class="badge"><i class="fa-solid fa-fire"></i> الأكثر مشاهدة اليوم</span>
             <h1 class="hero-title">AS THE CROW FLIES</h1>
             <p class="hero-desc">في عالم الصحافة والإعلام الشرس، تصطدم النجومية الصاعدة بالطموح الأعمى. قصة صراع أجيال وتضحيات بين الشهرة والحقيقة.</p>
             <div class="hero-btns">
-                <button class="btn btn-primary" onclick="openModal('As The Crow Flies', 'دراما • تركيا • 2024', 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1920', 'صراع بين مذيعة مخضرمة ومعجبة شابة تتسلل لغرفة الأخبار بكواليس مظلمة.')">
+                <button class="btn btn-primary" onclick="startVideo()">
                     <i class="fa-solid fa-play"></i> تشغيل الآن
                 </button>
-                <button class="btn btn-secondary" onclick="openModal('As The Crow Flies', 'دراما • تركيا • 2024', 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1920', 'صراع بين مذيعة مخضرمة ومعجبة شابة تتسلل لغرفة الأخبار بكواليس مظلمة.')">
+                <button class="btn btn-secondary" onclick="openModal('As The Crow Flies', 'دراما • تركيا • 2024', 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=1200', 'صراع بين مذيعة مخضرمة ومعجبة شابة تتسلل لغرفة الأخبار بكواليس مظلمة.')">
                     <i class="fa-solid fa-circle-info"></i> التفاصيل
                 </button>
             </div>
         </div>
     </section>
 
-    <!-- الأقسام والتصنيفات -->
+    <!-- Content Sections -->
     <main class="main-container">
         
         <!-- قسم متابعة المشاهدة -->
@@ -64,8 +62,7 @@
             <div class="row-cards">
                 <div class="card" onclick="openModal('Wednesday', 'غموض • خيال • 2022', 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=600', 'تدور الأحداث حول الأربعاء آدامز أثناء سنوات دراستها في أكاديمية نيفرمور.')">
                     <img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=600" alt="Wednesday">
-                    <div class="card-overlay">
-                        <div class="play-icon"><i class="fa-solid fa-play"></i></div>
+                    <div class="card-info">
                         <h4>Wednesday</h4>
                         <div class="progress-bar"><div class="progress" style="width: 70%;"></div></div>
                     </div>
@@ -73,10 +70,17 @@
 
                 <div class="card" onclick="openModal('Stranger Things', 'خيال علمي • رعب', 'https://images.unsplash.com/photo-1618336753974-aae8e04506aa?q=80&w=600', 'اختفاء صبي صغير يثير سلسلة من الأحداث الغريبة ببلدة صغيرة.')">
                     <img src="https://images.unsplash.com/photo-1618336753974-aae8e04506aa?q=80&w=600" alt="Stranger Things">
-                    <div class="card-overlay">
-                        <div class="play-icon"><i class="fa-solid fa-play"></i></div>
+                    <div class="card-info">
                         <h4>Stranger Things</h4>
                         <div class="progress-bar"><div class="progress" style="width: 40%;"></div></div>
+                    </div>
+                </div>
+
+                <div class="card" onclick="openModal('Dark', 'غموض • إثارة', 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=600', 'اختفاء طفلين يكشف عن العلاقات المزدوجة والحياة المزدوجة لأربع عائلات.')">
+                    <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=600" alt="Dark">
+                    <div class="card-info">
+                        <h4>Dark</h4>
+                        <div class="progress-bar"><div class="progress" style="width: 85%;"></div></div>
                     </div>
                 </div>
             </div>
@@ -89,16 +93,40 @@
                 <div class="card" onclick="openModal('The King', 'تاريخي • دراما', 'https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=600', 'أمير يعتلي العرش بعد وفاة والده ويتعلم كيفية إدارة الحرب والسياسة.')">
                     <span class="top-badge">TOP 1</span>
                     <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?q=80&w=600" alt="The King">
-                    <div class="card-overlay">
-                        <div class="play-icon"><i class="fa-solid fa-play"></i></div>
+                    <div class="card-info">
                         <h4>The King</h4>
+                    </div>
+                </div>
+
+                <div class="card" onclick="openModal('Cyberpunk', 'أنيميشن • أكشن', 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600', 'شاب يحاول البقاء على قيد الحياة في مدينة مستقبلية مهووسة بالتكنولوجيا.')">
+                    <span class="top-badge">TOP 2</span>
+                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=600" alt="Cyberpunk">
+                    <div class="card-info">
+                        <h4>Cyberpunk</h4>
+                    </div>
+                </div>
+
+                <div class="card" onclick="openModal('Interstellar', 'خيال علمي • فضاء', 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600', 'فريق من المستكشفين يسافر عبر ثقب دودي في الفضاء لضمان بقاء البشرية.')">
+                    <span class="top-badge">TOP 3</span>
+                    <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=600" alt="Interstellar">
+                    <div class="card-info">
+                        <h4>Interstellar</h4>
+                    </div>
+                </div>
+
+                <div class="card" onclick="openModal('Inception', 'إثارة • ذكاء', 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=600', 'لص يسرق الأسرار المؤسسية من خلال استخدام تكنولوجيا مشاركة الأحلام.')">
+                    <span class="top-badge">TOP 4</span>
+                    <img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=600" alt="Inception">
+                    <div class="card-info">
+                        <h4>Inception</h4>
                     </div>
                 </div>
             </div>
         </section>
+
     </main>
 
-    <!-- النافذة المنبثقة للتفاصيل الاحترافية (Modal) -->
+    <!-- Modal التفاصيل -->
     <div class="modal-backdrop" id="detailModal">
         <div class="modal-container">
             <button class="close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -110,20 +138,20 @@
                     <p id="modalMeta">التصنيف • السنة</p>
                     <div class="modal-actions">
                         <button class="btn btn-primary" onclick="startVideo()"><i class="fa-solid fa-play"></i> تشغيل</button>
-                        <button class="btn-icon" title="إضافة لقائمتي" id="addListBtn" onclick="toggleList()"><i class="fa-solid fa-plus"></i></button>
-                        <button class="btn-icon" title="تحميل"><i class="fa-solid fa-download"></i></button>
+                        <button class="btn-icon" id="addListBtn" onclick="toggleList()"><i class="fa-solid fa-plus"></i></button>
+                        <button class="btn-icon"><i class="fa-solid fa-download"></i></button>
                     </div>
                 </div>
             </div>
             <div class="modal-body">
-                <p id="modalDesc" class="modal-description">وصف الفيلم أو المسلسل يظهر هنا بالتفصيل...</p>
+                <p id="modalDesc" class="modal-description">وصف التفاصيل يظهر هنا...</p>
                 <div class="episodes-section">
-                    <h3>الحلقات</h3>
+                    <h3>الحلقات / السيرفرات</h3>
                     <div class="episode-item" onclick="startVideo()">
                         <span class="ep-num">1</span>
                         <div class="ep-info">
-                            <h4>الحلقة الأولى: البداية</h4>
-                            <p>45 دقيقة</p>
+                            <h4>السيرفر الرئيسي (FHD 1080p)</h4>
+                            <p>جودة عالية • مشاهدة مباشرة</p>
                         </div>
                         <i class="fa-solid fa-play ep-play"></i>
                     </div>
@@ -132,7 +160,7 @@
         </div>
     </div>
 
-    <!-- نافذة مشغل الفيديو (Video Player Modal) -->
+    <!-- Video Player -->
     <div class="player-modal" id="playerModal">
         <button class="close-player" onclick="closePlayer()"><i class="fa-solid fa-xmark"></i> إغلاق المشغل</button>
         <div class="video-wrapper">
