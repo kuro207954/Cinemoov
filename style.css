@@ -594,3 +594,43 @@ a:has(.fa-download) {
 .studio-card img {
     filter: brightness(0.15) !important;
 }
+/* Networks & Studios Styling Fixes */
+.networks-grid, .studios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.network-card, .studio-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 75px;
+    padding: 10px;
+    border-radius: 12px;
+    background: #16181f;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.network-card:hover, .studio-card:hover {
+    transform: translateY(-4px);
+    background: #20232e;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.studio-card {
+    background: #ffffff; /* خلفية بيضاء لإبراز شعارات الاستوديوهات */
+}
+
+.studio-card:hover {
+    background: #e8e8e8;
+}
+
+.network-card img, .studio-card img {
+    max-width: 85%;
+    max-height: 45px;
+    object-fit: contain;
+}

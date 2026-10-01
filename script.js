@@ -2,7 +2,7 @@ const API_KEY = 'e45956e29bfc581e0131eb6710b738c0';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_PATH = 'https://image.tmdb.org/t/p/w500';
 const BACKDROP_PATH = 'https://image.tmdb.org/t/p/original';
-const NO_IMAGE_URL = 'https://via.placeholder.com/300x450/19212b/ffffff?text=%D9%84%D8%A7+%D8%AA%D9%88%D8%AC%D8%AF+%D8%B5%D9%88%D8%B1%D8%A9';
+const NO_IMAGE_URL = 'https://via.placeholder.com/300x450/19212b/ffffff?text=No+Image';
 
 let heroInterval;
 let currentCompanyPage = 1;
@@ -32,13 +32,13 @@ function handleRoute() {
         renderWatchPage(parts[2], parts[3]);
     } else if (hash.startsWith('#/company/')) {
         const parts = hash.split('/');
-        renderCompanyPage(parts[2], decodeURIComponent(parts[3] || 'الشركة'));
+        renderCompanyPage(parts[2], decodeURIComponent(parts[3] || 'Company'));
     } else if (hash === '#/search') {
         renderSearchPage();
     } else if (hash === '#/movies') {
-        renderCategoryPage('movie', 'الأفلام');
+        renderCategoryPage('movie', 'Movies');
     } else if (hash === '#/tv') {
-        renderCategoryPage('tv', 'المسلسلات');
+        renderCategoryPage('tv', 'TV Shows');
     } else if (hash === '#/anime') {
         renderAnimePage();
     } else {
@@ -46,7 +46,7 @@ function handleRoute() {
     }
 }
 
-// 1. الصفحة الرئيسية
+// 1. Home Page (LTR English + SVG Official Logos)
 async function renderHomePage() {
     const container = document.getElementById('app-container');
     if (!container) return;
@@ -56,70 +56,60 @@ async function renderHomePage() {
     container.innerHTML = `
         <div id="hero-banner" class="hero-slider-container"></div>
 
-        ${continueWatching.length > 0 ? createSectionHTML('cw-list', 'fa-rotate-left', 'متابعة المشاهدة') : ''}
+        ${continueWatching.length > 0 ? createSectionHTML('cw-list', 'fa-rotate-left', 'Continue Watching') : ''}
         
-        ${createSectionHTML('trending-movies', 'fa-film', 'الأفلام الرائجة اليوم')}
-        ${createSectionHTML('trending-tv', 'fa-tv', 'المسلسلات الرائجة اليوم')}
-        ${createSectionHTML('top-movies', 'fa-star', 'الأفلام الأعلى تقييماً')}
-        ${createSectionHTML('top-tv', 'fa-crown', 'المسلسلات الأعلى تقييماً')}
+        ${createSectionHTML('trending-movies', 'fa-film', 'Trending Movies')}
+        ${createSectionHTML('trending-tv', 'fa-tv', 'Trending TV Shows')}
+        ${createSectionHTML('top-movies', 'fa-star', 'Top Rated Movies')}
+        ${createSectionHTML('top-tv', 'fa-crown', 'Top Rated TV Shows')}
 
-        <!-- المنصات والاستوديوهات الشهيرة -->
+        <!-- Networks & Studios -->
         <section class="section-container">
             <div class="section-header">
                 <h2 class="section-title"><i class="fa-solid fa-tv"></i> Popular Networks</h2>
             </div>
             <div class="networks-grid">
                 <div class="network-card net-netflix" onclick="navigateTo('#/company/178464/Netflix')">
-                    <img src="https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.ico" alt="Netflix" style="height:35px; width:auto;">
-                    <span style="color:#e50914; font-weight:bold; font-size:18px; margin-right:8px;">NETFLIX</span>
+                    <img src="https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.ico" alt="Netflix" style="height:35px;">
                 </div>
                 <div class="network-card net-disney" onclick="navigateTo('#/company/2/Walt%20Disney')">
-                    <span style="color:#ffffff; font-weight:bold; font-size:18px;">Disney+</span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg" alt="Disney+" style="height:32px; filter: brightness(0) invert(1);">
                 </div>
                 <div class="network-card net-prime" onclick="navigateTo('#/company/1024/Amazon')">
-                    <span style="color:#ffffff; font-weight:bold; font-size:17px;">Prime Video</span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.svg" alt="Prime Video" style="height:28px; filter: brightness(0) invert(1);">
                 </div>
                 <div class="network-card net-hbo" onclick="navigateTo('#/company/3268/HBO')">
-                    <span style="color:#ffffff; font-weight:bold; font-size:18px;">MAX (HBO)</span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg" alt="HBO" style="height:24px; filter: brightness(0) invert(1);">
                 </div>
                 <div class="network-card net-apple" onclick="navigateTo('#/company/2552/Apple%20TV')">
-                    <span style="color:#ffffff; font-weight:bold; font-size:17px;">Apple TV+</span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/28/Apple_TV_Plus_Logo.svg" alt="Apple TV+" style="height:28px; filter: brightness(0) invert(1);">
                 </div>
                 <div class="network-card net-hulu" onclick="navigateTo('#/company/453/Hulu')">
-                    <span style="color:#000000; font-weight:bold; font-size:18px;">hulu</span>
-                </div>
-                <div class="network-card net-paramount" onclick="navigateTo('#/company/4/Paramount')">
-                    <span style="color:#ffffff; font-weight:bold; font-size:17px;">Paramount+</span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Hulu_Logo.svg" alt="Hulu" style="height:24px; filter: brightness(0) invert(1);">
                 </div>
             </div>
 
             <div class="section-header" style="margin-top: 35px;">
-                <h2 class="section-title"><i class="fa-solid fa-building"></i> Studios</h2>
+                <h2 class="section-title"><i class="fa-solid fa-building"></i> Popular Studios</h2>
             </div>
             <div class="studios-grid">
                 <div class="studio-card" onclick="navigateTo('#/company/420/Marvel%20Studios')">
-                    <span style="color:#e50914; font-weight:900; font-size:20px; letter-spacing:1px; background:#000; padding:4px 8px; border-radius:4px;">MARVEL</span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/71/Marvel-Language-Bean.svg" alt="Marvel" style="height:35px;">
                 </div>
                 <div class="studio-card" onclick="navigateTo('#/company/3/Pixar')">
-                    <span style="color:#000; font-weight:bold; font-size:20px; letter-spacing:2px;">PIXAR</span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/40/Pixar_Loop.svg" alt="Pixar" style="height:28px;">
                 </div>
                 <div class="studio-card" onclick="navigateTo('#/company/2/Walt%20Disney')">
-                    <span style="color:#000; font-weight:bold; font-size:18px;">Disney</span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Walt_Disney_Pictures_logo.svg" alt="Disney" style="height:32px;">
                 </div>
                 <div class="studio-card" onclick="navigateTo('#/company/174/Warner%20Bros')">
-                    <span style="color:#003399; font-weight:bold; font-size:18px;">WARNER BROS</span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/64/Warner_Bros_logo.svg" alt="Warner Bros" style="height:35px;">
                 </div>
                 <div class="studio-card" onclick="navigateTo('#/company/33/Universal')">
-                    <span style="color:#000; font-weight:bold; font-size:17px;">UNIVERSAL</span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Universal_Pictures_logo.svg" alt="Universal" style="height:28px;">
                 </div>
                 <div class="studio-card" onclick="navigateTo('#/company/4/Paramount')">
-                    <span style="color:#002c6c; font-weight:bold; font-size:17px;">PARAMOUNT</span>
-                </div>
-                <div class="studio-card" onclick="navigateTo('#/company/5/Columbia')">
-                    <span style="color:#000; font-weight:bold; font-size:16px;">COLUMBIA</span>
-                </div>
-                <div class="studio-card" onclick="navigateTo('#/company/127928/20th%20Century')">
-                    <span style="color:#000; font-weight:bold; font-size:15px;">20TH CENTURY</span>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Paramount_Pictures_2022.svg" alt="Paramount" style="height:32px;">
                 </div>
             </div>
         </section>
@@ -128,10 +118,10 @@ async function renderHomePage() {
     if (continueWatching.length > 0) renderSavedList(continueWatching, 'cw-list', true);
     
     loadHeroBanner();
-    fetchMediaList(`${BASE_URL}/trending/movie/day?api_key=${API_KEY}&language=ar-SA`, 'trending-movies', 'movie');
-    fetchMediaList(`${BASE_URL}/trending/tv/day?api_key=${API_KEY}&language=ar-SA`, 'trending-tv', 'tv');
-    fetchMediaList(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=ar-SA`, 'top-movies', 'movie');
-    fetchMediaList(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}&language=ar-SA`, 'top-tv', 'tv');
+    fetchMediaList(`${BASE_URL}/trending/movie/day?api_key=${API_KEY}&language=en-US`, 'trending-movies', 'movie');
+    fetchMediaList(`${BASE_URL}/trending/tv/day?api_key=${API_KEY}&language=en-US`, 'trending-tv', 'tv');
+    fetchMediaList(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US`, 'top-movies', 'movie');
+    fetchMediaList(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}&language=en-US`, 'top-tv', 'tv');
 }
 
 function createSectionHTML(id, icon, title) {
@@ -140,11 +130,11 @@ function createSectionHTML(id, icon, title) {
             <div class="section-header">
                 <h2 class="section-title"><i class="fa-solid ${icon}"></i> ${title}</h2>
                 <div class="carousel-controls">
-                    <button class="scroll-btn-nav" onclick="scrollCarousel('${id}', 300)"><i class="fa-solid fa-chevron-right"></i></button>
                     <button class="scroll-btn-nav" onclick="scrollCarousel('${id}', -300)"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="scroll-btn-nav" onclick="scrollCarousel('${id}', 300)"><i class="fa-solid fa-chevron-right"></i></button>
                 </div>
             </div>
-            <div class="media-carousel" id="${id}">جاري التحميل...</div>
+            <div class="media-carousel" id="${id}">Loading...</div>
         </section>
     `;
 }
@@ -154,7 +144,7 @@ function renderSavedList(list, elementId, isContinueWatching = false) {
     if (!container) return;
     container.innerHTML = list.map(item => `
         <div class="media-card" onclick="navigateTo('#/watch/${item.type}/${item.id}')">
-            ${isContinueWatching ? `<button class="remove-btn" title="حذف" onclick="event.stopPropagation(); removeFromContinueWatching('${item.id}', '${item.type}')"><i class="fa-solid fa-xmark"></i></button>` : ''}
+            ${isContinueWatching ? `<button class="remove-btn" title="Remove" onclick="event.stopPropagation(); removeFromContinueWatching('${item.id}', '${item.type}')"><i class="fa-solid fa-xmark"></i></button>` : ''}
             <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.rating || 'N/A'}</span>
             <img class="card-poster" src="${item.poster ? IMG_PATH + item.poster : NO_IMAGE_URL}" onerror="this.src='${NO_IMAGE_URL}'" alt="${item.title}">
             <div class="card-info">
@@ -171,7 +161,7 @@ function removeFromContinueWatching(id, type) {
     renderHomePage(); 
 }
 
-// 2. صفحة شركة إنتاج (عرض جميع الأفلام + زر المزيد + بحث داخل الشركة)
+// 2. Company Page (Load More + Filter Search)
 async function renderCompanyPage(companyId, companyName) {
     const container = document.getElementById('app-container');
     if (!container) return;
@@ -183,21 +173,21 @@ async function renderCompanyPage(companyId, companyName) {
     container.innerHTML = `
         <div class="search-view-container">
             <h2 class="section-title" style="font-size: 24px; margin-bottom: 15px;">
-                <i class="fa-solid fa-film"></i> جميع أعمال: ${companyName}
+                <i class="fa-solid fa-film"></i> All Content from: ${companyName}
             </h2>
             
             <input type="text" 
                    id="company-search-input" 
                    class="search-bar-input" 
-                   placeholder="ابحث عن عمل معين لشركة ${companyName}..." 
+                   placeholder="Search within ${companyName}..." 
                    oninput="filterCompanyMovies(this.value)"
                    style="margin-bottom: 25px;">
 
-            <div id="company-results" class="grid-layout">جاري التحميل...</div>
+            <div id="company-results" class="grid-layout">Loading...</div>
 
             <div style="text-align: center; margin: 30px 0;">
                 <button id="load-more-btn" class="btn-primary" onclick="loadMoreCompanyMovies()" style="display:none; padding: 12px 30px; font-size: 16px;">
-                    <i class="fa-solid fa-plus"></i> عرض المزيد من الأفلام
+                    <i class="fa-solid fa-plus"></i> Load More Movies
                 </button>
             </div>
         </div>
@@ -208,13 +198,13 @@ async function renderCompanyPage(companyId, companyName) {
 
 async function fetchCompanyMovies() {
     try {
-        const res = await fetch(`${BASE_URL}/discover/movie?api_key=${API_KEY}&with_companies=${currentCompanyId}&sort_by=popularity.desc&language=ar-SA&page=${currentCompanyPage}`);
+        const res = await fetch(`${BASE_URL}/discover/movie?api_key=${API_KEY}&with_companies=${currentCompanyId}&sort_by=popularity.desc&language=en-US&page=${currentCompanyPage}`);
         const data = await res.json();
         const grid = document.getElementById('company-results');
         const loadMoreBtn = document.getElementById('load-more-btn');
         
         if (!data.results || !data.results.length) {
-            if (currentCompanyPage === 1) grid.innerHTML = '<p>لا تتوفر أعمال لهذه الشركة حالياً.</p>';
+            if (currentCompanyPage === 1) grid.innerHTML = '<p>No content available for this studio.</p>';
             if (loadMoreBtn) loadMoreBtn.style.display = 'none';
             return;
         }
@@ -237,7 +227,7 @@ function displayCompanyMovies(movies) {
     if (!grid) return;
 
     if (!movies.length) {
-        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">لا توجد نتائج تطابق بحثك.</p>';
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No movies found matching your search.</p>';
         return;
     }
 
@@ -249,7 +239,7 @@ function displayCompanyMovies(movies) {
                 <div class="card-title">${item.title}</div>
                 <div class="card-meta">
                     <span>${(item.release_date || '').substring(0, 4)}</span>
-                    <span>فيلم</span>
+                    <span>Movie</span>
                 </div>
             </div>
         </div>
@@ -268,15 +258,15 @@ function filterCompanyMovies(query) {
     displayCompanyMovies(filtered);
 }
 
-// 3. صفحة المشاهدة
+// 3. Watch Page
 async function renderWatchPage(type, id) {
     const container = document.getElementById('app-container');
     if (!container) return;
 
-    container.innerHTML = `<div style="padding: 100px; text-align: center;">جاري تجهيز مشغل الفيديو...</div>`;
+    container.innerHTML = `<div style="padding: 100px; text-align: center;">Preparing video player...</div>`;
 
     try {
-        const res = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&language=ar-SA&append_to_response=recommendations`);
+        const res = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&language=en-US&append_to_response=recommendations`);
         const data = await res.json();
 
         const title = data.title || data.name;
@@ -302,9 +292,9 @@ async function renderWatchPage(type, id) {
                         <div class="watch-meta">
                             <span class="badge-rating">⭐ ${rating}</span>
                             <span>${(data.release_date || data.first_air_date || '').substring(0, 4)}</span>
-                            <span>${type === 'movie' ? 'فيلم' : 'مسلسل'}</span>
+                            <span>${type === 'movie' ? 'Movie' : 'TV Show'}</span>
                         </div>
-                        <p class="watch-overview">${data.overview || 'لا يوجد وصف متاح لهذا العمل.'}</p>
+                        <p class="watch-overview">${data.overview || 'No overview available.'}</p>
                     </div>
                 </div>
             </div>
@@ -315,20 +305,20 @@ async function renderWatchPage(type, id) {
                 </div>
 
                 <div class="servers-section">
-                    <h3 class="servers-title"><i class="fa-solid fa-server"></i> اختر سيرفر المشاهدة:</h3>
+                    <h3 class="servers-title"><i class="fa-solid fa-server"></i> Choose Server:</h3>
                     <div class="servers-grid">
-                        <button class="server-btn active" onclick="changeServer('${server1}', this)">سيرفر 1 (VidLink)</button>
-                        <button class="server-btn" onclick="changeServer('${server2}', this)">سيرفر 2 (VidSrc)</button>
-                        <button class="server-btn" onclick="changeServer('${server3}', this)">سيرفر 3 (Pro)</button>
-                        <button class="server-btn" onclick="changeServer('${server4}', this)">سيرفر 4 (SmashyStream)</button>
-                        <button class="server-btn" onclick="changeServer('${server5}', this)">سيرفر 5 (2Embed)</button>
-                        <button class="server-btn" onclick="changeServer('${server6}', this)">سيرفر 6 (AutoEmbed)</button>
+                        <button class="server-btn active" onclick="changeServer('${server1}', this)">Server 1 (VidLink)</button>
+                        <button class="server-btn" onclick="changeServer('${server2}', this)">Server 2 (VidSrc)</button>
+                        <button class="server-btn" onclick="changeServer('${server3}', this)">Server 3 (Pro)</button>
+                        <button class="server-btn" onclick="changeServer('${server4}', this)">Server 4 (SmashyStream)</button>
+                        <button class="server-btn" onclick="changeServer('${server5}', this)">Server 5 (2Embed)</button>
+                        <button class="server-btn" onclick="changeServer('${server6}', this)">Server 6 (AutoEmbed)</button>
                     </div>
                 </div>
 
                 ${data.recommendations && data.recommendations.results.length ? `
                     <div class="recommendations-section">
-                        <h2 class="section-title" style="margin-bottom:15px;"><i class="fa-solid fa-thumbs-up"></i> أعمال نوصي بها</h2>
+                        <h2 class="section-title" style="margin-bottom:15px;"><i class="fa-solid fa-thumbs-up"></i> Recommended For You</h2>
                         <div class="grid-layout">
                             ${data.recommendations.results.slice(0, 6).map(item => `
                                 <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/${type}/${item.id}')">
@@ -345,13 +335,13 @@ async function renderWatchPage(type, id) {
             </div>
         `;
     } catch(e) {
-        container.innerHTML = `<div style="padding: 50px; text-align: center; color: red;">حدث خطأ أثناء تحميل البيانات.</div>`;
+        container.innerHTML = `<div style="padding: 50px; text-align: center; color: red;">Error loading data.</div>`;
     }
 }
 
 async function loadHeroBanner() {
     try {
-        const res = await fetch(`${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=ar-SA`);
+        const res = await fetch(`${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=en-US`);
         const data = await res.json();
         if (!data.results || !data.results.length) return;
         
@@ -363,11 +353,11 @@ async function loadHeroBanner() {
             <div class="hero-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${item.backdrop_path ? BACKDROP_PATH + item.backdrop_path : ''}')">
                 <div class="hero-overlay">
                     <div class="hero-content">
-                        <span class="hero-badge">الأبرز حالياً</span>
+                        <span class="hero-badge">Featured</span>
                         <h1 class="hero-title">${item.title || item.name}</h1>
-                        <p class="hero-overview">${item.overview || 'لا يوجد وصف متاح.'}</p>
+                        <p class="hero-overview">${item.overview || 'No overview available.'}</p>
                         <button class="btn-primary" onclick="navigateTo('#/watch/${item.media_type || 'movie'}/${item.id}')">
-                            <i class="fa-solid fa-play"></i> تشغيل الآن
+                            <i class="fa-solid fa-play"></i> Watch Now
                         </button>
                     </div>
                 </div>
@@ -403,7 +393,7 @@ async function fetchMediaList(url, containerId, customType = null) {
                         <div class="card-title">${item.title || item.name}</div>
                         <div class="card-meta">
                             <span>${(item.release_date || item.first_air_date || '').substring(0, 4)}</span>
-                            <span>${type === 'movie' ? 'فيلم' : 'مسلسل'}</span>
+                            <span>${type === 'movie' ? 'Movie' : 'TV Show'}</span>
                         </div>
                     </div>
                 </div>
@@ -416,22 +406,22 @@ function renderAnimePage() {
     const container = document.getElementById('app-container');
     if (!container) return;
     container.innerHTML = `
-        ${createSectionHTML('anime-popular', 'fa-fire', 'أشهر أنميات العصر (Top Popular)')}
-        ${createSectionHTML('anime-top', 'fa-star', 'الأنميات الأعلى تقييماً')}
+        ${createSectionHTML('anime-popular', 'fa-fire', 'Top Popular Anime')}
+        ${createSectionHTML('anime-top', 'fa-star', 'Top Rated Anime')}
     `;
-    fetchMediaList(`${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&sort_by=popularity.desc&language=ar-SA`, 'anime-popular', 'tv');
-    fetchMediaList(`${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200&language=ar-SA`, 'anime-top', 'tv');
+    fetchMediaList(`${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&sort_by=popularity.desc&language=en-US`, 'anime-popular', 'tv');
+    fetchMediaList(`${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200&language=en-US`, 'anime-top', 'tv');
 }
 
 async function renderCategoryPage(type, title) {
     const container = document.getElementById('app-container');
     if (!container) return;
     container.innerHTML = `
-        ${createSectionHTML('cat-trending', 'fa-fire', `${title} الرائجة`)}
-        ${createSectionHTML('cat-top', 'fa-star', `${title} الأعلى تقييماً`)}
+        ${createSectionHTML('cat-trending', 'fa-fire', `Trending ${title}`)}
+        ${createSectionHTML('cat-top', 'fa-star', `Top Rated ${title}`)}
     `;
-    fetchMediaList(`${BASE_URL}/${type}/popular?api_key=${API_KEY}&language=ar-SA`, 'cat-trending', type);
-    fetchMediaList(`${BASE_URL}/${type}/top_rated?api_key=${API_KEY}&language=ar-SA`, 'cat-top', type);
+    fetchMediaList(`${BASE_URL}/${type}/popular?api_key=${API_KEY}&language=en-US`, 'cat-trending', type);
+    fetchMediaList(`${BASE_URL}/${type}/top_rated?api_key=${API_KEY}&language=en-US`, 'cat-top', type);
 }
 
 function renderSearchPage() {
@@ -439,23 +429,23 @@ function renderSearchPage() {
     if (!container) return;
     container.innerHTML = `
         <div class="search-view-container">
-            <input type="text" class="search-bar-input" placeholder="ابحث عن أي فيلم، مسلسل، أو أنمي..." oninput="handleSearch(this.value)">
-            <h2 class="section-title" id="search-title">الأكثر رواجاً الآن</h2>
-            <div id="search-results" class="grid-layout">جاري التحميل...</div>
+            <input type="text" class="search-bar-input" placeholder="Search movies, TV shows, anime..." oninput="handleSearch(this.value)">
+            <h2 class="section-title" id="search-title">Trending Now</h2>
+            <div id="search-results" class="grid-layout">Loading...</div>
         </div>
     `;
-    fetchGridMedia(`${BASE_URL}/trending/all/day?api_key=${API_KEY}&language=ar-SA`);
+    fetchGridMedia(`${BASE_URL}/trending/all/day?api_key=${API_KEY}&language=en-US`);
 }
 
 async function handleSearch(query) {
     const titleEl = document.getElementById('search-title');
     if (!query.trim()) {
-        if (titleEl) titleEl.innerText = 'الأكثر رواجاً الآن';
-        fetchGridMedia(`${BASE_URL}/trending/all/day?api_key=${API_KEY}&language=ar-SA`);
+        if (titleEl) titleEl.innerText = 'Trending Now';
+        fetchGridMedia(`${BASE_URL}/trending/all/day?api_key=${API_KEY}&language=en-US`);
         return;
     }
-    if (titleEl) titleEl.innerText = 'نتائج البحث';
-    fetchGridMedia(`${BASE_URL}/search/multi?api_key=${API_KEY}&language=ar-SA&query=${encodeURIComponent(query)}`);
+    if (titleEl) titleEl.innerText = 'Search Results';
+    fetchGridMedia(`${BASE_URL}/search/multi?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(query)}`);
 }
 
 async function fetchGridMedia(url) {
