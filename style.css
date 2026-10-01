@@ -73,13 +73,6 @@ body {
     font-weight: bold;
 }
 
-.search-btn {
-    background: #1f2833;
-    padding: 6px 14px;
-    border-radius: 20px;
-    border: 1px solid #333;
-}
-
 /* Hero Carousel Slider */
 .hero-slider-container {
     position: relative;
@@ -99,9 +92,7 @@ body {
     align-items: flex-end;
 }
 
-.hero-slide.active {
-    opacity: 1;
-}
+.hero-slide.active { opacity: 1; }
 
 .hero-overlay {
     width: 100%;
@@ -112,9 +103,7 @@ body {
     padding: 30px;
 }
 
-.hero-content {
-    max-width: 600px;
-}
+.hero-content { max-width: 600px; }
 
 .hero-badge {
     background: var(--primary);
@@ -127,11 +116,7 @@ body {
     margin-bottom: 10px;
 }
 
-.hero-title {
-    font-size: 32px;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
+.hero-title { font-size: 32px; font-weight: bold; margin-bottom: 10px; }
 
 .hero-overview {
     font-size: 13px;
@@ -160,10 +145,8 @@ body {
 
 .btn-primary:hover { background: var(--primary-hover); }
 
-/* Carousels & Horizontal Lists Header */
-.section-container {
-    padding: 20px 30px;
-}
+/* Carousels & Controls */
+.section-container { padding: 20px 30px; }
 
 .section-header {
     display: flex;
@@ -172,17 +155,9 @@ body {
     margin-bottom: 12px;
 }
 
-.section-title {
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+.section-title { font-size: 18px; display: flex; align-items: center; gap: 8px; }
 
-.carousel-controls {
-    display: flex;
-    gap: 8px;
-}
+.carousel-controls { display: flex; gap: 8px; }
 
 .scroll-btn-nav {
     background: rgba(255, 255, 255, 0.08);
@@ -198,10 +173,7 @@ body {
     transition: 0.3s;
 }
 
-.scroll-btn-nav:hover {
-    background: var(--primary);
-    border-color: var(--primary);
-}
+.scroll-btn-nav:hover { background: var(--primary); border-color: var(--primary); }
 
 .media-carousel {
     display: flex;
@@ -232,46 +204,166 @@ body {
     box-shadow: 0 8px 18px rgba(0,0,0,0.5);
 }
 
-.card-poster {
-    width: 100%;
-    height: 210px;
-    object-fit: cover;
-    background-color: #151515;
-}
+.card-poster { width: 100%; height: 210px; object-fit: cover; background-color: #151515; }
 
 .card-info { padding: 8px; }
 .card-title { font-size: 12px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .card-meta { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-top: 4px; }
 .badge-rating { position: absolute; top: 8px; right: 8px; background: rgba(0, 0, 0, 0.85); padding: 2px 6px; border-radius: 5px; font-size: 10px; color: #ffd700; }
 
-/* Companies Section (قسم الشركات) */
+/* Companies Logos (شعارات الشركات) */
 .companies-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: 12px;
+    gap: 15px;
     margin-top: 15px;
 }
 
-.company-card {
+.company-card-logo {
     background: #151c24;
     border: 1px solid #2a3441;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 15px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     cursor: pointer;
     transition: 0.3s;
-    font-weight: bold;
+    height: 80px;
+}
+
+.company-card-logo img {
+    max-width: 80%;
+    max-height: 50px;
+    object-fit: contain;
+    filter: brightness(0.8) grayscale(0.2);
+    transition: 0.3s;
+}
+
+.company-card-logo:hover {
+    background: #1f2833;
+    border-color: var(--primary);
+    transform: translateY(-4px);
+}
+
+.company-card-logo:hover img {
+    filter: brightness(1) grayscale(0);
+}
+
+/* Netflix Style Watch Page */
+.netflix-hero {
+    position: relative;
+    width: 100%;
+    min-height: 550px;
+    background-size: cover;
+    background-position: center top;
+    display: flex;
+    align-items: flex-end;
+}
+
+.netflix-overlay {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, var(--bg-color) 5%, rgba(11, 12, 16, 0.75) 60%, rgba(11, 12, 16, 0.85));
+    padding: 40px 30px;
+    display: flex;
+    gap: 30px;
+    align-items: flex-end;
+}
+
+.netflix-poster {
+    width: 220px;
+    border-radius: var(--radius);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    flex-shrink: 0;
+}
+
+.netflix-details { flex: 1; }
+
+.netflix-title { font-size: 36px; font-weight: bold; margin-bottom: 10px; }
+
+.netflix-meta-bar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
     font-size: 14px;
     color: var(--text-muted);
 }
 
-.company-card:hover, .company-card.active {
-    background: var(--primary);
+.badge-green { color: #46d369; font-weight: bold; }
+
+.action-buttons-group {
+    display: flex;
+    gap: 12px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.15);
     color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.3s;
+}
+
+.btn-secondary:hover { background: rgba(255, 255, 255, 0.3); }
+
+/* Download Modal & Servers */
+.player-section { padding: 30px; }
+
+.player-box {
+    position: relative;
+    padding-top: 56.25%;
+    background: black;
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.player-box iframe {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    border: none;
+}
+
+.servers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.server-btn {
+    background: #1f2833;
+    color: white;
+    border: 1px solid #333;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 13px;
+    transition: 0.3s;
+}
+
+.server-btn.active, .server-btn:hover {
+    background: var(--primary);
     border-color: var(--primary);
 }
 
-/* Search View */
+.grid-layout {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 15px;
+}
+
 .search-view-container { padding: 25px 30px; }
 .search-bar-input {
     width: 100%;
@@ -286,69 +378,20 @@ body {
 }
 .search-bar-input:focus { border-color: var(--primary); }
 
-.grid-layout {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 15px;
-}
-
-/* Watch Page */
-.watch-container {
-    padding: 20px 30px;
-    display: grid;
-    grid-template-columns: 3fr 1fr;
-    gap: 25px;
-}
-
-.player-box {
-    position: relative;
-    padding-top: 56.25%;
-    background: black;
-    border-radius: var(--radius);
-    overflow: hidden;
-}
-
-.player-box iframe {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    border: none;
-}
-
-.servers-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 8px;
-    margin: 15px 0;
-}
-
-.server-btn {
-    background: #1f2833;
-    color: white;
-    border: 1px solid #333;
-    padding: 8px;
-    border-radius: 6px;
-    cursor: pointer;
-    text-align: center;
-    font-size: 12px;
-}
-
-.server-btn.active, .server-btn:hover {
-    background: var(--primary);
-    border-color: var(--primary);
-}
-
 /* Responsive Phone Adjustments */
 @media (max-width: 768px) {
     .main-header { padding: 10px 12px; }
     .logo-text { font-size: 18px; }
     .nav-links { gap: 8px; }
     .nav-item { font-size: 12px; }
-    .hero-slider-container { height: 45vh; }
-    .hero-title { font-size: 20px; }
-    .hero-overview { font-size: 11px; -webkit-line-clamp: 2; }
-    .section-container, .watch-container, .search-view-container { padding: 12px; }
-    .watch-container { grid-template-columns: 1fr; }
+    .netflix-overlay { flex-direction: column; align-items: center; text-align: center; padding: 20px 15px; }
+    .netflix-poster { width: 140px; }
+    .netflix-title { font-size: 22px; }
+    .netflix-meta-bar { justify-content: center; }
+    .action-buttons-group { justify-content: center; }
+    .section-container, .player-section, .search-view-container { padding: 12px; }
+    .companies-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .company-card-logo { height: 65px; padding: 8px; }
     .media-card { min-width: 120px; width: 120px; }
     .card-poster { height: 170px; }
-    .companies-grid { grid-template-columns: repeat(3, 1fr); }
 }

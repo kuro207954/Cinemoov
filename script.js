@@ -26,6 +26,9 @@ function handleRoute() {
     if (hash.startsWith('#/watch/')) {
         const parts = hash.split('/');
         renderWatchPage(parts[2], parts[3]);
+    } else if (hash.startsWith('#/company/')) {
+        const parts = hash.split('/');
+        renderCompanyPage(parts[2], decodeURIComponent(parts[3] || 'الشركة'));
     } else if (hash === '#/search') {
         renderSearchPage();
     } else if (hash === '#/movies') {
@@ -39,41 +42,56 @@ function handleRoute() {
     }
 }
 
-// 1. الصفحة الرئيسية المنظمة
+// 1. الصفحة الرئيسية
 async function renderHomePage() {
     const container = document.getElementById('app-container');
     if (!container) return;
 
+    const favorites = JSON.parse(localStorage.getItem('favorites_list') || '[]');
     const continueWatching = JSON.parse(localStorage.getItem('continue_watching') || '[]');
 
     container.innerHTML = `
         <div id="hero-banner" class="hero-slider-container"></div>
 
+        ${favorites.length > 0 ? createSectionHTML('fav-list', 'fa-heart', 'قائمتي المفضلة ❤️') : ''}
         ${continueWatching.length > 0 ? createSectionHTML('cw-list', 'fa-rotate-left', 'متابعة المشاهدة') : ''}
+        
         ${createSectionHTML('trending-movies', 'fa-film', 'الأفلام الرائجة اليوم')}
         ${createSectionHTML('trending-tv', 'fa-tv', 'المسلسلات الرائجة اليوم')}
         ${createSectionHTML('top-movies', 'fa-star', 'الأفلام الأعلى تقييماً')}
         ${createSectionHTML('top-tv', 'fa-crown', 'المسلسلات الأعلى تقييماً')}
 
-        <!-- قسم شركات الإنتاج العالمية -->
+        <!-- قسم استوديوهات وشركات الإنتاج بشعارات احترافية -->
         <section class="section-container">
             <div class="section-header">
                 <h2 class="section-title"><i class="fa-solid fa-building"></i> استوديوهات وشركات الإنتاج</h2>
             </div>
             <div class="companies-grid">
-                <div class="company-card" onclick="loadCompanyMedia(420, 'Marvel Studios')">Marvel</div>
-                <div class="company-card" onclick="loadCompanyMedia(2, 'Walt Disney')">Disney</div>
-                <div class="company-card" onclick="loadCompanyMedia(178464, 'Netflix')">Netflix</div>
-                <div class="company-card" onclick="loadCompanyMedia(174, 'Warner Bros')">Warner Bros</div>
-                <div class="company-card" onclick="loadCompanyMedia(3, 'Pixar')">Pixar</div>
-                <div class="company-card" onclick="loadCompanyMedia(3268, 'HBO')">HBO</div>
+                <div class="company-card-logo" onclick="navigateTo('#/company/420/Marvel%20Studios')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Marvel_Logo.svg" alt="Marvel">
+                </div>
+                <div class="company-card-logo" onclick="navigateTo('#/company/2/Walt%20Disney')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Disney_wordmark.svg" alt="Disney">
+                </div>
+                <div class="company-card-logo" onclick="navigateTo('#/company/178464/Netflix')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
+                </div>
+                <div class="company-card-logo" onclick="navigateTo('#/company/174/Warner%20Bros')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/64/Warner_Bros_logo.svg" alt="Warner Bros">
+                </div>
+                <div class="company-card-logo" onclick="navigateTo('#/company/3/Pixar')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/40/Pixar_Disney_Logo.svg" alt="Pixar">
+                </div>
+                <div class="company-card-logo" onclick="navigateTo('#/company/3268/HBO')">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/de/HBO_logo.svg" alt="HBO">
+                </div>
             </div>
-            <div id="company-results-title" class="section-title" style="margin-top: 20px; display: none;"></div>
-            <div id="company-results" class="grid-layout" style="margin-top: 15px;"></div>
         </section>
     `;
 
-    if (continueWatching.length > 0) renderContinueWatchingList(continueWatching);
+    if (favorites.length > 0) renderSavedList(favorites, 'fav-list');
+    if (continueWatching.length > 0) renderSavedList(continueWatching, 'cw-list');
+    
     loadHeroBanner();
     fetchMediaList(`${BASE_URL}/trending/movie/day?api_key=${API_KEY}&language=ar-SA`, 'trending-movies', 'movie');
     fetchMediaList(`${BASE_URL}/trending/tv/day?api_key=${API_KEY}&language=ar-SA`, 'trending-tv', 'tv');
@@ -81,7 +99,6 @@ async function renderHomePage() {
     fetchMediaList(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}&language=ar-SA`, 'top-tv', 'tv');
 }
 
-// دالة إنشاء هيكل الأقسام مع أسهم التنقل بالأعلى
 function createSectionHTML(id, icon, title) {
     return `
         <section class="section-container">
@@ -97,8 +114,8 @@ function createSectionHTML(id, icon, title) {
     `;
 }
 
-function renderContinueWatchingList(list) {
-    const container = document.getElementById('cw-list');
+function renderSavedList(list, elementId) {
+    const container = document.getElementById(elementId);
     if (!container) return;
     container.innerHTML = list.map(item => `
         <div class="media-card" onclick="navigateTo('#/watch/${item.type}/${item.id}')">
@@ -111,32 +128,164 @@ function renderContinueWatchingList(list) {
     `).join('');
 }
 
-// جلب أعمال شركة إنتاج معينة
-async function loadCompanyMedia(companyId, companyName) {
-    document.querySelectorAll('.company-card').forEach(c => c.classList.remove('active'));
-    event.currentTarget.classList.add('active');
+// 2. صفحة شركة إنتاج مستقلة وكاملة الأعمال
+async function renderCompanyPage(companyId, companyName) {
+    const container = document.getElementById('app-container');
+    if (!container) return;
 
-    const titleEl = document.getElementById('company-results-title');
-    const container = document.getElementById('company-results');
-    
-    titleEl.style.display = 'block';
-    titleEl.innerHTML = `<i class="fa-solid fa-clapperboard"></i> أشهر وأحدث أعمال ${companyName}`;
-    container.innerHTML = 'جاري الجلب...';
+    container.innerHTML = `
+        <div class="search-view-container">
+            <h2 class="section-title" style="font-size: 24px; margin-bottom: 20px;">
+                <i class="fa-solid fa-film"></i> جميع أعمال شركة: ${companyName}
+            </h2>
+            <div id="company-results" class="grid-layout">جاري التحميل...</div>
+        </div>
+    `;
 
     try {
         const res = await fetch(`${BASE_URL}/discover/movie?api_key=${API_KEY}&with_companies=${companyId}&sort_by=popularity.desc&language=ar-SA`);
         const data = await res.json();
+        const grid = document.getElementById('company-results');
         
-        container.innerHTML = data.results.slice(0, 12).map(item => `
+        if (!data.results || !data.results.length) {
+            grid.innerHTML = '<p>لا تتوفر أعمال لهذه الشركة حالياً.</p>';
+            return;
+        }
+
+        grid.innerHTML = data.results.map(item => `
             <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/movie/${item.id}')">
                 <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
                 <img class="card-poster" src="${item.poster_path ? IMG_PATH + item.poster_path : 'https://via.placeholder.com/160x230?text=No+Poster'}" alt="${item.title}">
                 <div class="card-info">
                     <div class="card-title">${item.title}</div>
+                    <div class="card-meta">
+                        <span>${(item.release_date || '').substring(0, 4)}</span>
+                        <span>فيلم</span>
+                    </div>
                 </div>
             </div>
         `).join('');
     } catch(e) { console.error(e); }
+}
+
+// 3. صفحة المشاهدة والتفاصيل بأسلوب Netflix
+async function renderWatchPage(type, id) {
+    const container = document.getElementById('app-container');
+    if (!container) return;
+
+    container.innerHTML = `<div style="padding: 100px; text-align: center;">جاري تجهيز السينما...</div>`;
+
+    try {
+        const res = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&language=ar-SA&append_to_response=recommendations`);
+        const data = await res.json();
+
+        const title = data.title || data.name;
+        const poster = data.poster_path;
+        const rating = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
+        
+        saveToContinueWatching({ id, type, title, poster, rating });
+
+        const isFav = isFavorite(id, type);
+
+        container.innerHTML = `
+            <!-- Netflix Style Hero Header -->
+            <div class="netflix-hero" style="background-image: url('${BACKDROP_PATH + (data.backdrop_path || data.poster_path)}')">
+                <div class="netflix-overlay">
+                    <img class="netflix-poster" src="${poster ? IMG_PATH + poster : 'https://via.placeholder.com/200x300'}" alt="${title}">
+                    <div class="netflix-details">
+                        <h1 class="netflix-title">${title}</h1>
+                        <div class="netflix-meta-bar">
+                            <span class="badge-green">${Math.round((data.vote_average || 7) * 10)}% تطابق</span>
+                            <span>${(data.release_date || data.first_air_date || '').substring(0, 4)}</span>
+                            <span>⭐ ${rating}</span>
+                            <span>${type === 'movie' ? 'فيلم' : 'مسلسل'}</span>
+                        </div>
+                        <p style="color: var(--text-muted); line-height: 1.6; max-width: 700px;">${data.overview || 'لا يوجد وصف متاح لهذا العمل.'}</p>
+                        
+                        <div class="action-buttons-group">
+                            <button class="btn-primary" onclick="scrollToPlayer()">
+                                <i class="fa-solid fa-play"></i> مشاهدة الآن
+                            </button>
+                            <button class="btn-secondary" id="fav-btn" onclick="toggleFavorite('${id}', '${type}', '${encodeURIComponent(title)}', '${poster}', '${rating}')">
+                                <i class="fa-solid ${isFav ? 'fa-heart-circle-check' : 'fa-heart'}" style="${isFav ? 'color: red;' : ''}"></i> 
+                                ${isFav ? 'في المفضلة' : 'إضافة للمفضلة'}
+                            </button>
+                            <button class="btn-secondary" onclick="triggerDownload('${type}', '${id}')">
+                                <i class="fa-solid fa-download"></i> تحميل الفيلم
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Player & Download Options -->
+            <div class="player-section" id="player-area">
+                <h2 class="section-title" style="margin-bottom: 15px;"><i class="fa-solid fa-tv"></i> مشغل الفيديو</h2>
+                <div class="player-box">
+                    <iframe id="video-iframe" src="https://vidsrc.me/embed/${type}?tmdb=${id}" allowfullscreen></iframe>
+                </div>
+
+                <h3>اختر سيرفر المشاهدة:</h3>
+                <div class="servers-grid" style="margin-top: 10px;">
+                    <button class="server-btn active" onclick="changeServer('https://vidsrc.me/embed/${type}?tmdb=${id}', this)">سيرفر 1 (سريع)</button>
+                    <button class="server-btn" onclick="changeServer('https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1', this)">سيرفر 2 (VIP)</button>
+                    <button class="server-btn" onclick="changeServer('https://2embed.org/embed/${id}', this)">سيرفر 3</button>
+                    <button class="server-btn" onclick="changeServer('https://autoembed.co/${type}/tmdb/${id}', this)">سيرفر 4</button>
+                </div>
+
+                <!-- الأعمال المقترحة -->
+                ${data.recommendations && data.recommendations.results.length ? `
+                    <h2 class="section-title" style="margin-top: 30px; margin-bottom: 15px;"><i class="fa-solid fa-thumbs-up"></i> أعمال نوصي بها</h2>
+                    <div class="grid-layout">
+                        ${data.recommendations.results.slice(0, 6).map(item => `
+                            <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/${type}/${item.id}')">
+                                <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
+                                <img class="card-poster" src="${item.poster_path ? IMG_PATH + item.poster_path : 'https://via.placeholder.com/160x230'}" alt="${item.title || item.name}">
+                                <div class="card-info">
+                                    <div class="card-title">${item.title || item.name}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    } catch(e) {
+        container.innerHTML = `<div style="padding: 50px; text-align: center; color: red;">حدث خطأ في تحميل البيانات.</div>`;
+    }
+}
+
+// دالة التمرير لمكان المشغل
+function scrollToPlayer() {
+    document.getElementById('player-area')?.scrollIntoView({ behavior: 'smooth' });
+}
+
+// إدارة المفضلة
+function isFavorite(id, type) {
+    const list = JSON.parse(localStorage.getItem('favorites_list') || '[]');
+    return list.some(item => item.id == id && item.type == type);
+}
+
+function toggleFavorite(id, type, encodedTitle, poster, rating) {
+    const title = decodeURIComponent(encodedTitle);
+    let list = JSON.parse(localStorage.getItem('favorites_list') || '[]');
+    const index = list.findIndex(item => item.id == id && item.type == type);
+
+    if (index > -1) {
+        list.splice(index, 1);
+        alert('تم الإزالة من المفضلة');
+    } else {
+        list.push({ id, type, title, poster, rating });
+        alert('تمت الإضافة إلى المفضلة ❤️');
+    }
+    localStorage.setItem('favorites_list', JSON.stringify(list));
+    renderWatchPage(type, id);
+}
+
+// تحميل الفيلم
+function triggerDownload(type, id) {
+    const downloadUrl = `https://vidsrc.me/embed/${type}?tmdb=${id}`;
+    window.open(downloadUrl, '_blank');
 }
 
 async function loadHeroBanner() {
@@ -183,11 +332,6 @@ async function fetchMediaList(url, containerId, customType = null) {
         const container = document.getElementById(containerId);
         if (!container) return;
         
-        if (!data.results || data.results.length === 0) {
-            container.innerHTML = '<p style="padding:10px; color:#aaa;">لا تتوفر نتائج.</p>';
-            return;
-        }
-
         container.innerHTML = data.results.map(item => {
             const type = customType || item.media_type || (item.title ? 'movie' : 'tv');
             return `
@@ -207,17 +351,13 @@ async function fetchMediaList(url, containerId, customType = null) {
     } catch (e) { console.error(e); }
 }
 
-// قسم الأنمي المفلتر والمنظم للأشهر فقط
 function renderAnimePage() {
     const container = document.getElementById('app-container');
     if (!container) return;
-
     container.innerHTML = `
         ${createSectionHTML('anime-popular', 'fa-fire', 'أشهر أنميات العصر (Top Popular)')}
         ${createSectionHTML('anime-top', 'fa-star', 'الأنميات الأعلى تقييماً')}
     `;
-
-    // تصفية جلب الأنمي الياباني الأعلى تقييماً وشهرة
     fetchMediaList(`${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&sort_by=popularity.desc&language=ar-SA`, 'anime-popular', 'tv');
     fetchMediaList(`${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200&language=ar-SA`, 'anime-top', 'tv');
 }
@@ -225,12 +365,10 @@ function renderAnimePage() {
 async function renderCategoryPage(type, title) {
     const container = document.getElementById('app-container');
     if (!container) return;
-
     container.innerHTML = `
         ${createSectionHTML('cat-trending', 'fa-fire', `${title} الرائجة`)}
         ${createSectionHTML('cat-top', 'fa-star', `${title} الأعلى تقييماً`)}
     `;
-
     fetchMediaList(`${BASE_URL}/${type}/popular?api_key=${API_KEY}&language=ar-SA`, 'cat-trending', type);
     fetchMediaList(`${BASE_URL}/${type}/top_rated?api_key=${API_KEY}&language=ar-SA`, 'cat-top', type);
 }
@@ -238,10 +376,9 @@ async function renderCategoryPage(type, title) {
 function renderSearchPage() {
     const container = document.getElementById('app-container');
     if (!container) return;
-
     container.innerHTML = `
         <div class="search-view-container">
-            <input type="text" class="search-bar-input" id="search-input" placeholder="ابحث عن أي فيلم، مسلسل، أو أنمي (عربي، أجنبي، قديم، جديد)..." oninput="handleSearch(this.value)">
+            <input type="text" class="search-bar-input" placeholder="ابحث عن أي فيلم، مسلسل، أو أنمي..." oninput="handleSearch(this.value)">
             <h2 class="section-title" id="search-title">الأكثر رواجاً الآن</h2>
             <div id="search-results" class="grid-layout">جاري التحميل...</div>
         </div>
@@ -256,7 +393,7 @@ async function handleSearch(query) {
         fetchGridMedia(`${BASE_URL}/trending/all/day?api_key=${API_KEY}&language=ar-SA`);
         return;
     }
-    if (titleEl) titleEl.innerText = 'نتائج البحث الشاملة';
+    if (titleEl) titleEl.innerText = 'نتائج البحث';
     fetchGridMedia(`${BASE_URL}/search/multi?api_key=${API_KEY}&language=ar-SA&query=${encodeURIComponent(query)}`);
 }
 
@@ -266,19 +403,13 @@ async function fetchGridMedia(url) {
         const data = await res.json();
         const container = document.getElementById('search-results');
         if (!container) return;
-
-        if (!data.results || !data.results.length) {
-            container.innerHTML = '<p style="grid-column: 1/-1; text-align:center; padding: 20px;">لا توجد نتائج مطابقة لاسم البحث.</p>';
-            return;
-        }
-
         container.innerHTML = data.results.map(item => {
-            if (!item.poster_path && !item.backdrop_path) return '';
+            if (!item.poster_path) return '';
             const type = item.media_type || (item.title ? 'movie' : 'tv');
             return `
                 <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/${type}/${item.id}')">
                     <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
-                    <img class="card-poster" src="${item.poster_path ? IMG_PATH + item.poster_path : 'https://via.placeholder.com/160x230?text=No+Poster'}" alt="${item.title || item.name}">
+                    <img class="card-poster" src="${IMG_PATH + item.poster_path}" alt="${item.title || item.name}">
                     <div class="card-info">
                         <div class="card-title">${item.title || item.name}</div>
                     </div>
@@ -286,67 +417,6 @@ async function fetchGridMedia(url) {
             `;
         }).join('');
     } catch(e) { console.error(e); }
-}
-
-async function renderWatchPage(type, id) {
-    const container = document.getElementById('app-container');
-    if (!container) return;
-
-    container.innerHTML = `<div style="padding: 100px; text-align: center;">جاري تجهيز المشغل والمعلومات...</div>`;
-
-    try {
-        const res = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&language=ar-SA&append_to_response=credits,recommendations`);
-        const data = await res.json();
-
-        saveToContinueWatching({
-            id: data.id,
-            type: type,
-            title: data.title || data.name,
-            poster: data.poster_path,
-            rating: data.vote_average ? data.vote_average.toFixed(1) : 'N/A'
-        });
-
-        const cast = data.credits?.cast?.slice(0, 6) || [];
-        const recommended = data.recommendations?.results?.slice(0, 10) || [];
-
-        container.innerHTML = `
-            <div class="watch-container">
-                <div>
-                    <div class="player-box">
-                        <iframe id="video-iframe" src="https://vidsrc.me/embed/${type}?tmdb=${id}" allowfullscreen></iframe>
-                    </div>
-
-                    <h3 style="margin-top: 20px;">اختر سيرفر التشغيل</h3>
-                    <div class="servers-grid">
-                        <button class="server-btn active" onclick="changeServer('https://vidsrc.me/embed/${type}?tmdb=${id}', this)">سيرفر 1 (أساسي)</button>
-                        <button class="server-btn" onclick="changeServer('https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1', this)">سيرفر 2 (VIP)</button>
-                        <button class="server-btn" onclick="changeServer('https://2embed.org/embed/${id}', this)">سيرفر 3 (سريع)</button>
-                        <button class="server-btn" onclick="changeServer('https://autoembed.co/${type}/tmdb/${id}', this)">سيرفر 4 (احتياطي)</button>
-                    </div>
-
-                    <h1 style="margin-top: 15px;">${data.title || data.name}</h1>
-                    <p style="color: var(--text-muted); margin-top: 10px; line-height: 1.6;">${data.overview || 'لا يوجد قصة مضافة لهذا العمل.'}</p>
-                </div>
-
-                <div>
-                    <h3>أعمال مشابهة</h3>
-                    <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
-                        ${recommended.map(item => `
-                            <div class="media-card" style="width: 100%; display: flex; gap: 10px;" onclick="navigateTo('#/watch/${type}/${item.id}')">
-                                <img src="${item.poster_path ? IMG_PATH + item.poster_path : 'https://via.placeholder.com/80x110'}" style="width: 70px; height: 95px; object-fit: cover;">
-                                <div style="padding: 5px;">
-                                    <div class="card-title">${item.title || item.name}</div>
-                                    <div style="font-size: 11px; color: #ffd700; margin-top: 5px;">⭐ ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            </div>
-        `;
-    } catch(e) {
-        container.innerHTML = `<div style="padding: 50px; text-align: center; color: red;">حدث خطأ في جلب بيانات العمل.</div>`;
-    }
 }
 
 function scrollCarousel(id, distance) {
