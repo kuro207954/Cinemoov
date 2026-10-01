@@ -5,6 +5,9 @@ const BACKDROP_PATH = 'https://image.tmdb.org/t/p/original';
 const NO_IMAGE_URL = 'https://via.placeholder.com/300x450/19212b/ffffff?text=%D9%84%D8%A7+%D8%AA%D9%88%D8%AC%D8%AF+%D8%B5%D9%88%D8%B1%D8%A9';
 
 let heroInterval;
+let currentCompanyPage = 1;
+let currentCompanyId = null;
+let allCompanyMovies = [];
 
 window.addEventListener('hashchange', handleRoute);
 window.addEventListener('load', handleRoute);
@@ -67,25 +70,26 @@ async function renderHomePage() {
             </div>
             <div class="networks-grid">
                 <div class="network-card net-netflix" onclick="navigateTo('#/company/178464/Netflix')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
+                    <img src="https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.ico" alt="Netflix" style="height:35px; width:auto;">
+                    <span style="color:#e50914; font-weight:bold; font-size:18px; margin-right:8px;">NETFLIX</span>
                 </div>
                 <div class="network-card net-disney" onclick="navigateTo('#/company/2/Walt%20Disney')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg" alt="Disney+">
+                    <span style="color:#ffffff; font-weight:bold; font-size:18px;">Disney+</span>
                 </div>
                 <div class="network-card net-prime" onclick="navigateTo('#/company/1024/Amazon')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.svg" alt="Prime Video">
+                    <span style="color:#ffffff; font-weight:bold; font-size:17px;">Prime Video</span>
                 </div>
                 <div class="network-card net-hbo" onclick="navigateTo('#/company/3268/HBO')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg" alt="HBO Max">
+                    <span style="color:#ffffff; font-weight:bold; font-size:18px;">MAX (HBO)</span>
                 </div>
                 <div class="network-card net-apple" onclick="navigateTo('#/company/2552/Apple%20TV')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/28/Apple_TV_Plus_Logo.svg" alt="Apple TV+">
+                    <span style="color:#ffffff; font-weight:bold; font-size:17px;">Apple TV+</span>
                 </div>
                 <div class="network-card net-hulu" onclick="navigateTo('#/company/453/Hulu')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Hulu_Logo.svg" alt="Hulu">
+                    <span style="color:#000000; font-weight:bold; font-size:18px;">hulu</span>
                 </div>
                 <div class="network-card net-paramount" onclick="navigateTo('#/company/4/Paramount')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Paramount_Plus.svg" alt="Paramount+">
+                    <span style="color:#ffffff; font-weight:bold; font-size:17px;">Paramount+</span>
                 </div>
             </div>
 
@@ -94,28 +98,28 @@ async function renderHomePage() {
             </div>
             <div class="studios-grid">
                 <div class="studio-card" onclick="navigateTo('#/company/420/Marvel%20Studios')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Marvel_Logo.svg" alt="Marvel Studios">
+                    <span style="color:#e50914; font-weight:900; font-size:20px; letter-spacing:1px; background:#000; padding:4px 8px; border-radius:4px;">MARVEL</span>
                 </div>
                 <div class="studio-card" onclick="navigateTo('#/company/3/Pixar')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/Pixar_Wordmark.svg" alt="Pixar">
+                    <span style="color:#000; font-weight:bold; font-size:20px; letter-spacing:2px;">PIXAR</span>
                 </div>
                 <div class="studio-card" onclick="navigateTo('#/company/2/Walt%20Disney')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Walt_Disney_Pictures_logo.svg" alt="Walt Disney">
+                    <span style="color:#000; font-weight:bold; font-size:18px;">Disney</span>
                 </div>
                 <div class="studio-card" onclick="navigateTo('#/company/174/Warner%20Bros')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/64/Warner_Bros_logo.svg" alt="Warner Bros">
+                    <span style="color:#003399; font-weight:bold; font-size:18px;">WARNER BROS</span>
                 </div>
                 <div class="studio-card" onclick="navigateTo('#/company/33/Universal')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/00/Universal_Pictures_logo.svg" alt="Universal">
+                    <span style="color:#000; font-weight:bold; font-size:17px;">UNIVERSAL</span>
                 </div>
                 <div class="studio-card" onclick="navigateTo('#/company/4/Paramount')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Paramount_Pictures_logo.svg" alt="Paramount">
+                    <span style="color:#002c6c; font-weight:bold; font-size:17px;">PARAMOUNT</span>
                 </div>
                 <div class="studio-card" onclick="navigateTo('#/company/5/Columbia')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Columbia_Pictures_logo.svg" alt="Columbia Pictures">
+                    <span style="color:#000; font-weight:bold; font-size:16px;">COLUMBIA</span>
                 </div>
                 <div class="studio-card" onclick="navigateTo('#/company/127928/20th%20Century')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/20th_Century_Studios_logo.svg" alt="20th Century Studios">
+                    <span style="color:#000; font-weight:bold; font-size:15px;">20TH CENTURY</span>
                 </div>
             </div>
         </section>
@@ -167,47 +171,104 @@ function removeFromContinueWatching(id, type) {
     renderHomePage(); 
 }
 
-// 2. صفحة شركة إنتاج
+// 2. صفحة شركة إنتاج (عرض جميع الأفلام + زر المزيد + بحث داخل الشركة)
 async function renderCompanyPage(companyId, companyName) {
     const container = document.getElementById('app-container');
     if (!container) return;
 
+    currentCompanyPage = 1;
+    currentCompanyId = companyId;
+    allCompanyMovies = [];
+
     container.innerHTML = `
         <div class="search-view-container">
-            <h2 class="section-title" style="font-size: 24px; margin-bottom: 20px;">
+            <h2 class="section-title" style="font-size: 24px; margin-bottom: 15px;">
                 <i class="fa-solid fa-film"></i> جميع أعمال: ${companyName}
             </h2>
+            
+            <input type="text" 
+                   id="company-search-input" 
+                   class="search-bar-input" 
+                   placeholder="ابحث عن عمل معين لشركة ${companyName}..." 
+                   oninput="filterCompanyMovies(this.value)"
+                   style="margin-bottom: 25px;">
+
             <div id="company-results" class="grid-layout">جاري التحميل...</div>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <button id="load-more-btn" class="btn-primary" onclick="loadMoreCompanyMovies()" style="display:none; padding: 12px 30px; font-size: 16px;">
+                    <i class="fa-solid fa-plus"></i> عرض المزيد من الأفلام
+                </button>
+            </div>
         </div>
     `;
 
+    await fetchCompanyMovies();
+}
+
+async function fetchCompanyMovies() {
     try {
-        const res = await fetch(`${BASE_URL}/discover/movie?api_key=${API_KEY}&with_companies=${companyId}&sort_by=popularity.desc&language=ar-SA`);
+        const res = await fetch(`${BASE_URL}/discover/movie?api_key=${API_KEY}&with_companies=${currentCompanyId}&sort_by=popularity.desc&language=ar-SA&page=${currentCompanyPage}`);
         const data = await res.json();
         const grid = document.getElementById('company-results');
+        const loadMoreBtn = document.getElementById('load-more-btn');
         
         if (!data.results || !data.results.length) {
-            grid.innerHTML = '<p>لا تتوفر أعمال لهذه الشركة حالياً.</p>';
+            if (currentCompanyPage === 1) grid.innerHTML = '<p>لا تتوفر أعمال لهذه الشركة حالياً.</p>';
+            if (loadMoreBtn) loadMoreBtn.style.display = 'none';
             return;
         }
 
-        grid.innerHTML = data.results.map(item => `
-            <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/movie/${item.id}')">
-                <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
-                <img class="card-poster" src="${item.poster_path ? IMG_PATH + item.poster_path : NO_IMAGE_URL}" onerror="this.src='${NO_IMAGE_URL}'" alt="${item.title}">
-                <div class="card-info">
-                    <div class="card-title">${item.title}</div>
-                    <div class="card-meta">
-                        <span>${(item.release_date || '').substring(0, 4)}</span>
-                        <span>فيلم</span>
-                    </div>
-                </div>
-            </div>
-        `).join('');
+        allCompanyMovies = [...allCompanyMovies, ...data.results];
+        displayCompanyMovies(allCompanyMovies);
+
+        if (loadMoreBtn) {
+            if (currentCompanyPage < data.total_pages) {
+                loadMoreBtn.style.display = 'inline-block';
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
+        }
     } catch(e) { console.error(e); }
 }
 
-// 3. صفحة المشاهدة - إعادة الهيدر والبوستر خلفية وتضخيم العرض للسيرفرات
+function displayCompanyMovies(movies) {
+    const grid = document.getElementById('company-results');
+    if (!grid) return;
+
+    if (!movies.length) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">لا توجد نتائج تطابق بحثك.</p>';
+        return;
+    }
+
+    grid.innerHTML = movies.map(item => `
+        <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/movie/${item.id}')">
+            <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
+            <img class="card-poster" src="${item.poster_path ? IMG_PATH + item.poster_path : NO_IMAGE_URL}" onerror="this.src='${NO_IMAGE_URL}'" alt="${item.title}">
+            <div class="card-info">
+                <div class="card-title">${item.title}</div>
+                <div class="card-meta">
+                    <span>${(item.release_date || '').substring(0, 4)}</span>
+                    <span>فيلم</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function loadMoreCompanyMovies() {
+    currentCompanyPage++;
+    await fetchCompanyMovies();
+}
+
+function filterCompanyMovies(query) {
+    const filtered = allCompanyMovies.filter(movie => 
+        (movie.title || '').toLowerCase().includes(query.toLowerCase())
+    );
+    displayCompanyMovies(filtered);
+}
+
+// 3. صفحة المشاهدة
 async function renderWatchPage(type, id) {
     const container = document.getElementById('app-container');
     if (!container) return;
@@ -225,7 +286,6 @@ async function renderWatchPage(type, id) {
         
         saveToContinueWatching({ id, type, title, poster, rating });
 
-        // سيرفرات مع دعم اللغات الأصلية (مثل الكورية واليابانية)
         const server1 = `https://vidlink.pro/${type}/${id}?primaryColor=e50914`;
         const server2 = `https://vidsrc.to/embed/${type}/${id}`;
         const server3 = `https://vidsrc.me/embed/${type}?tmdb=${id}`;
@@ -234,7 +294,6 @@ async function renderWatchPage(type, id) {
         const server6 = `https://autoembed.co/${type}/tmdb/${id}`;
 
         container.innerHTML = `
-            <!-- خلفية الفيلم العلوية الرئيسية (Banner) -->
             <div class="watch-backdrop-banner" style="background-image: linear-gradient(to bottom, rgba(11, 12, 16, 0.3), #0b0c10), url('${backdrop}');">
                 <div class="watch-backdrop-content">
                     <img class="watch-poster-img" src="${poster ? IMG_PATH + poster : NO_IMAGE_URL}" alt="${title}">
@@ -251,16 +310,14 @@ async function renderWatchPage(type, id) {
             </div>
 
             <div class="watch-page-container">
-                <!-- مشغل الفيديو بالحجم الكامل عريض -->
                 <div class="player-box-wrapper">
                     <iframe id="video-iframe" src="${server1}" allowfullscreen frameborder="0" scrolling="no"></iframe>
                 </div>
 
-                <!-- أزرار اختيار السيرفرات -->
                 <div class="servers-section">
-                    <h3 class="servers-title"><i class="fa-solid fa-server"></i> اختر سيرفر المشاهدة (جرّب VidLink أو Smashy للصوت الأصلي/الكوري):</h3>
+                    <h3 class="servers-title"><i class="fa-solid fa-server"></i> اختر سيرفر المشاهدة:</h3>
                     <div class="servers-grid">
-                        <button class="server-btn active" onclick="changeServer('${server1}', this)">سيرفر 1 (VidLink - متعدد اللغات)</button>
+                        <button class="server-btn active" onclick="changeServer('${server1}', this)">سيرفر 1 (VidLink)</button>
                         <button class="server-btn" onclick="changeServer('${server2}', this)">سيرفر 2 (VidSrc)</button>
                         <button class="server-btn" onclick="changeServer('${server3}', this)">سيرفر 3 (Pro)</button>
                         <button class="server-btn" onclick="changeServer('${server4}', this)">سيرفر 4 (SmashyStream)</button>
@@ -269,7 +326,6 @@ async function renderWatchPage(type, id) {
                     </div>
                 </div>
 
-                <!-- الأعمال المقترحة -->
                 ${data.recommendations && data.recommendations.results.length ? `
                     <div class="recommendations-section">
                         <h2 class="section-title" style="margin-bottom:15px;"><i class="fa-solid fa-thumbs-up"></i> أعمال نوصي بها</h2>
