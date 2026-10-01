@@ -49,13 +49,11 @@ async function renderHomePage() {
     const container = document.getElementById('app-container');
     if (!container) return;
 
-    const favorites = JSON.parse(localStorage.getItem('favorites_list') || '[]');
     const continueWatching = JSON.parse(localStorage.getItem('continue_watching') || '[]');
 
     container.innerHTML = `
         <div id="hero-banner" class="hero-slider-container"></div>
 
-        ${favorites.length > 0 ? createSectionHTML('fav-list', 'fa-heart', 'قائمتي المفضلة ❤️') : ''}
         ${continueWatching.length > 0 ? createSectionHTML('cw-list', 'fa-rotate-left', 'متابعة المشاهدة') : ''}
         
         ${createSectionHTML('trending-movies', 'fa-film', 'الأفلام الرائجة اليوم')}
@@ -91,7 +89,6 @@ async function renderHomePage() {
         </section>
     `;
 
-    if (favorites.length > 0) renderSavedList(favorites, 'fav-list', false);
     if (continueWatching.length > 0) renderSavedList(continueWatching, 'cw-list', true);
     
     loadHeroBanner();
@@ -116,7 +113,7 @@ function createSectionHTML(id, icon, title) {
     `;
 }
 
-// عرض القوائم المحفوظة مع إمكانية مسح العناصر من متابعة المشاهدة
+// عرض قائمة متابعة المشاهدة مع إمكانية مسح العناصر
 function renderSavedList(list, elementId, isContinueWatching = false) {
     const container = document.getElementById(elementId);
     if (!container) return;
@@ -137,10 +134,10 @@ function removeFromContinueWatching(id, type) {
     let list = JSON.parse(localStorage.getItem('continue_watching') || '[]');
     list = list.filter(item => !(item.id == id && item.type == type));
     localStorage.setItem('continue_watching', JSON.stringify(list));
-    renderHomePage(); // إعادة بناء الواجهة مباشرة لتحديث القائمة
+    renderHomePage(); 
 }
 
-// 2. صفحة شركة إنتاج مع التعامل مع الصور الفارغة
+// 2. صفحة شركة إنتاج
 async function renderCompanyPage(companyId, companyName) {
     const container = document.getElementById('app-container');
     if (!container) return;
@@ -180,7 +177,7 @@ async function renderCompanyPage(companyId, companyName) {
     } catch(e) { console.error(e); }
 }
 
-// 3. صفحة المشاهدة بحجم متناسق ومصغر لراحة العين
+// 3. صفحة المشاهدة
 async function renderWatchPage(type, id) {
     const container = document.getElementById('app-container');
     if (!container) return;
@@ -198,10 +195,8 @@ async function renderWatchPage(type, id) {
         
         saveToContinueWatching({ id, type, title, poster, rating });
 
-        const isFav = isFavorite(id, type);
-
         container.innerHTML = `
-            <!-- Banner Poster Header (مصغر ومتناسق) -->
+            <!-- Banner Poster Header -->
             <div class="netflix-hero" style="background-image: url('${backdrop ? BACKDROP_PATH + backdrop : ''}')">
                 <div class="netflix-overlay">
                     <img class="netflix-poster" src="${poster ? IMG_PATH + poster : NO_IMAGE_URL}" onerror="this.src='${NO_IMAGE_URL}'" alt="${title}">
@@ -219,19 +214,12 @@ async function renderWatchPage(type, id) {
                             <button class="btn-primary" onclick="scrollToPlayer()">
                                 <i class="fa-solid fa-play"></i> مشاهدة الآن
                             </button>
-                            <button class="btn-secondary" id="fav-btn" onclick="toggleFavorite('${id}', '${type}', '${encodeURIComponent(title)}', '${poster}', '${rating}')">
-                                <i class="fa-solid ${isFav ? 'fa-heart-circle-check' : 'fa-heart'}" style="${isFav ? 'color: red;' : ''}"></i> 
-                                ${isFav ? 'في المفضلة' : 'إضافة للمفضلة'}
-                            </button>
-                            <button class="btn-secondary" onclick="triggerDownload('${type}', '${id}')">
-                                <i class="fa-solid fa-download"></i> تحميل الفيلم
-                            </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- منطقة المشغل (محددة بحد أقصى للعرض وموسّطة) -->
+            <!-- منطقة المشغل -->
             <div class="player-section" id="player-area">
                 <h2 class="section-title" style="margin-bottom: 15px;"><i class="fa-solid fa-tv"></i> مشغل الفيديو</h2>
                 <div class="player-box">
@@ -270,32 +258,6 @@ async function renderWatchPage(type, id) {
 
 function scrollToPlayer() {
     document.getElementById('player-area')?.scrollIntoView({ behavior: 'smooth' });
-}
-
-function isFavorite(id, type) {
-    const list = JSON.parse(localStorage.getItem('favorites_list') || '[]');
-    return list.some(item => item.id == id && item.type == type);
-}
-
-function toggleFavorite(id, type, encodedTitle, poster, rating) {
-    const title = decodeURIComponent(encodedTitle);
-    let list = JSON.parse(localStorage.getItem('favorites_list') || '[]');
-    const index = list.findIndex(item => item.id == id && item.type == type);
-
-    if (index > -1) {
-        list.splice(index, 1);
-        alert('تم الإزالة من المفضلة');
-    } else {
-        list.push({ id, type, title, poster, rating });
-        alert('تمت الإضافة إلى المفضلة ❤️');
-    }
-    localStorage.setItem('favorites_list', JSON.stringify(list));
-    renderWatchPage(type, id);
-}
-
-function triggerDownload(type, id) {
-    const downloadUrl = `https://vidsrc.me/embed/${type}?tmdb=${id}`;
-    window.open(downloadUrl, '_blank');
 }
 
 async function loadHeroBanner() {
@@ -445,12 +407,4 @@ function saveToContinueWatching(item) {
     list = list.filter(i => !(i.id === item.id && i.type === item.type));
     list.unshift(item);
     localStorage.setItem('continue_watching', JSON.stringify(list.slice(0, 10)));
-}// إخفاء الشعارات المكسورة أو غير المتوفرة تلقائياً
-document.addEventListener("DOMContentLoaded", () => {
-    const companyLogos = document.querySelectorAll('.production-company-logo');
-    companyLogos.forEach(img => {
-        img.onerror = function() {
-            this.style.display = 'none';
-        };
-    });
-});
+}
