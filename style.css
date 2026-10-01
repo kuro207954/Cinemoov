@@ -1,636 +1,341 @@
-:root {
-    --bg-color: #0b0c10;
-    --card-bg: #1f2833;
-    --primary: #e50914;
-    --primary-hover: #b80710;
-    --accent: #66fcf1;
-    --text-color: #ffffff;
-    --text-muted: #c5c6c7;
-    --radius: 12px;
-}
-
 * {
-    box-sizing: border-box;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    direction: rtl;
-    overflow-x: hidden;
+    background-color: #0b0c10;
+    color: #ffffff;
+    direction: ltr !important;
+    text-align: left !important;
 }
 
-/* ========================================== */
-/* 1. MASQUAGE DES ÉLÉMENTS INDÉSIRABLES     */
-/* ========================================== */
-/* Masquer la section Favoris, boutons Favoris et Télécharger */
-.favorites-section,
-[class*="favorite"],
-[id*="favorite"],
-.btn-favorite,
-.btn-download,
-button:has(.fa-heart),
-a:has(.fa-download) {
-    display: none !important;
-}
-
-/* ========================================== */
-/* 2. HEADER & NAVIGATION                    */
-/* ========================================== */
-.main-header {
+/* Navbar */
+.navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 30px;
-    background: rgba(11, 12, 16, 0.95);
-    backdrop-filter: blur(10px);
+    padding: 15px 40px;
+    background-color: rgba(11, 12, 16, 0.95);
     position: sticky;
     top: 0;
     z-index: 1000;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.logo-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-}
-
-.logo-text {
-    font-size: 22px;
+.nav-logo {
+    font-size: 26px;
     font-weight: bold;
-    color: var(--text-color);
-}
-
-.logo-icon {
-    color: var(--primary);
-    font-size: 20px;
+    color: #e50914;
+    cursor: pointer;
 }
 
 .nav-links {
     display: flex;
-    gap: 15px;
-    align-items: center;
+    gap: 20px;
 }
 
 .nav-item {
-    color: var(--text-muted);
+    color: #aaa;
     text-decoration: none;
-    font-size: 14px;
-    transition: all 0.3s;
+    font-size: 15px;
+    transition: color 0.3s;
 }
 
 .nav-item:hover, .nav-item.active {
-    color: var(--text-color);
-    font-weight: bold;
+    color: #ffffff;
 }
 
-/* ========================================== */
-/* 3. HERO SLIDER                             */
-/* ========================================== */
+/* Hero Slider */
 .hero-slider-container {
     position: relative;
-    height: 50vh;
-    max-height: 450px;
-    width: 100%;
+    height: 450px;
     overflow: hidden;
 }
 
 .hero-slide {
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
     opacity: 0;
     transition: opacity 0.8s ease-in-out;
-    background-size: cover;
-    background-position: center top;
-    display: flex;
-    align-items: flex-end;
 }
 
-.hero-slide.active { opacity: 1; }
+.hero-slide.active {
+    opacity: 1;
+}
 
 .hero-overlay {
     width: 100%;
     height: 100%;
-    background: linear-gradient(to top, var(--bg-color) 10%, rgba(11, 12, 16, 0.5) 60%, transparent);
+    background: linear-gradient(to right, #0b0c10 20%, transparent 100%), linear-gradient(to top, #0b0c10 10%, transparent 50%);
     display: flex;
-    align-items: flex-end;
-    padding: 30px;
+    align-items: center;
+    padding: 0 50px;
 }
 
-.hero-content { max-width: 600px; }
+.hero-content {
+    max-width: 550px;
+}
 
 .hero-badge {
-    background: var(--primary);
+    background-color: #e50914;
     color: white;
     padding: 4px 10px;
-    border-radius: 4px;
     font-size: 12px;
+    border-radius: 4px;
     font-weight: bold;
-    display: inline-block;
-    margin-bottom: 10px;
 }
 
-.hero-title { font-size: 26px; font-weight: bold; margin-bottom: 8px; }
+.hero-title {
+    font-size: 36px;
+    margin: 15px 0;
+}
 
 .hero-overview {
-    font-size: 13px;
-    color: var(--text-muted);
+    font-size: 14px;
+    color: #ccc;
     line-height: 1.5;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
 .btn-primary {
-    padding: 9px 20px;
-    border-radius: 8px;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    background: var(--primary);
+    background-color: #e50914;
     color: white;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: 0.3s;
+    border: none;
+    padding: 10px 22px;
+    font-size: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
 }
 
-.btn-primary:hover { background: var(--primary-hover); }
+.btn-primary:hover {
+    background-color: #b80710;
+}
 
-/* ========================================== */
-/* 4. CAROUSELS & MEDIAS                      */
-/* ========================================== */
-.section-container { padding: 20px 30px; }
+/* Sections & Carousels */
+.section-container {
+    padding: 20px 40px;
+}
 
 .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 15px;
 }
 
-.section-title { font-size: 18px; display: flex; align-items: center; gap: 8px; }
+.section-title {
+    font-size: 20px;
+}
 
-.carousel-controls { display: flex; gap: 8px; }
+.carousel-controls {
+    display: flex;
+    gap: 8px;
+}
 
 .scroll-btn-nav {
-    background: rgba(255, 255, 255, 0.08);
+    background: #1f2833;
     color: white;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    width: 34px;
-    height: 34px;
+    border: none;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.3s;
 }
-
-.scroll-btn-nav:hover { background: var(--primary); border-color: var(--primary); }
 
 .media-carousel {
     display: flex;
-    gap: 14px;
+    gap: 15px;
     overflow-x: auto;
     scroll-behavior: smooth;
-    padding: 5px 0 15px 0;
-    scrollbar-width: none;
+    padding-bottom: 10px;
 }
 
-.media-carousel::-webkit-scrollbar { display: none; }
+.media-carousel::-webkit-scrollbar {
+    display: none;
+}
 
 /* Media Card */
 .media-card {
-    min-width: 145px;
-    width: 145px;
-    background-color: var(--card-bg);
-    border-radius: var(--radius);
+    flex: 0 0 170px;
+    background-color: #1f2833;
+    border-radius: 8px;
     overflow: hidden;
     cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
     position: relative;
-    flex-shrink: 0;
+    transition: transform 0.2s;
 }
 
 .media-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 18px rgba(0,0,0,0.5);
 }
 
-.card-poster { width: 100%; height: 210px; object-fit: cover; background-color: #151515; }
+.card-poster {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+}
 
-.card-info { padding: 8px; }
-.card-title { font-size: 12px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.card-meta { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-top: 4px; }
-.badge-rating { position: absolute; top: 8px; right: 8px; background: rgba(0, 0, 0, 0.85); padding: 2px 6px; border-radius: 5px; font-size: 10px; color: #ffd700; }
+.card-info {
+    padding: 10px;
+}
+
+.card-title {
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-meta {
+    font-size: 12px;
+    color: #888;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+}
+
+.badge-rating {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #f1c40f;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
 
 .remove-btn {
     position: absolute;
     top: 8px;
-    left: 8px;
-    background: rgba(229, 9, 20, 0.85);
+    right: 8px;
+    background: rgba(229, 9, 20, 0.9);
     color: white;
     border: none;
+    border-radius: 50%;
     width: 24px;
     height: 24px;
-    border-radius: 50%;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    z-index: 10;
-    transition: 0.2s;
-}
-.remove-btn:hover {
-    background: #ff0000;
-    transform: scale(1.1);
 }
 
-/* ========================================== */
-/* 5. LOGOS COMPAGNIES DE PRODUCTION          */
-/* ========================================== */
-.companies-grid,
-.companies-bar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-top: 20px;
+/* Search View & Grid */
+.search-view-container {
+    padding: 30px 40px;
+}
+
+.search-bar-input {
+    width: 100%;
     padding: 15px;
-}
-
-.company-card-logo {
-    background: #151c24;
-    border: 1px solid #2a3441;
-    border-radius: 12px;
-    padding: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: 0.3s;
-    height: 70px;
-}
-
-.company-card-logo img,
-.production-company-logo {
-    max-width: 100px;
-    max-height: 40px;
-    object-fit: contain;
-    /* Conversion des logos sombres en blanc clair */
-    filter: brightness(0) invert(1) !important;
-    opacity: 0.8;
-    transition: 0.3s;
-}
-
-.company-card-logo:hover img,
-.production-company-logo:hover {
-    opacity: 1;
-    transform: scale(1.05);
-}
-
-/* ========================================== */
-/* 6. PAGE DE LECTURE & LECTEUR VIDEO         */
-/* ========================================== */
-.netflix-hero {
-    position: relative;
-    width: 100%;
-    max-width: 1000px;
-    margin: 20px auto 0 auto;
-    border-radius: 16px;
-    overflow: hidden;
-    background-size: cover;
-    background-position: center top;
-    display: flex;
-    align-items: flex-end;
-}
-
-.netflix-overlay {
-    width: 100%;
-    background: linear-gradient(to top, var(--bg-color) 15%, rgba(11, 12, 16, 0.75) 60%, rgba(11, 12, 16, 0.85));
-    padding: 30px;
-    display: flex;
-    gap: 25px;
-    align-items: flex-end;
-}
-
-.netflix-poster {
-    width: 160px;
-    border-radius: var(--radius);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-    flex-shrink: 0;
-}
-
-.netflix-details { flex: 1; }
-
-.netflix-title { font-size: 28px; font-weight: bold; margin-bottom: 8px; }
-
-.netflix-meta-bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-    font-size: 13px;
-    color: var(--text-muted);
-}
-
-.badge-green { color: #46d369; font-weight: bold; }
-
-.action-buttons-group {
-    display: flex;
-    gap: 10px;
-    margin: 15px 0 5px 0;
-    flex-wrap: wrap;
-}
-
-.btn-secondary {
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    padding: 9px 18px;
-    border-radius: 8px;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: 0.3s;
-}
-
-.btn-secondary:hover { background: rgba(255, 255, 255, 0.3); }
-
-/* Lecteur vidéo */
-.player-section {
-    padding: 20px 30px;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-.player-box,
-.player-container {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: black;
-    border-radius: var(--radius);
-    overflow: hidden;
-    margin-bottom: 20px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.7);
-}
-
-.player-box iframe,
-.player-container iframe,
-.player-box video,
-.player-container video {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    border: none;
-}
-
-.servers-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-    gap: 10px;
-    margin-bottom: 25px;
-}
-
-.server-btn {
-    background: #1f2833;
-    color: white;
+    background-color: #1f2833;
     border: 1px solid #333;
-    padding: 10px;
     border-radius: 8px;
-    cursor: pointer;
-    text-align: center;
-    font-size: 13px;
-    transition: 0.3s;
-}
-
-.server-btn.active, .server-btn:hover {
-    background: var(--primary);
-    border-color: var(--primary);
+    color: white;
+    font-size: 16px;
+    margin-bottom: 25px;
 }
 
 .grid-layout {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
 }
 
-/* ========================================== */
-/* 7. RECHERCHE ET RESPONSIVE                 */
-/* ========================================== */
-.search-view-container { padding: 25px 30px; }
-.search-bar-input {
-    width: 100%;
-    padding: 14px 18px;
-    font-size: 16px;
-    border-radius: var(--radius);
-    border: 1px solid #333;
-    background: #1f2833;
-    color: white;
-    margin-bottom: 20px;
-    outline: none;
-}
-.search-bar-input:focus { border-color: var(--primary); }
-
-@media (max-width: 768px) {
-    .main-header { padding: 10px 12px; }
-    .logo-text { font-size: 18px; }
-    .nav-links { gap: 8px; }
-    .nav-item { font-size: 12px; }
-    .netflix-hero { margin: 0; border-radius: 0; }
-    .netflix-overlay { flex-direction: column; align-items: center; text-align: center; padding: 20px 15px; }
-    .netflix-poster { width: 130px; }
-    .netflix-title { font-size: 20px; }
-    .netflix-meta-bar { justify-content: center; }
-    .action-buttons-group { justify-content: center; }
-    .section-container, .player-section, .search-view-container { padding: 12px; }
-    .companies-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .company-card-logo { height: 65px; padding: 8px; }
-    .media-card { min-width: 120px; width: 120px; }
-    .card-poster { height: 170px; }
-    
-    .player-box, .player-container {
-        border-radius: 0;
-    }
-}
-/* =================================================== */
-/* تعديلات الشاشة والشعارات للحاسوب (حل كامل) */
-/* =================================================== */
-
-/* 1. إصلاح الهيدر والبوستر خلف الفيلم */
+/* Watch Page */
 .watch-backdrop-banner {
-    width: 100%;
-    min-height: 380px;
+    position: relative;
+    min-height: 350px;
     background-size: cover;
-    background-position: center top;
+    background-position: center;
     display: flex;
     align-items: flex-end;
-    padding: 30px;
-    position: relative;
-    margin-bottom: 25px;
+    padding: 40px;
 }
 
 .watch-backdrop-content {
     display: flex;
     gap: 25px;
     align-items: flex-end;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
 }
 
 .watch-poster-img {
-    width: 160px;
-    height: 240px;
-    border-radius: 12px;
-    object-fit: cover;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.8);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-}
-
-.watch-details-info {
-    color: #ffffff;
+    width: 150px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
 }
 
 .watch-title {
-    font-size: 28px;
-    font-weight: bold;
+    font-size: 32px;
     margin-bottom: 10px;
 }
 
 .watch-meta {
     display: flex;
     gap: 15px;
-    font-size: 14px;
-    color: #c5c6c7;
-    margin-bottom: 12px;
+    color: #aaa;
+    margin-bottom: 10px;
 }
 
 .watch-overview {
     font-size: 14px;
-    color: #d1d5db;
-    max-width: 800px;
-    line-height: 1.6;
+    color: #ddd;
+    max-width: 700px;
 }
 
-/* 2. ضبط مقاس مشغل الفيديو بالحجم العريض المناسب للحاسوب */
 .watch-page-container {
-    max-width: 1200px !important;
-    margin: 0 auto !important;
-    padding: 0 20px !important;
+    padding: 30px 40px;
 }
 
 .player-box-wrapper {
-    position: relative !important;
-    width: 100% !important;
-    padding-top: 56.25% !important; /* نسبة 16:9 للحاسوب */
-    background: #000000 !important;
-    border-radius: 14px !important;
-    overflow: hidden !important;
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.9) !important;
-    margin-bottom: 25px !important;
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    background: #000;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 .player-box-wrapper iframe {
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    border: none !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
-/* 3. إصلاح ظهور الشعارات بالكامل (بدون قص) */
-.networks-grid, .studios-grid {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)) !important;
-    gap: 15px !important;
-    margin-top: 15px !important;
+.servers-section {
+    margin: 25px 0;
 }
 
-.network-card, .studio-card {
-    height: 85px !important;
-    border-radius: 12px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 10px 15px !important;
-    cursor: pointer !important;
-    transition: transform 0.2s ease !important;
-    overflow: hidden !important;
-}
-
-.network-card img, .studio-card img {
-    max-width: 100% !important;
-    max-height: 100% !important;
-    object-fit: contain !important; /* يضمن عدم قص أي شعار */
-}
-
-/* ألوان خلفية الشركات والمنصات */
-.net-netflix { background-color: #000000 !important; border: 1px solid #333 !important; }
-.net-disney { background-color: #031b38 !important; border: 1px solid #084183 !important; }
-.net-prime { background-color: #00a8e1 !important; }
-.net-hbo { background-color: #1a0033 !important; border: 1px solid #3d0075 !important; }
-.net-apple { background-color: #1c1c1e !important; border: 1px solid #333 !important; }
-.net-hulu { background-color: #1ce783 !important; }
-.net-paramount { background-color: #0064ff !important; }
-
-.studio-card {
-    background-color: #e2e8f0 !important;
-}
-
-.studio-card img {
-    filter: brightness(0.15) !important;
-}
-/* Networks & Studios Styling Fixes */
-.networks-grid, .studios-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 15px;
-    margin-top: 15px;
-}
-
-.network-card, .studio-card {
+.servers-grid {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 75px;
-    padding: 10px;
-    border-radius: 12px;
-    background: #16181f;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.server-btn {
+    background: #1f2833;
+    color: white;
+    border: 1px solid #333;
+    padding: 10px 18px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: transform 0.2s ease, background 0.2s ease;
-    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.network-card:hover, .studio-card:hover {
-    transform: translateY(-4px);
-    background: #20232e;
-    border-color: rgba(255, 255, 255, 0.2);
-}
-
-.studio-card {
-    background: #ffffff; /* خلفية بيضاء لإبراز شعارات الاستوديوهات */
-}
-
-.studio-card:hover {
-    background: #e8e8e8;
-}
-
-.network-card img, .studio-card img {
-    max-width: 85%;
-    max-height: 45px;
-    object-fit: contain;
+.server-btn.active, .server-btn:hover {
+    background: #e50914;
+    border-color: #e50914;
 }

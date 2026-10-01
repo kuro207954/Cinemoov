@@ -5,9 +5,6 @@ const BACKDROP_PATH = 'https://image.tmdb.org/t/p/original';
 const NO_IMAGE_URL = 'https://via.placeholder.com/300x450/19212b/ffffff?text=No+Image';
 
 let heroInterval;
-let currentCompanyPage = 1;
-let currentCompanyId = null;
-let allCompanyMovies = [];
 
 window.addEventListener('hashchange', handleRoute);
 window.addEventListener('load', handleRoute);
@@ -30,9 +27,6 @@ function handleRoute() {
     if (hash.startsWith('#/watch/')) {
         const parts = hash.split('/');
         renderWatchPage(parts[2], parts[3]);
-    } else if (hash.startsWith('#/company/')) {
-        const parts = hash.split('/');
-        renderCompanyPage(parts[2], decodeURIComponent(parts[3] || 'Company'));
     } else if (hash === '#/search') {
         renderSearchPage();
     } else if (hash === '#/movies') {
@@ -46,7 +40,7 @@ function handleRoute() {
     }
 }
 
-// 1. Home Page (LTR English + SVG Official Logos)
+// 1. Home Page
 async function renderHomePage() {
     const container = document.getElementById('app-container');
     if (!container) return;
@@ -62,57 +56,6 @@ async function renderHomePage() {
         ${createSectionHTML('trending-tv', 'fa-tv', 'Trending TV Shows')}
         ${createSectionHTML('top-movies', 'fa-star', 'Top Rated Movies')}
         ${createSectionHTML('top-tv', 'fa-crown', 'Top Rated TV Shows')}
-
-        <!-- Networks & Studios -->
-        <section class="section-container">
-            <div class="section-header">
-                <h2 class="section-title"><i class="fa-solid fa-tv"></i> Popular Networks</h2>
-            </div>
-            <div class="networks-grid">
-                <div class="network-card net-netflix" onclick="navigateTo('#/company/178464/Netflix')">
-                    <img src="https://assets.nflxext.com/us/ffe/siteui/common/icons/nficon2016.ico" alt="Netflix" style="height:35px;">
-                </div>
-                <div class="network-card net-disney" onclick="navigateTo('#/company/2/Walt%20Disney')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg" alt="Disney+" style="height:32px; filter: brightness(0) invert(1);">
-                </div>
-                <div class="network-card net-prime" onclick="navigateTo('#/company/1024/Amazon')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f1/Prime_Video.svg" alt="Prime Video" style="height:28px; filter: brightness(0) invert(1);">
-                </div>
-                <div class="network-card net-hbo" onclick="navigateTo('#/company/3268/HBO')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/17/HBO_Max_Logo.svg" alt="HBO" style="height:24px; filter: brightness(0) invert(1);">
-                </div>
-                <div class="network-card net-apple" onclick="navigateTo('#/company/2552/Apple%20TV')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/28/Apple_TV_Plus_Logo.svg" alt="Apple TV+" style="height:28px; filter: brightness(0) invert(1);">
-                </div>
-                <div class="network-card net-hulu" onclick="navigateTo('#/company/453/Hulu')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e4/Hulu_Logo.svg" alt="Hulu" style="height:24px; filter: brightness(0) invert(1);">
-                </div>
-            </div>
-
-            <div class="section-header" style="margin-top: 35px;">
-                <h2 class="section-title"><i class="fa-solid fa-building"></i> Popular Studios</h2>
-            </div>
-            <div class="studios-grid">
-                <div class="studio-card" onclick="navigateTo('#/company/420/Marvel%20Studios')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/71/Marvel-Language-Bean.svg" alt="Marvel" style="height:35px;">
-                </div>
-                <div class="studio-card" onclick="navigateTo('#/company/3/Pixar')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/40/Pixar_Loop.svg" alt="Pixar" style="height:28px;">
-                </div>
-                <div class="studio-card" onclick="navigateTo('#/company/2/Walt%20Disney')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d2/Walt_Disney_Pictures_logo.svg" alt="Disney" style="height:32px;">
-                </div>
-                <div class="studio-card" onclick="navigateTo('#/company/174/Warner%20Bros')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/64/Warner_Bros_logo.svg" alt="Warner Bros" style="height:35px;">
-                </div>
-                <div class="studio-card" onclick="navigateTo('#/company/33/Universal')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Universal_Pictures_logo.svg" alt="Universal" style="height:28px;">
-                </div>
-                <div class="studio-card" onclick="navigateTo('#/company/4/Paramount')">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Paramount_Pictures_2022.svg" alt="Paramount" style="height:32px;">
-                </div>
-            </div>
-        </section>
     `;
 
     if (continueWatching.length > 0) renderSavedList(continueWatching, 'cw-list', true);
@@ -161,104 +104,7 @@ function removeFromContinueWatching(id, type) {
     renderHomePage(); 
 }
 
-// 2. Company Page (Load More + Filter Search)
-async function renderCompanyPage(companyId, companyName) {
-    const container = document.getElementById('app-container');
-    if (!container) return;
-
-    currentCompanyPage = 1;
-    currentCompanyId = companyId;
-    allCompanyMovies = [];
-
-    container.innerHTML = `
-        <div class="search-view-container">
-            <h2 class="section-title" style="font-size: 24px; margin-bottom: 15px;">
-                <i class="fa-solid fa-film"></i> All Content from: ${companyName}
-            </h2>
-            
-            <input type="text" 
-                   id="company-search-input" 
-                   class="search-bar-input" 
-                   placeholder="Search within ${companyName}..." 
-                   oninput="filterCompanyMovies(this.value)"
-                   style="margin-bottom: 25px;">
-
-            <div id="company-results" class="grid-layout">Loading...</div>
-
-            <div style="text-align: center; margin: 30px 0;">
-                <button id="load-more-btn" class="btn-primary" onclick="loadMoreCompanyMovies()" style="display:none; padding: 12px 30px; font-size: 16px;">
-                    <i class="fa-solid fa-plus"></i> Load More Movies
-                </button>
-            </div>
-        </div>
-    `;
-
-    await fetchCompanyMovies();
-}
-
-async function fetchCompanyMovies() {
-    try {
-        const res = await fetch(`${BASE_URL}/discover/movie?api_key=${API_KEY}&with_companies=${currentCompanyId}&sort_by=popularity.desc&language=en-US&page=${currentCompanyPage}`);
-        const data = await res.json();
-        const grid = document.getElementById('company-results');
-        const loadMoreBtn = document.getElementById('load-more-btn');
-        
-        if (!data.results || !data.results.length) {
-            if (currentCompanyPage === 1) grid.innerHTML = '<p>No content available for this studio.</p>';
-            if (loadMoreBtn) loadMoreBtn.style.display = 'none';
-            return;
-        }
-
-        allCompanyMovies = [...allCompanyMovies, ...data.results];
-        displayCompanyMovies(allCompanyMovies);
-
-        if (loadMoreBtn) {
-            if (currentCompanyPage < data.total_pages) {
-                loadMoreBtn.style.display = 'inline-block';
-            } else {
-                loadMoreBtn.style.display = 'none';
-            }
-        }
-    } catch(e) { console.error(e); }
-}
-
-function displayCompanyMovies(movies) {
-    const grid = document.getElementById('company-results');
-    if (!grid) return;
-
-    if (!movies.length) {
-        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No movies found matching your search.</p>';
-        return;
-    }
-
-    grid.innerHTML = movies.map(item => `
-        <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/movie/${item.id}')">
-            <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
-            <img class="card-poster" src="${item.poster_path ? IMG_PATH + item.poster_path : NO_IMAGE_URL}" onerror="this.src='${NO_IMAGE_URL}'" alt="${item.title}">
-            <div class="card-info">
-                <div class="card-title">${item.title}</div>
-                <div class="card-meta">
-                    <span>${(item.release_date || '').substring(0, 4)}</span>
-                    <span>Movie</span>
-                </div>
-            </div>
-        </div>
-    `).join('');
-}
-
-async function loadMoreCompanyMovies() {
-    currentCompanyPage++;
-    await fetchCompanyMovies();
-}
-
-function filterCompanyMovies(query) {
-    const filtered = allCompanyMovies.filter(movie => 
-        (movie.title || '').toLowerCase().includes(query.toLowerCase())
-    );
-    displayCompanyMovies(filtered);
-}
-
-// 3. Watch Page
+// 2. Watch Page
 async function renderWatchPage(type, id) {
     const container = document.getElementById('app-container');
     if (!container) return;

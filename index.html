@@ -1,40 +1,29 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CineMoov - متعتك السينمائية</title>
-    <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- CSS File -->
+    <title>StreamEx - Watch Movies & TV Shows</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- الهيدر الرئيسي -->
-    <header class="main-header">
-        <div class="logo-container" onclick="navigateTo('#/')">
-            <span class="logo-text">CineMoov</span>
-            <i class="fa-solid fa-film logo-icon"></i>
+    <nav class="navbar">
+        <div class="nav-logo" onclick="navigateTo('#/')">StreamEx</div>
+        <div class="nav-links">
+            <a href="#/" class="nav-item active" id="nav-home"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="#/movies" class="nav-item" id="nav-movies"><i class="fa-solid fa-film"></i> Movies</a>
+            <a href="#/tv" class="nav-item" id="nav-tv"><i class="fa-solid fa-tv"></i> TV Shows</a>
+            <a href="#/anime" class="nav-item" id="nav-anime"><i class="fa-solid fa-dragon"></i> Anime</a>
+            <a href="#/search" class="nav-item" id="nav-search"><i class="fa-solid fa-magnifying-glass"></i> Search</a>
         </div>
+    </nav>
 
-        <nav class="nav-links">
-            <a href="#/" class="nav-item active" id="nav-home">الرئيسية</a>
-            <a href="#/movies" class="nav-item" id="nav-movies">الأفلام</a>
-            <a href="#/tv" class="nav-item" id="nav-tv">المسلسلات</a>
-            <a href="#/anime" class="nav-item" id="nav-anime">الأنمي</a>
-            <a href="#/search" class="nav-item search-btn" id="nav-search">
-                <i class="fa-solid fa-magnifying-glass"></i> البحث
-            </a>
-        </nav>
-    </header>
-
-    <!-- حاوية العرض الرئيسية -->
     <main id="app-container">
-        <!-- يتم تحميل المحتوى ديناميكياً بواسطة script.js -->
+        <!-- Content loaded dynamically via script.js -->
     </main>
 
-    <!-- JS File -->
     <script src="script.js"></script>
 </body>
 </html>
