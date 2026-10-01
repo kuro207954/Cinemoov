@@ -73,10 +73,11 @@ body {
     font-weight: bold;
 }
 
-/* Hero Carousel Slider */
+/* Hero Carousel Slider (الرئيسية) */
 .hero-slider-container {
     position: relative;
-    height: 65vh;
+    height: 50vh; /* تم تصغير الهيدر الرئيسي لراحة العين */
+    max-height: 450px;
     width: 100%;
     overflow: hidden;
 }
@@ -116,21 +117,21 @@ body {
     margin-bottom: 10px;
 }
 
-.hero-title { font-size: 32px; font-weight: bold; margin-bottom: 10px; }
+.hero-title { font-size: 26px; font-weight: bold; margin-bottom: 8px; }
 
 .hero-overview {
     font-size: 13px;
     color: var(--text-muted);
     line-height: 1.5;
-    margin-bottom: 18px;
+    margin-bottom: 15px;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
 .btn-primary {
-    padding: 10px 22px;
+    padding: 9px 20px;
     border-radius: 8px;
     border: none;
     font-weight: bold;
@@ -211,7 +212,31 @@ body {
 .card-meta { display: flex; justify-content: space-between; font-size: 10px; color: var(--text-muted); margin-top: 4px; }
 .badge-rating { position: absolute; top: 8px; right: 8px; background: rgba(0, 0, 0, 0.85); padding: 2px 6px; border-radius: 5px; font-size: 10px; color: #ffd700; }
 
-/* Companies Logos (شعارات الشركات) */
+/* زر حذف عنصر متابعة المشاهدة */
+.remove-btn {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: rgba(229, 9, 20, 0.85);
+    color: white;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    z-index: 10;
+    transition: 0.2s;
+}
+.remove-btn:hover {
+    background: #ff0000;
+    transform: scale(1.1);
+}
+
+/* Companies Logos */
 .companies-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
@@ -250,11 +275,14 @@ body {
     filter: brightness(1) grayscale(0);
 }
 
-/* Netflix Style Watch Page */
+/* Netflix Style Watch Page - تصغير حجم البانر للحفاظ على الأبعاد */
 .netflix-hero {
     position: relative;
     width: 100%;
-    min-height: 550px;
+    max-width: 1000px;
+    margin: 20px auto 0 auto;
+    border-radius: 16px;
+    overflow: hidden;
     background-size: cover;
     background-position: center top;
     display: flex;
@@ -263,16 +291,15 @@ body {
 
 .netflix-overlay {
     width: 100%;
-    height: 100%;
-    background: linear-gradient(to top, var(--bg-color) 5%, rgba(11, 12, 16, 0.75) 60%, rgba(11, 12, 16, 0.85));
-    padding: 40px 30px;
+    background: linear-gradient(to top, var(--bg-color) 15%, rgba(11, 12, 16, 0.75) 60%, rgba(11, 12, 16, 0.85));
+    padding: 30px;
     display: flex;
-    gap: 30px;
+    gap: 25px;
     align-items: flex-end;
 }
 
 .netflix-poster {
-    width: 220px;
+    width: 160px;
     border-radius: var(--radius);
     box-shadow: 0 10px 30px rgba(0,0,0,0.8);
     flex-shrink: 0;
@@ -280,14 +307,14 @@ body {
 
 .netflix-details { flex: 1; }
 
-.netflix-title { font-size: 36px; font-weight: bold; margin-bottom: 10px; }
+.netflix-title { font-size: 28px; font-weight: bold; margin-bottom: 8px; }
 
 .netflix-meta-bar {
     display: flex;
     align-items: center;
-    gap: 15px;
-    margin-bottom: 15px;
-    font-size: 14px;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 13px;
     color: var(--text-muted);
 }
 
@@ -295,15 +322,15 @@ body {
 
 .action-buttons-group {
     display: flex;
-    gap: 12px;
-    margin: 20px 0;
+    gap: 10px;
+    margin: 15px 0 5px 0;
     flex-wrap: wrap;
 }
 
 .btn-secondary {
     background: rgba(255, 255, 255, 0.15);
     color: white;
-    padding: 10px 20px;
+    padding: 9px 18px;
     border-radius: 8px;
     border: none;
     font-weight: bold;
@@ -316,8 +343,12 @@ body {
 
 .btn-secondary:hover { background: rgba(255, 255, 255, 0.3); }
 
-/* Download Modal & Servers */
-.player-section { padding: 30px; }
+/* المشغل والحاوية الخاصة به بتصميم مصغر متناسق */
+.player-section {
+    padding: 20px 30px;
+    max-width: 900px;
+    margin: 0 auto;
+}
 
 .player-box {
     position: relative;
@@ -326,6 +357,7 @@ body {
     border-radius: var(--radius);
     overflow: hidden;
     margin-bottom: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.7);
 }
 
 .player-box iframe {
@@ -384,9 +416,10 @@ body {
     .logo-text { font-size: 18px; }
     .nav-links { gap: 8px; }
     .nav-item { font-size: 12px; }
+    .netflix-hero { margin: 0; border-radius: 0; }
     .netflix-overlay { flex-direction: column; align-items: center; text-align: center; padding: 20px 15px; }
-    .netflix-poster { width: 140px; }
-    .netflix-title { font-size: 22px; }
+    .netflix-poster { width: 130px; }
+    .netflix-title { font-size: 20px; }
     .netflix-meta-bar { justify-content: center; }
     .action-buttons-group { justify-content: center; }
     .section-container, .player-section, .search-view-container { padding: 12px; }

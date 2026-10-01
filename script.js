@@ -2,6 +2,8 @@ const API_KEY = 'e45956e29bfc581e0131eb6710b738c0';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_PATH = 'https://image.tmdb.org/t/p/w500';
 const BACKDROP_PATH = 'https://image.tmdb.org/t/p/original';
+// صورة افتراضية عند عدم توفر الملصق
+const NO_IMAGE_URL = 'https://via.placeholder.com/300x450/19212b/ffffff?text=%D9%84%D8%A7+%D8%AA%D9%88%D8%AC%D8%AF+%D8%B5%D9%88%D8%B1%D8%A9';
 
 let heroInterval;
 
@@ -61,7 +63,7 @@ async function renderHomePage() {
         ${createSectionHTML('top-movies', 'fa-star', 'الأفلام الأعلى تقييماً')}
         ${createSectionHTML('top-tv', 'fa-crown', 'المسلسلات الأعلى تقييماً')}
 
-        <!-- قسم استوديوهات وشركات الإنتاج بشعارات احترافية -->
+        <!-- شركات الإنتاج -->
         <section class="section-container">
             <div class="section-header">
                 <h2 class="section-title"><i class="fa-solid fa-building"></i> استوديوهات وشركات الإنتاج</h2>
@@ -89,8 +91,8 @@ async function renderHomePage() {
         </section>
     `;
 
-    if (favorites.length > 0) renderSavedList(favorites, 'fav-list');
-    if (continueWatching.length > 0) renderSavedList(continueWatching, 'cw-list');
+    if (favorites.length > 0) renderSavedList(favorites, 'fav-list', false);
+    if (continueWatching.length > 0) renderSavedList(continueWatching, 'cw-list', true);
     
     loadHeroBanner();
     fetchMediaList(`${BASE_URL}/trending/movie/day?api_key=${API_KEY}&language=ar-SA`, 'trending-movies', 'movie');
@@ -114,13 +116,15 @@ function createSectionHTML(id, icon, title) {
     `;
 }
 
-function renderSavedList(list, elementId) {
+// عرض القوائم المحفوظة مع إمكانية مسح العناصر من متابعة المشاهدة
+function renderSavedList(list, elementId, isContinueWatching = false) {
     const container = document.getElementById(elementId);
     if (!container) return;
     container.innerHTML = list.map(item => `
         <div class="media-card" onclick="navigateTo('#/watch/${item.type}/${item.id}')">
+            ${isContinueWatching ? `<button class="remove-btn" title="حذف" onclick="event.stopPropagation(); removeFromContinueWatching('${item.id}', '${item.type}')"><i class="fa-solid fa-xmark"></i></button>` : ''}
             <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.rating || 'N/A'}</span>
-            <img class="card-poster" src="${item.poster ? IMG_PATH + item.poster : 'https://via.placeholder.com/160x230?text=No+Poster'}" alt="${item.title}">
+            <img class="card-poster" src="${item.poster ? IMG_PATH + item.poster : NO_IMAGE_URL}" onerror="this.src='${NO_IMAGE_URL}'" alt="${item.title}">
             <div class="card-info">
                 <div class="card-title">${item.title}</div>
             </div>
@@ -128,7 +132,15 @@ function renderSavedList(list, elementId) {
     `).join('');
 }
 
-// 2. صفحة شركة إنتاج مستقلة وكاملة الأعمال
+// دالة مسح العنصر من قائمة "متابعة المشاهدة"
+function removeFromContinueWatching(id, type) {
+    let list = JSON.parse(localStorage.getItem('continue_watching') || '[]');
+    list = list.filter(item => !(item.id == id && item.type == type));
+    localStorage.setItem('continue_watching', JSON.stringify(list));
+    renderHomePage(); // إعادة بناء الواجهة مباشرة لتحديث القائمة
+}
+
+// 2. صفحة شركة إنتاج مع التعامل مع الصور الفارغة
 async function renderCompanyPage(companyId, companyName) {
     const container = document.getElementById('app-container');
     if (!container) return;
@@ -155,7 +167,7 @@ async function renderCompanyPage(companyId, companyName) {
         grid.innerHTML = data.results.map(item => `
             <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/movie/${item.id}')">
                 <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
-                <img class="card-poster" src="${item.poster_path ? IMG_PATH + item.poster_path : 'https://via.placeholder.com/160x230?text=No+Poster'}" alt="${item.title}">
+                <img class="card-poster" src="${item.poster_path ? IMG_PATH + item.poster_path : NO_IMAGE_URL}" onerror="this.src='${NO_IMAGE_URL}'" alt="${item.title}">
                 <div class="card-info">
                     <div class="card-title">${item.title}</div>
                     <div class="card-meta">
@@ -168,7 +180,7 @@ async function renderCompanyPage(companyId, companyName) {
     } catch(e) { console.error(e); }
 }
 
-// 3. صفحة المشاهدة والتفاصيل بأسلوب Netflix
+// 3. صفحة المشاهدة بحجم متناسق ومصغر لراحة العين
 async function renderWatchPage(type, id) {
     const container = document.getElementById('app-container');
     if (!container) return;
@@ -181,6 +193,7 @@ async function renderWatchPage(type, id) {
 
         const title = data.title || data.name;
         const poster = data.poster_path;
+        const backdrop = data.backdrop_path || data.poster_path;
         const rating = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
         
         saveToContinueWatching({ id, type, title, poster, rating });
@@ -188,10 +201,10 @@ async function renderWatchPage(type, id) {
         const isFav = isFavorite(id, type);
 
         container.innerHTML = `
-            <!-- Netflix Style Hero Header -->
-            <div class="netflix-hero" style="background-image: url('${BACKDROP_PATH + (data.backdrop_path || data.poster_path)}')">
+            <!-- Banner Poster Header (مصغر ومتناسق) -->
+            <div class="netflix-hero" style="background-image: url('${backdrop ? BACKDROP_PATH + backdrop : ''}')">
                 <div class="netflix-overlay">
-                    <img class="netflix-poster" src="${poster ? IMG_PATH + poster : 'https://via.placeholder.com/200x300'}" alt="${title}">
+                    <img class="netflix-poster" src="${poster ? IMG_PATH + poster : NO_IMAGE_URL}" onerror="this.src='${NO_IMAGE_URL}'" alt="${title}">
                     <div class="netflix-details">
                         <h1 class="netflix-title">${title}</h1>
                         <div class="netflix-meta-bar">
@@ -200,7 +213,7 @@ async function renderWatchPage(type, id) {
                             <span>⭐ ${rating}</span>
                             <span>${type === 'movie' ? 'فيلم' : 'مسلسل'}</span>
                         </div>
-                        <p style="color: var(--text-muted); line-height: 1.6; max-width: 700px;">${data.overview || 'لا يوجد وصف متاح لهذا العمل.'}</p>
+                        <p style="color: var(--text-muted); line-height: 1.5; font-size: 13px; max-width: 650px;">${data.overview || 'لا يوجد وصف متاح لهذا العمل.'}</p>
                         
                         <div class="action-buttons-group">
                             <button class="btn-primary" onclick="scrollToPlayer()">
@@ -218,15 +231,15 @@ async function renderWatchPage(type, id) {
                 </div>
             </div>
 
-            <!-- Player & Download Options -->
+            <!-- منطقة المشغل (محددة بحد أقصى للعرض وموسّطة) -->
             <div class="player-section" id="player-area">
                 <h2 class="section-title" style="margin-bottom: 15px;"><i class="fa-solid fa-tv"></i> مشغل الفيديو</h2>
                 <div class="player-box">
                     <iframe id="video-iframe" src="https://vidsrc.me/embed/${type}?tmdb=${id}" allowfullscreen></iframe>
                 </div>
 
-                <h3>اختر سيرفر المشاهدة:</h3>
-                <div class="servers-grid" style="margin-top: 10px;">
+                <h3 style="font-size: 14px; margin-bottom: 8px;">اختر سيرفر المشاهدة:</h3>
+                <div class="servers-grid">
                     <button class="server-btn active" onclick="changeServer('https://vidsrc.me/embed/${type}?tmdb=${id}', this)">سيرفر 1 (سريع)</button>
                     <button class="server-btn" onclick="changeServer('https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1', this)">سيرفر 2 (VIP)</button>
                     <button class="server-btn" onclick="changeServer('https://2embed.org/embed/${id}', this)">سيرفر 3</button>
@@ -240,7 +253,7 @@ async function renderWatchPage(type, id) {
                         ${data.recommendations.results.slice(0, 6).map(item => `
                             <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/${type}/${item.id}')">
                                 <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
-                                <img class="card-poster" src="${item.poster_path ? IMG_PATH + item.poster_path : 'https://via.placeholder.com/160x230'}" alt="${item.title || item.name}">
+                                <img class="card-poster" src="${item.poster_path ? IMG_PATH + item.poster_path : NO_IMAGE_URL}" onerror="this.src='${NO_IMAGE_URL}'" alt="${item.title || item.name}">
                                 <div class="card-info">
                                     <div class="card-title">${item.title || item.name}</div>
                                 </div>
@@ -255,12 +268,10 @@ async function renderWatchPage(type, id) {
     }
 }
 
-// دالة التمرير لمكان المشغل
 function scrollToPlayer() {
     document.getElementById('player-area')?.scrollIntoView({ behavior: 'smooth' });
 }
 
-// إدارة المفضلة
 function isFavorite(id, type) {
     const list = JSON.parse(localStorage.getItem('favorites_list') || '[]');
     return list.some(item => item.id == id && item.type == type);
@@ -282,7 +293,6 @@ function toggleFavorite(id, type, encodedTitle, poster, rating) {
     renderWatchPage(type, id);
 }
 
-// تحميل الفيلم
 function triggerDownload(type, id) {
     const downloadUrl = `https://vidsrc.me/embed/${type}?tmdb=${id}`;
     window.open(downloadUrl, '_blank');
@@ -299,7 +309,7 @@ async function loadHeroBanner() {
         if (!heroBanner) return;
 
         heroBanner.innerHTML = items.map((item, idx) => `
-            <div class="hero-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${BACKDROP_PATH + item.backdrop_path}')">
+            <div class="hero-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${item.backdrop_path ? BACKDROP_PATH + item.backdrop_path : ''}')">
                 <div class="hero-overlay">
                     <div class="hero-content">
                         <span class="hero-badge">الأبرز حالياً</span>
@@ -337,7 +347,7 @@ async function fetchMediaList(url, containerId, customType = null) {
             return `
                 <div class="media-card" onclick="navigateTo('#/watch/${type}/${item.id}')">
                     <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
-                    <img class="card-poster" src="${item.poster_path ? IMG_PATH + item.poster_path : 'https://via.placeholder.com/160x230?text=No+Poster'}" alt="${item.title || item.name}">
+                    <img class="card-poster" src="${item.poster_path ? IMG_PATH + item.poster_path : NO_IMAGE_URL}" onerror="this.src='${NO_IMAGE_URL}'" alt="${item.title || item.name}">
                     <div class="card-info">
                         <div class="card-title">${item.title || item.name}</div>
                         <div class="card-meta">
@@ -404,12 +414,11 @@ async function fetchGridMedia(url) {
         const container = document.getElementById('search-results');
         if (!container) return;
         container.innerHTML = data.results.map(item => {
-            if (!item.poster_path) return '';
             const type = item.media_type || (item.title ? 'movie' : 'tv');
             return `
                 <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/${type}/${item.id}')">
                     <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
-                    <img class="card-poster" src="${IMG_PATH + item.poster_path}" alt="${item.title || item.name}">
+                    <img class="card-poster" src="${item.poster_path ? IMG_PATH + item.poster_path : NO_IMAGE_URL}" onerror="this.src='${NO_IMAGE_URL}'" alt="${item.title || item.name}">
                     <div class="card-info">
                         <div class="card-title">${item.title || item.name}</div>
                     </div>
