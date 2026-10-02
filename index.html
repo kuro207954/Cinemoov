@@ -1,29 +1,60 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cinemoov - Watch Movies & TV Shows</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body dir="ltr">
+    
+    <!-- SEO Meta Tags -->
+    <title>Cinemoov - سينيموف | شاهد أحدث الأفلام والمسلسلات والبرامج مجاناً</title>
+    <meta name="description" content="موقع سينيموف Cinemoov لمشاهدة أحدث الأفلام، المسلسلات، والأنمي بجودة عالية وبدون إعلانات مزعجة.">
+    <meta name="keywords" content="cinemoov, سينيموف, سينما, افلام, مسلسلات, انمي, مشاهدة افلام, movies, tv shows">
+    <meta name="author" content="Cinemoov">
 
+    <!-- Open Graph Meta Tags (لإظهار صورة ومعلومات الموقع عند مشاركته في الواتساب وفيسبوك) -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Cinemoov - شاهد الأفلام والبرامج">
+    <meta property="og:description" content="أفضل منصة لمشاهدة الأفلام والمسلسلات بجودة عالية.">
+    <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/3172/3172522.png">
+
+    <!-- Favicon (أيقونة الموقع التي تظهر في المتصفح وعلامات التبويب) -->
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/3172/3172522.png">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3172/3172522.png">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
     <nav class="navbar">
-        <div class="nav-logo" onclick="navigateTo('#/')">Cinemoov</div>
-        <div class="nav-links">
-            <a href="#/" class="nav-item active" id="nav-home"><i class="fa-solid fa-house"></i> Home</a>
-            <a href="#/movies" class="nav-item" id="nav-movies"><i class="fa-solid fa-film"></i> Movies</a>
-            <a href="#/tv" class="nav-item" id="nav-tv"><i class="fa-solid fa-tv"></i> TV Shows</a>
-            <a href="#/anime" class="nav-item" id="nav-anime"><i class="fa-solid fa-dragon"></i> Anime</a>
-            <a href="#/search" class="nav-item" id="nav-search"><i class="fa-solid fa-magnifying-glass"></i> Search</a>
+        <div class="nav-container">
+            <a href="#/" class="logo">
+                <i class="fa-solid fa-play"></i> Cinemoov
+            </a>
+            <div class="nav-links">
+                <a href="#/" id="nav-home" class="nav-item active"><i class="fa-solid fa-house"></i> الرئيسية</a>
+                <a href="#/movies" id="nav-movies" class="nav-item"><i class="fa-solid fa-film"></i> الأفلام</a>
+                <a href="#/tv" id="nav-tv" class="nav-item"><i class="fa-solid fa-tv"></i> المسلسلات</a>
+                <a href="#/anime" id="nav-anime" class="nav-item"><i class="fa-solid fa-dragon"></i> الأنمي</a>
+                <a href="#/search" id="nav-search" class="nav-item"><i class="fa-solid fa-magnifying-glass"></i> البحث</a>
+            </div>
         </div>
     </nav>
 
-    <main id="app-container" dir="ltr">
-        <!-- Content loaded dynamically via script.js -->
+    <!-- Main App Container -->
+    <main id="app-container">
+        <!-- يتم تحميل المحتوى ديناميكياً عبر الجافاسكريبت -->
     </main>
 
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Cinemoov. جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <!-- Custom JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
