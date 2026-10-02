@@ -1,3 +1,8 @@
+// ============================================
+// Cinemoov - script.js
+// Version 2.0 - Enhanced with Auto-Failover
+// ============================================
+
 const API_KEY = 'e45956e29bfc581e0131eb6710b738c0';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_PATH = 'https://image.tmdb.org/t/p/w500';
@@ -50,7 +55,6 @@ let heroInterval;
             text-overflow: ellipsis !important;
             font-weight: 500;
         }
-        
         .servers-section {
             margin-top: 25px;
             background: #12151c;
@@ -85,6 +89,23 @@ let heroInterval;
             color: #fff;
             font-weight: bold;
         }
+        .server-btn.arabic {
+            background: #1e3a2f;
+            border-color: #2a5038;
+        }
+        .server-btn.arabic:hover {
+            background: #25D366;
+            border-color: #25D366;
+        }
+        .failover-notice {
+            background: rgba(229, 9, 20, 0.1);
+            border: 1px solid rgba(229, 9, 20, 0.3);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            color: #ffc107;
+            font-size: 13px;
+        }
     `;
     document.head.appendChild(style);
 })();
@@ -92,9 +113,7 @@ let heroInterval;
 window.addEventListener('hashchange', handleRoute);
 window.addEventListener('load', handleRoute);
 
-function navigateTo(hash) { window.location.hash = hash; }
-
-function handleRoute() {
+function navigateTo(hash) { window.location.hash = hash; }function handleRoute() {
     if (heroInterval) clearInterval(heroInterval);
     const hash = window.location.hash || '#/';
     
@@ -121,7 +140,10 @@ function handleRoute() {
     }
 }
 
-function getPosterUrl(path) { return `${IMG_PATH}${path}`; }
+function getPosterUrl(path) {
+    if (!path) return 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22300%22><rect fill=%22%23161920%22 width=%22200%22 height=%22300%22/><text x=%2250%25%22 y=%2250%25%22 fill=%22%23666%22 text-anchor=%22middle%22 font-size=%2220%22>No Image</text></svg>';
+    return `${IMG_PATH}${path}`;
+}
 
 async function renderHomePage() {
     const container = document.getElementById('app-container');
@@ -182,98 +204,6 @@ function removeFromContinueWatching(id, type) {
     list = list.filter(item => !(item.id == id && item.type == type));
     localStorage.setItem('continue_watching', JSON.stringify(list));
     renderHomePage(); 
-}
-
-async function renderWatchPage(type, id) {
-    const container = document.getElementById('app-container');
-    if (!container) return;
-
-    container.innerHTML = `<div style="padding: 100px; text-align: center; color: #fff;">جاري تجهيز مشغل الفيديو...</div>`;
-
-    try {
-        const res = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=recommendations`);
-        const data = await res.json();
-
-        const title = data.title || data.name;
-        const poster = data.poster_path;
-        const backdrop = data.backdrop_path ? BACKDROP_PATH + data.backdrop_path : getPosterUrl(poster);
-        const rating = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
-        const searchTitle = encodeURIComponent(title);
-        
-        saveToContinueWatching({ id, type, title, poster, rating });
-
-        const servers = [
-            { name: "Server 1 (VidLink)", url: `https://vidlink.pro/${type}/${id}?primaryColor=e50914` },
-            { name: "Server 2 (VidSrc Pro)", url: `https://vidsrc.me/embed/${type}?tmdb=${id}` },
-            { name: "Server 3 (AutoEmbed)", url: `https://player.autoembed.cc/embed/${type}/${id}` },
-            { name: "Server 4 (VidSrc CC)", url: `https://vidsrc.cc/v2/embed/${type}/${id}` },
-            { name: "Server 5 (SmashyStream)", url: `https://embed.smashystream.com/playere.php?tmdb=${id}` },
-            { name: "Server 6 (2Embed)", url: `https://www.2embed.cc/embed${type === 'movie' ? '' : 'tv'}/${id}` },
-            { name: "Server 7 (MultiEmbed)", url: `https://multiembed.mov/?video_id=${id}&tmdb=1` },
-            { name: "Server 8 (NontonGo)", url: `https://www.NontonGo.win/embed/${type}/${id}` },
-            { name: "سيرفر عربي 1", url: `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1` },
-            { name: "سيرفر عربي 2", url: `https://vidsrc.icu/embed/${type}/${id}` },
-            { name: "بحث في CimaNow (عربي)", isExternal: true, url: `https://cimanow.cc/?s=${searchTitle}` },
-            { name: "بحث في FaselHD (عربي)", isExternal: true, url: `https://www.faselhd.co/?s=${searchTitle}` }
-        ];
-
-        const cleanRecs = (data.recommendations?.results || []).filter(item => item.poster_path);
-
-        container.innerHTML = `
-            <div class="watch-backdrop-banner" style="background-image: linear-gradient(to bottom, rgba(13, 15, 18, 0.4), #0d0f12), url('${backdrop}');">
-                <div class="watch-backdrop-content">
-                    <img class="watch-poster-img" src="${getPosterUrl(poster)}" alt="${title}">
-                    <div class="watch-details-info">
-                        <h1 class="watch-title">${title}</h1>
-                        <div class="watch-meta">
-                            <span class="badge-rating">⭐ ${rating}</span>
-                            <span>${(data.release_date || data.first_air_date || '').substring(0, 4)}</span>
-                            <span>${type === 'movie' ? 'Movie' : 'TV Show'}</span>
-                        </div>
-                        <p class="watch-overview">${data.overview || 'لا يوجد وصف متوفر.'}</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="watch-page-container">
-                <div class="player-box-wrapper">
-                    <iframe id="video-iframe" src="${servers[0].url}" allowfullscreen frameborder="0" scrolling="no" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"></iframe>
-                </div>
-
-                <!-- قسم السيرفرات نظيف وبدون حقول إدخال عشوائية -->
-                <div class="servers-section">
-                    <h3 class="servers-title" style="color: #fff; font-size: 16px;"><i class="fa-solid fa-server"></i> اختر السيرفر المناسب:</h3>
-                    <div class="servers-grid">
-                        ${servers.map((srv, index) => {
-                            if (srv.isExternal) {
-                                return `<a href="${srv.url}" target="_blank" class="server-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> ${srv.name}</a>`;
-                            }
-                            return `<button class="server-btn ${index === 0 ? 'active' : ''}" onclick="changeServer('${srv.url}', this)">${srv.name}</button>`;
-                        }).join('')}
-                    </div>
-                </div>
-
-                ${cleanRecs.length ? `
-                    <div class="recommendations-section" style="margin-top: 30px;">
-                        <h2 class="section-title" style="margin-bottom:15px;"><i class="fa-solid fa-thumbs-up"></i> مقترحات لك</h2>
-                        <div class="grid-layout">
-                            ${cleanRecs.slice(0, 6).map(item => `
-                                <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/${type}/${item.id}')">
-                                    <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
-                                    <img class="card-poster" src="${getPosterUrl(item.poster_path)}" alt="${item.title || item.name}">
-                                    <div class="card-info">
-                                        <div class="card-title">${item.title || item.name}</div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                ` : ''}
-            </div>
-        `;
-    } catch(e) {
-        container.innerHTML = `<div style="padding: 50px; text-align: center; color: red;">حدث خطأ أثناء تحميل البيانات.</div>`;
-    }
 }
 
 async function loadHeroBanner() {
@@ -363,9 +293,7 @@ async function renderCategoryPage(type, title) {
     `;
     fetchMediaList(`${BASE_URL}/${type}/popular?api_key=${API_KEY}`, 'cat-trending', type);
     fetchMediaList(`${BASE_URL}/${type}/top_rated?api_key=${API_KEY}`, 'cat-top', type);
-}
-
-function renderSearchPage() {
+}function renderSearchPage() {
     const container = document.getElementById('app-container');
     if (!container) return;
     container.innerHTML = `
@@ -414,16 +342,128 @@ async function fetchGridMedia(url) {
     } catch(e) { console.error(e); }
 }
 
-function scrollCarousel(id, distance) {
-    const el = document.getElementById(id);
-    if (el) el.scrollBy({ left: distance, behavior: 'smooth' });
+async function renderWatchPage(type, id) {
+    const container = document.getElementById('app-container');
+    if (!container) return;
+
+    container.innerHTML = `<div style="padding: 100px; text-align: center; color: #fff;">جاري تجهيز مشغل الفيديو...</div>`;
+
+    try {
+        const res = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=recommendations`);
+        const data = await res.json();
+
+        const title = data.title || data.name;
+        const poster = data.poster_path;
+        const backdrop = data.backdrop_path ? BACKDROP_PATH + data.backdrop_path : getPosterUrl(poster);
+        const rating = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
+        const searchTitle = encodeURIComponent(title);
+        
+        saveToContinueWatching({ id, type, title, poster, rating });
+
+        // قائمة السيرفرات المحدثة - مرتبة من الأفضل للأسوأ
+        const servers = [
+            { name: "VidLink", url: `https://vidlink.pro/${type}/${id}?primaryColor=e50914` },
+            { name: "VidSrc.me", url: `https://vidsrc.me/embed/${type}?tmdb=${id}` },
+            { name: "2Embed", url: `https://www.2embed.cc/embed${type === 'movie' ? '' : 'tv'}/${id}` },
+            { name: "SmashyStream", url: `https://embed.smashystream.com/playere.php?tmdb=${id}` },
+            { name: "AutoEmbed", url: `https://player.autoembed.cc/embed/${type}/${id}` },
+            { name: "VidSrc.win", url: `https://vidsrc.win/embed/${type}/${id}` },
+            { name: "VidPlus", url: `https://vidplus.to/embed/${type}/${id}` },
+            { name: "VidSrc.icu", url: `https://vidsrc.icu/embed/${type}/${id}` }
+        ];
+
+        // مواقع عربية (روابط خارجية)
+        const arabicServers = [
+            { name: "CimaNow (عربي)", url: `https://cimanow.cc/?s=${searchTitle}` },
+            { name: "FaselHD (عربي)", url: `https://www.faselhd.co/?s=${searchTitle}` },
+            { name: "Akwam (عربي)", url: `https://akwam.to/search?q=${searchTitle}` },
+            { name: "EgyBest (عربي)", url: `https://egybest.com/?s=${searchTitle}` }
+        ];
+
+        const cleanRecs = (data.recommendations?.results || []).filter(item => item.poster_path);
+
+        container.innerHTML = `
+            <div class="watch-backdrop-banner" style="background-image: linear-gradient(to bottom, rgba(13, 15, 18, 0.4), #0d0f12), url('${backdrop}');">
+                <div class="watch-backdrop-content">
+                    <img class="watch-poster-img" src="${getPosterUrl(poster)}" alt="${title}">
+                    <div class="watch-details-info">
+                        <h1 class="watch-title">${title}</h1>
+                        <div class="watch-meta">
+                            <span class="badge-rating">⭐ ${rating}</span>
+                            <span>${(data.release_date || data.first_air_date || '').substring(0, 4)}</span>
+                            <span>${type === 'movie' ? 'Movie' : 'TV Show'}</span>
+                        </div>
+                        <p class="watch-overview">${data.overview || 'لا يوجد وصف متوفر.'}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="watch-page-container">
+                <div class="failover-notice" id="failover-notice" style="display: none;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span id="failover-text">جاري تجربة سيرفر آخر...</span>
+                </div>
+                <div class="player-box-wrapper">
+                    <iframe id="video-iframe" src="${servers[0].url}" allowfullscreen frameborder="0" scrolling="no" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" onload="checkServerLoad()"></iframe>
+                </div>
+
+                <div class="servers-section">
+                    <h3 class="servers-title" style="color: #fff; font-size: 16px;"><i class="fa-solid fa-server"></i> سيرفرات المشاهدة:</h3>
+                    <div class="servers-grid">
+                        ${servers.map((srv, index) => `<button class="server-btn ${index === 0 ? 'active' : ''}" onclick="changeServer('${srv.url}', this)">${srv.name}</button>`).join('')}
+                    </div>
+                </div>
+
+                <div class="servers-section" style="margin-top: 15px;">
+                    <h3 class="servers-title" style="color: #fff; font-size: 16px;"><i class="fa-solid fa-globe"></i> مواقع عربية (فتح خارجي):</h3>
+                    <div class="servers-grid">
+                        ${arabicServers.map(srv => `<a href="${srv.url}" target="_blank" class="server-btn arabic"><i class="fa-solid fa-arrow-up-right-from-square"></i> ${srv.name}</a>`).join('')}
+                    </div>
+                </div>
+
+                ${cleanRecs.length ? `
+                    <div class="recommendations-section" style="margin-top: 30px;">
+                        <h2 class="section-title" style="margin-bottom:15px;"><i class="fa-solid fa-thumbs-up"></i> مقترحات لك</h2>
+                        <div class="grid-layout">
+                            ${cleanRecs.slice(0, 6).map(item => `
+                                <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/${type}/${item.id}')">
+                                    <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
+                                    <img class="card-poster" src="${getPosterUrl(item.poster_path)}" alt="${item.title || item.name}">
+                                    <div class="card-info">
+                                        <div class="card-title">${item.title || item.name}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+
+        // حفظ السيرفرات في متغير عام للاستخدام في Auto-Failover
+        window.currentServers = servers;
+        window.currentServerIndex = 0;
+
+    } catch(e) {
+        container.innerHTML = `<div style="padding: 50px; text-align: center; color: red;">حدث خطأ أثناء تحميل البيانات.</div>`;
+    }
 }
 
 function changeServer(url, btn) {
     const iframe = document.getElementById('video-iframe');
-    if (iframe) iframe.src = url;
+    if (iframe) {
+        iframe.src = url;
+        // إخفاء رسالة الفشل عند اختيار سيرفر يدوياً
+        const notice = document.getElementById('failover-notice');
+        if (notice) notice.style.display = 'none';
+    }
     document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
+}
+
+function scrollCarousel(id, distance) {
+    const el = document.getElementById(id);
+    if (el) el.scrollBy({ left: distance, behavior: 'smooth' });
 }
 
 function saveToContinueWatching(item) {
