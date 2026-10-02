@@ -2,7 +2,7 @@ const API_KEY = 'e45956e29bfc581e0131eb6710b738c0';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_PATH = 'https://image.tmdb.org/t/p/w500';
 const BACKDROP_PATH = 'https://image.tmdb.org/t/p/original';
-const NO_IMAGE_URL = 'https://via.placeholder.com/500x750/161920/FFFFFF?text=No+Poster+Available';
+const NO_IMAGE_URL = 'https://via.placeholder.com/500x750/161920/FFFFFF?text=No+Poster';
 
 let heroInterval;
 
@@ -30,9 +30,9 @@ function handleRoute() {
     } else if (hash === '#/search') {
         renderSearchPage();
     } else if (hash === '#/movies') {
-        renderCategoryPage('movie', 'Movies');
+        renderCategoryPage('movie', 'الأفلام');
     } else if (hash === '#/tv') {
-        renderCategoryPage('tv', 'TV Shows');
+        renderCategoryPage('tv', 'المسلسلات');
     } else if (hash === '#/anime') {
         renderAnimePage();
     } else {
@@ -40,10 +40,10 @@ function handleRoute() {
     }
 }
 
-// دالة مساعدة لتأمين رابط البوستر
+// دالة دقيقة ومحصنة لجلب رابط الصورة الصحيح
 function getPosterUrl(path) {
-    if (path && path !== 'null' && path !== 'undefined') {
-        return path.startsWith('http') ? path : IMG_PATH + path;
+    if (path && path !== 'null' && path !== 'undefined' && path !== '') {
+        return path.startsWith('http') ? path : `${IMG_PATH}${path}`;
     }
     return NO_IMAGE_URL;
 }
@@ -58,21 +58,21 @@ async function renderHomePage() {
     container.innerHTML = `
         <div id="hero-banner" class="hero-slider-container"></div>
 
-        ${continueWatching.length > 0 ? createSectionHTML('cw-list', 'fa-rotate-left', 'Continue Watching') : ''}
+        ${continueWatching.length > 0 ? createSectionHTML('cw-list', 'fa-rotate-left', 'متابعة المشاهدة') : ''}
         
-        ${createSectionHTML('trending-movies', 'fa-film', 'Trending Movies')}
-        ${createSectionHTML('trending-tv', 'fa-tv', 'Trending TV Shows')}
-        ${createSectionHTML('top-movies', 'fa-star', 'Top Rated Movies')}
-        ${createSectionHTML('top-tv', 'fa-crown', 'Top Rated TV Shows')}
+        ${createSectionHTML('trending-movies', 'fa-film', 'الأفلام الأكثر تداولاً')}
+        ${createSectionHTML('trending-tv', 'fa-tv', 'المسلسلات الأكثر تداولاً')}
+        ${createSectionHTML('top-movies', 'fa-star', 'الأفلام الأعلى تقييماً')}
+        ${createSectionHTML('top-tv', 'fa-crown', 'المسلسلات الأعلى تقييماً')}
     `;
 
     if (continueWatching.length > 0) renderSavedList(continueWatching, 'cw-list', true);
     
     loadHeroBanner();
-    fetchMediaList(`${BASE_URL}/trending/movie/day?api_key=${API_KEY}&language=en-US`, 'trending-movies', 'movie');
-    fetchMediaList(`${BASE_URL}/trending/tv/day?api_key=${API_KEY}&language=en-US`, 'trending-tv', 'tv');
-    fetchMediaList(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-US`, 'top-movies', 'movie');
-    fetchMediaList(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}&language=en-US`, 'top-tv', 'tv');
+    fetchMediaList(`${BASE_URL}/trending/movie/day?api_key=${API_KEY}&language=ar-SA&include_image_language=en,null`, 'trending-movies', 'movie');
+    fetchMediaList(`${BASE_URL}/trending/tv/day?api_key=${API_KEY}&language=ar-SA&include_image_language=en,null`, 'trending-tv', 'tv');
+    fetchMediaList(`${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=ar-SA&include_image_language=en,null`, 'top-movies', 'movie');
+    fetchMediaList(`${BASE_URL}/tv/top_rated?api_key=${API_KEY}&language=ar-SA&include_image_language=en,null`, 'top-tv', 'tv');
 }
 
 function createSectionHTML(id, icon, title) {
@@ -81,11 +81,11 @@ function createSectionHTML(id, icon, title) {
             <div class="section-header">
                 <h2 class="section-title"><i class="fa-solid ${icon}"></i> ${title}</h2>
                 <div class="carousel-controls">
-                    <button class="scroll-btn-nav" onclick="scrollCarousel('${id}', -300)"><i class="fa-solid fa-chevron-left"></i></button>
-                    <button class="scroll-btn-nav" onclick="scrollCarousel('${id}', 300)"><i class="fa-solid fa-chevron-right"></i></button>
+                    <button class="scroll-btn-nav" onclick="scrollCarousel('${id}', -300)"><i class="fa-solid fa-chevron-right"></i></button>
+                    <button class="scroll-btn-nav" onclick="scrollCarousel('${id}', 300)"><i class="fa-solid fa-chevron-left"></i></button>
                 </div>
             </div>
-            <div class="media-carousel" id="${id}">Loading...</div>
+            <div class="media-carousel" id="${id}">جاري التحميل...</div>
         </section>
     `;
 }
@@ -95,7 +95,7 @@ function renderSavedList(list, elementId, isContinueWatching = false) {
     if (!container) return;
     container.innerHTML = list.map(item => `
         <div class="media-card" onclick="navigateTo('#/watch/${item.type}/${item.id}')">
-            ${isContinueWatching ? `<button class="remove-btn" title="Remove" onclick="event.stopPropagation(); removeFromContinueWatching('${item.id}', '${item.type}')"><i class="fa-solid fa-xmark"></i></button>` : ''}
+            ${isContinueWatching ? `<button class="remove-btn" title="حذف" onclick="event.stopPropagation(); removeFromContinueWatching('${item.id}', '${item.type}')"><i class="fa-solid fa-xmark"></i></button>` : ''}
             <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.rating || 'N/A'}</span>
             <img class="card-poster" src="${getPosterUrl(item.poster)}" onerror="this.onerror=null; this.src='${NO_IMAGE_URL}';" alt="${item.title}">
             <div class="card-info">
@@ -117,10 +117,10 @@ async function renderWatchPage(type, id) {
     const container = document.getElementById('app-container');
     if (!container) return;
 
-    container.innerHTML = `<div style="padding: 100px; text-align: center;">Preparing video player...</div>`;
+    container.innerHTML = `<div style="padding: 100px; text-align: center;">جاري تجهيز مشغل الفيديو...</div>`;
 
     try {
-        const res = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&language=en-US&append_to_response=recommendations`);
+        const res = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&language=ar-SA&append_to_response=recommendations&include_image_language=en,null`);
         const data = await res.json();
 
         const title = data.title || data.name;
@@ -146,9 +146,9 @@ async function renderWatchPage(type, id) {
                         <div class="watch-meta">
                             <span class="badge-rating">⭐ ${rating}</span>
                             <span>${(data.release_date || data.first_air_date || '').substring(0, 4)}</span>
-                            <span>${type === 'movie' ? 'Movie' : 'TV Show'}</span>
+                            <span>${type === 'movie' ? 'فيلم' : 'مسلسل'}</span>
                         </div>
-                        <p class="watch-overview">${data.overview || 'No overview available.'}</p>
+                        <p class="watch-overview">${data.overview || 'لا يوجد وصف متاح لهذا العرض.'}</p>
                     </div>
                 </div>
             </div>
@@ -159,20 +159,20 @@ async function renderWatchPage(type, id) {
                 </div>
 
                 <div class="servers-section">
-                    <h3 class="servers-title"><i class="fa-solid fa-server"></i> Choose Server:</h3>
+                    <h3 class="servers-title"><i class="fa-solid fa-server"></i> اختر السيرفر:</h3>
                     <div class="servers-grid">
-                        <button class="server-btn active" onclick="changeServer('${server1}', this)">Server 1 (VidLink)</button>
-                        <button class="server-btn" onclick="changeServer('${server2}', this)">Server 2 (VidSrc)</button>
-                        <button class="server-btn" onclick="changeServer('${server3}', this)">Server 3 (Pro)</button>
-                        <button class="server-btn" onclick="changeServer('${server4}', this)">Server 4 (SmashyStream)</button>
-                        <button class="server-btn" onclick="changeServer('${server5}', this)">Server 5 (2Embed)</button>
-                        <button class="server-btn" onclick="changeServer('${server6}', this)">Server 6 (AutoEmbed)</button>
+                        <button class="server-btn active" onclick="changeServer('${server1}', this)">السيرفر 1 (VidLink)</button>
+                        <button class="server-btn" onclick="changeServer('${server2}', this)">السيرفر 2 (VidSrc)</button>
+                        <button class="server-btn" onclick="changeServer('${server3}', this)">السيرفر 3 (Pro)</button>
+                        <button class="server-btn" onclick="changeServer('${server4}', this)">السيرفر 4 (SmashyStream)</button>
+                        <button class="server-btn" onclick="changeServer('${server5}', this)">السيرفر 5 (2Embed)</button>
+                        <button class="server-btn" onclick="changeServer('${server6}', this)">السيرفر 6 (AutoEmbed)</button>
                     </div>
                 </div>
 
                 ${data.recommendations && data.recommendations.results.length ? `
                     <div class="recommendations-section">
-                        <h2 class="section-title" style="margin-bottom:15px;"><i class="fa-solid fa-thumbs-up"></i> Recommended For You</h2>
+                        <h2 class="section-title" style="margin-bottom:15px;"><i class="fa-solid fa-thumbs-up"></i> اقتراحات قد تعجبك</h2>
                         <div class="grid-layout">
                             ${data.recommendations.results.slice(0, 6).map(item => `
                                 <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/${type}/${item.id}')">
@@ -189,13 +189,13 @@ async function renderWatchPage(type, id) {
             </div>
         `;
     } catch(e) {
-        container.innerHTML = `<div style="padding: 50px; text-align: center; color: red;">Error loading data.</div>`;
+        container.innerHTML = `<div style="padding: 50px; text-align: center; color: red;">حدث خطأ أثناء تحميل البيانات.</div>`;
     }
 }
 
 async function loadHeroBanner() {
     try {
-        const res = await fetch(`${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=en-US`);
+        const res = await fetch(`${BASE_URL}/trending/all/week?api_key=${API_KEY}&language=ar-SA`);
         const data = await res.json();
         if (!data.results || !data.results.length) return;
         
@@ -207,11 +207,11 @@ async function loadHeroBanner() {
             <div class="hero-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${item.backdrop_path ? BACKDROP_PATH + item.backdrop_path : getPosterUrl(item.poster_path)}')">
                 <div class="hero-overlay">
                     <div class="hero-content">
-                        <span class="hero-badge">Featured</span>
+                        <span class="hero-badge">مميز</span>
                         <h1 class="hero-title">${item.title || item.name}</h1>
-                        <p class="hero-overview">${item.overview || 'No overview available.'}</p>
+                        <p class="hero-overview">${item.overview || 'لا يوجد وصف متاح.'}</p>
                         <button class="btn-primary" onclick="navigateTo('#/watch/${item.media_type || 'movie'}/${item.id}')">
-                            <i class="fa-solid fa-play"></i> Watch Now
+                            <i class="fa-solid fa-play"></i> شاهد الآن
                         </button>
                     </div>
                 </div>
@@ -247,7 +247,7 @@ async function fetchMediaList(url, containerId, customType = null) {
                         <div class="card-title">${item.title || item.name}</div>
                         <div class="card-meta">
                             <span>${(item.release_date || item.first_air_date || '').substring(0, 4)}</span>
-                            <span>${type === 'movie' ? 'Movie' : 'TV Show'}</span>
+                            <span>${type === 'movie' ? 'فيلم' : 'مسلسل'}</span>
                         </div>
                     </div>
                 </div>
@@ -260,22 +260,22 @@ function renderAnimePage() {
     const container = document.getElementById('app-container');
     if (!container) return;
     container.innerHTML = `
-        ${createSectionHTML('anime-popular', 'fa-fire', 'Top Popular Anime')}
-        ${createSectionHTML('anime-top', 'fa-star', 'Top Rated Anime')}
+        ${createSectionHTML('anime-popular', 'fa-fire', 'أنمي شائع')}
+        ${createSectionHTML('anime-top', 'fa-star', 'أنمي الأعلى تقييماً')}
     `;
-    fetchMediaList(`${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&sort_by=popularity.desc&language=en-US`, 'anime-popular', 'tv');
-    fetchMediaList(`${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200&language=en-US`, 'anime-top', 'tv');
+    fetchMediaList(`${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&sort_by=popularity.desc&language=ar-SA&include_image_language=en,null`, 'anime-popular', 'tv');
+    fetchMediaList(`${BASE_URL}/discover/tv?api_key=${API_KEY}&with_genres=16&with_original_language=ja&sort_by=vote_average.desc&vote_count.gte=200&language=ar-SA&include_image_language=en,null`, 'anime-top', 'tv');
 }
 
 async function renderCategoryPage(type, title) {
     const container = document.getElementById('app-container');
     if (!container) return;
     container.innerHTML = `
-        ${createSectionHTML('cat-trending', 'fa-fire', `Trending ${title}`)}
-        ${createSectionHTML('cat-top', 'fa-star', `Top Rated ${title}`)}
+        ${createSectionHTML('cat-trending', 'fa-fire', `${title} الأكثر تداولاً`)}
+        ${createSectionHTML('cat-top', 'fa-star', `${title} الأعلى تقييماً`)}
     `;
-    fetchMediaList(`${BASE_URL}/${type}/popular?api_key=${API_KEY}&language=en-US`, 'cat-trending', type);
-    fetchMediaList(`${BASE_URL}/${type}/top_rated?api_key=${API_KEY}&language=en-US`, 'cat-top', type);
+    fetchMediaList(`${BASE_URL}/${type}/popular?api_key=${API_KEY}&language=ar-SA&include_image_language=en,null`, 'cat-trending', type);
+    fetchMediaList(`${BASE_URL}/${type}/top_rated?api_key=${API_KEY}&language=ar-SA&include_image_language=en,null`, 'cat-top', type);
 }
 
 function renderSearchPage() {
@@ -283,23 +283,23 @@ function renderSearchPage() {
     if (!container) return;
     container.innerHTML = `
         <div class="search-view-container">
-            <input type="text" class="search-bar-input" placeholder="Search movies, TV shows, anime..." oninput="handleSearch(this.value)">
-            <h2 class="section-title" id="search-title">Trending Now</h2>
-            <div id="search-results" class="grid-layout">Loading...</div>
+            <input type="text" class="search-bar-input" placeholder="ابحث عن أفلام، مسلسلات، أنمي..." oninput="handleSearch(this.value)">
+            <h2 class="section-title" id="search-title">الأكثر تداولاً الآن</h2>
+            <div id="search-results" class="grid-layout">جاري التحميل...</div>
         </div>
     `;
-    fetchGridMedia(`${BASE_URL}/trending/all/day?api_key=${API_KEY}&language=en-US`);
+    fetchGridMedia(`${BASE_URL}/trending/all/day?api_key=${API_KEY}&language=ar-SA&include_image_language=en,null`);
 }
 
 async function handleSearch(query) {
     const titleEl = document.getElementById('search-title');
     if (!query.trim()) {
-        if (titleEl) titleEl.innerText = 'Trending Now';
-        fetchGridMedia(`${BASE_URL}/trending/all/day?api_key=${API_KEY}&language=en-US`);
+        if (titleEl) titleEl.innerText = 'الأكثر تداولاً الآن';
+        fetchGridMedia(`${BASE_URL}/trending/all/day?api_key=${API_KEY}&language=ar-SA&include_image_language=en,null`);
         return;
     }
-    if (titleEl) titleEl.innerText = 'Search Results';
-    fetchGridMedia(`${BASE_URL}/search/multi?api_key=${API_KEY}&language=en-US&query=${encodeURIComponent(query)}`);
+    if (titleEl) titleEl.innerText = 'نتائج البحث';
+    fetchGridMedia(`${BASE_URL}/search/multi?api_key=${API_KEY}&language=ar-SA&query=${encodeURIComponent(query)}&include_image_language=en,null`);
 }
 
 async function fetchGridMedia(url) {
