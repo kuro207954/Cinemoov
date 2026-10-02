@@ -57,16 +57,6 @@ let heroInterval;
             text-overflow: ellipsis !important;
             font-weight: 500;
         }
-        .server-notice {
-            background: #1a1d24;
-            color: #b0b5c1;
-            padding: 12px 18px;
-            border-radius: 6px;
-            font-size: 13px;
-            margin-bottom: 15px;
-            border-right: 4px solid #e50914;
-            line-height: 1.5;
-        }
         .servers-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -240,7 +230,7 @@ async function renderWatchPage(type, id) {
         saveToContinueWatching({ id, type, title, poster, rating });
 
         const servers = [
-            // السيرفرات العالمية الـ 8 الأساسية
+            // السيرفرات العالمية
             { name: "Server 1 (VidLink)", url: `https://vidlink.pro/${type}/${id}?primaryColor=e50914` },
             { name: "Server 2 (VidSrc Pro)", url: `https://vidsrc.me/embed/${type}?tmdb=${id}` },
             { name: "Server 3 (AutoEmbed)", url: `https://player.autoembed.cc/embed/${type}/${id}` },
@@ -250,7 +240,7 @@ async function renderWatchPage(type, id) {
             { name: "Server 7 (MultiEmbed)", url: `https://multiembed.mov/?video_id=${id}&tmdb=1` },
             { name: "Server 8 (NontonGo)", url: `https://www.NontonGo.win/embed/${type}/${id}` },
             
-            // السيرفرات والمصادر العربية المضافة
+            // السيرفرات العربية
             { name: "سيرفر عربي 1 (SuperEmbed)", url: `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1` },
             { name: "سيرفر عربي 2 (ArabEmbed)", url: `https://vidsrc.icu/embed/${type}/${id}` },
             { name: "بحث في FaselHD (عربي)", isExternal: true, url: `https://www.faselhd.co/?s=${searchTitle}` },
@@ -276,9 +266,6 @@ async function renderWatchPage(type, id) {
             </div>
 
             <div class="watch-page-container">
-                <div class="server-notice">
-                    <i class="fa-solid fa-circle-info"></i> <strong>ملاحظة:</strong> تم إضافة سيرفرات عربية إضافية. إذا لم يعمل العمل على السيرفرات التلقائية، يمكنك التجربة أو إدخال رابط مشغل مباشر بالأسفل.
-                </div>
 
                 <div class="player-box-wrapper">
                     <iframe id="video-iframe" src="${servers[0].url}" allowfullscreen frameborder="0" scrolling="no" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"></iframe>
