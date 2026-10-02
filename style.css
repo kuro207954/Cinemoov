@@ -11,6 +11,7 @@ html, body {
     text-align: left !important;
     background-color: #0d0f12;
     color: #ffffff;
+    overflow-x: hidden;
 }
 
 /* Navbar */
@@ -357,4 +358,108 @@ html, body {
 .server-btn.active, .server-btn:hover {
     background: #e50914;
     border-color: #e50914;
+}
+
+/* ===================================================
+   Mobile Responsiveness (التوافق التام مع شاشات الهواتف)
+   =================================================== */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 12px 20px;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .nav-logo {
+        font-size: 22px;
+    }
+
+    .nav-links {
+        gap: 12px;
+        width: 100%;
+        justify-content: space-around;
+        overflow-x: auto;
+    }
+
+    .nav-item {
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    .hero-slider-container {
+        height: 300px;
+    }
+
+    .hero-overlay {
+        padding: 0 20px;
+    }
+
+    .hero-title {
+        font-size: 22px;
+        margin: 8px 0;
+    }
+
+    .hero-overview {
+        font-size: 12px;
+        -webkit-line-clamp: 2;
+        margin-bottom: 12px;
+    }
+
+    .btn-primary {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+
+    .section-container {
+        padding: 15px 20px;
+    }
+
+    .section-title {
+        font-size: 17px;
+    }
+
+    .media-card {
+        flex: 0 0 130px;
+    }
+
+    .card-poster {
+        height: 185px;
+    }
+
+    .card-title {
+        font-size: 12px;
+    }
+
+    .grid-layout {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+    }
+
+    .watch-backdrop-banner {
+        padding: 20px;
+        min-height: 250px;
+    }
+
+    .watch-backdrop-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .watch-poster-img {
+        width: 100px;
+    }
+
+    .watch-title {
+        font-size: 22px;
+    }
+
+    .watch-page-container, .search-view-container {
+        padding: 20px 15px;
+    }
+
+    .server-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
 }
