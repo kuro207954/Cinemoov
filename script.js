@@ -5,8 +5,8 @@ const BACKDROP_PATH = 'https://image.tmdb.org/t/p/original';
 
 let heroInterval;
 
-// حقن تنسيقات حماية تصميم البطاقات والسيرفرات والخيارات الإضافية
-(function injectCardStyles() {
+// حقن تنسيقات ثابتة للسيرفرات والكروت
+(function injectCleanStyles() {
     const style = document.createElement('style');
     style.innerHTML = `
         .media-card {
@@ -21,9 +21,7 @@ let heroInterval;
             transition: transform 0.2s ease;
             cursor: pointer;
         }
-        .media-card:hover {
-            transform: translateY(-4px);
-        }
+        .media-card:hover { transform: translateY(-4px); }
         .card-poster {
             width: 100% !important;
             height: 260px !important;
@@ -42,13 +40,8 @@ let heroInterval;
             color: #ffc107 !important;
             font-size: 11px !important;
             font-weight: bold;
-            backdrop-filter: blur(4px);
         }
-        .card-info {
-            padding: 10px !important;
-            background: #161920 !important;
-            z-index: 2 !important;
-        }
+        .card-info { padding: 10px !important; background: #161920 !important; }
         .card-title {
             font-size: 13px !important;
             color: #fff !important;
@@ -57,53 +50,39 @@ let heroInterval;
             text-overflow: ellipsis !important;
             font-weight: 500;
         }
+        
+        .servers-section {
+            margin-top: 25px;
+            background: #12151c;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #1f2430;
+        }
         .servers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
             gap: 10px;
-            margin-top: 10px;
+            margin-top: 15px;
         }
         .server-btn {
-            background: #1f232d;
-            color: #fff;
-            border: 1px solid #2d323f;
-            padding: 10px 12px;
+            background: #1a1e29;
+            color: #e1e4ed;
+            border: 1px solid #2a3040;
+            padding: 10px 16px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 13px;
+            font-weight: 500;
             transition: all 0.2s ease;
-            text-align: center;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
         }
         .server-btn:hover, .server-btn.active {
             background: #e50914;
             border-color: #e50914;
             color: #fff;
-            font-weight: bold;
-        }
-        .custom-link-box {
-            margin-top: 15px;
-            background: #161920;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #2d323f;
-        }
-        .custom-link-box input {
-            width: calc(100% - 110px);
-            padding: 8px 12px;
-            background: #0d0f12;
-            border: 1px solid #2d323f;
-            color: #fff;
-            border-radius: 4px;
-            font-size: 12px;
-        }
-        .custom-link-box button {
-            padding: 8px 15px;
-            background: #e50914;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
             font-weight: bold;
         }
     `;
@@ -113,9 +92,7 @@ let heroInterval;
 window.addEventListener('hashchange', handleRoute);
 window.addEventListener('load', handleRoute);
 
-function navigateTo(hash) {
-    window.location.hash = hash;
-}
+function navigateTo(hash) { window.location.hash = hash; }
 
 function handleRoute() {
     if (heroInterval) clearInterval(heroInterval);
@@ -144,9 +121,7 @@ function handleRoute() {
     }
 }
 
-function getPosterUrl(path) {
-    return `${IMG_PATH}${path}`;
-}
+function getPosterUrl(path) { return `${IMG_PATH}${path}`; }
 
 async function renderHomePage() {
     const container = document.getElementById('app-container');
@@ -156,9 +131,7 @@ async function renderHomePage() {
 
     container.innerHTML = `
         <div id="hero-banner" class="hero-slider-container"></div>
-
         ${continueWatching.length > 0 ? createSectionHTML('cw-list', 'fa-rotate-left', 'Continue Watching') : ''}
-        
         ${createSectionHTML('trending-movies', 'fa-film', 'Trending Movies')}
         ${createSectionHTML('trending-tv', 'fa-tv', 'Trending TV Shows')}
         ${createSectionHTML('top-movies', 'fa-star', 'Top Rated Movies')}
@@ -230,7 +203,6 @@ async function renderWatchPage(type, id) {
         saveToContinueWatching({ id, type, title, poster, rating });
 
         const servers = [
-            // السيرفرات العالمية
             { name: "Server 1 (VidLink)", url: `https://vidlink.pro/${type}/${id}?primaryColor=e50914` },
             { name: "Server 2 (VidSrc Pro)", url: `https://vidsrc.me/embed/${type}?tmdb=${id}` },
             { name: "Server 3 (AutoEmbed)", url: `https://player.autoembed.cc/embed/${type}/${id}` },
@@ -239,12 +211,10 @@ async function renderWatchPage(type, id) {
             { name: "Server 6 (2Embed)", url: `https://www.2embed.cc/embed${type === 'movie' ? '' : 'tv'}/${id}` },
             { name: "Server 7 (MultiEmbed)", url: `https://multiembed.mov/?video_id=${id}&tmdb=1` },
             { name: "Server 8 (NontonGo)", url: `https://www.NontonGo.win/embed/${type}/${id}` },
-            
-            // السيرفرات العربية
-            { name: "سيرفر عربي 1 (SuperEmbed)", url: `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1` },
-            { name: "سيرفر عربي 2 (ArabEmbed)", url: `https://vidsrc.icu/embed/${type}/${id}` },
-            { name: "بحث في FaselHD (عربي)", isExternal: true, url: `https://www.faselhd.co/?s=${searchTitle}` },
-            { name: "بحث في CimaNow (عربي)", isExternal: true, url: `https://cimanow.cc/?s=${searchTitle}` }
+            { name: "سيرفر عربي 1", url: `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1` },
+            { name: "سيرفر عربي 2", url: `https://vidsrc.icu/embed/${type}/${id}` },
+            { name: "بحث في CimaNow (عربي)", isExternal: true, url: `https://cimanow.cc/?s=${searchTitle}` },
+            { name: "بحث في FaselHD (عربي)", isExternal: true, url: `https://www.faselhd.co/?s=${searchTitle}` }
         ];
 
         const cleanRecs = (data.recommendations?.results || []).filter(item => item.poster_path);
@@ -266,34 +236,25 @@ async function renderWatchPage(type, id) {
             </div>
 
             <div class="watch-page-container">
-
                 <div class="player-box-wrapper">
                     <iframe id="video-iframe" src="${servers[0].url}" allowfullscreen frameborder="0" scrolling="no" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"></iframe>
                 </div>
 
+                <!-- قسم السيرفرات نظيف وبدون حقول إدخال عشوائية -->
                 <div class="servers-section">
-                    <h3 class="servers-title"><i class="fa-solid fa-server"></i> اختر السيرفر المناسب:</h3>
+                    <h3 class="servers-title" style="color: #fff; font-size: 16px;"><i class="fa-solid fa-server"></i> اختر السيرفر المناسب:</h3>
                     <div class="servers-grid">
                         ${servers.map((srv, index) => {
                             if (srv.isExternal) {
-                                return `<a href="${srv.url}" target="_blank" class="server-btn" style="text-decoration:none; display:inline-block;"><i class="fa-solid fa-arrow-up-right-from-square"></i> ${srv.name}</a>`;
+                                return `<a href="${srv.url}" target="_blank" class="server-btn"><i class="fa-solid fa-arrow-up-right-from-square"></i> ${srv.name}</a>`;
                             }
                             return `<button class="server-btn ${index === 0 ? 'active' : ''}" onclick="changeServer('${srv.url}', this)">${srv.name}</button>`;
                         }).join('')}
                     </div>
-
-                    <!-- خيار تشغيل رابط خاص للأفلام غير المتوفرة -->
-                    <div class="custom-link-box">
-                        <p style="color:#b0b5c1; font-size:12px; margin-bottom:8px;"><i class="fa-solid fa-link"></i> إذا كان لديك رابط مباشر للفيلم/المسلسل (MP4 أو Embed):</p>
-                        <div style="display:flex; gap:10px;">
-                            <input type="text" id="custom-embed-input" placeholder="ضع رابط الفيديو أو السيرفر هنا...">
-                            <button onclick="playCustomLink()"><i class="fa-solid fa-play"></i> تشغيل</button>
-                        </div>
-                    </div>
                 </div>
 
                 ${cleanRecs.length ? `
-                    <div class="recommendations-section">
+                    <div class="recommendations-section" style="margin-top: 30px;">
                         <h2 class="section-title" style="margin-bottom:15px;"><i class="fa-solid fa-thumbs-up"></i> مقترحات لك</h2>
                         <div class="grid-layout">
                             ${cleanRecs.slice(0, 6).map(item => `
@@ -463,15 +424,6 @@ function changeServer(url, btn) {
     if (iframe) iframe.src = url;
     document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
-}
-
-function playCustomLink() {
-    const input = document.getElementById('custom-embed-input');
-    if (input && input.value.trim()) {
-        const iframe = document.getElementById('video-iframe');
-        if (iframe) iframe.src = input.value.trim();
-        document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
-    }
 }
 
 function saveToContinueWatching(item) {
