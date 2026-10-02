@@ -5,13 +5,7 @@ const BACKDROP_PATH = 'https://image.tmdb.org/t/p/original';
 
 let heroInterval;
 
-// دالة لتوليد صورة احترافية بالاسم بدلاً من الصندوق الفارغ
-function createFallbackImage(title) {
-    const encodedTitle = encodeURIComponent(title || 'Cinemoov');
-    return `https://placehold.co/500x750/1a1d24/ffffff?text=${encodedTitle}`;
-}
-
-// إضافة تنسيق CSS لحماية تجربة المستخدم وحجب الصور المكسورة
+// حقن تنسيقات حماية تصميم البطاقات
 (function injectCardStyles() {
     const style = document.createElement('style');
     style.innerHTML = `
@@ -100,11 +94,8 @@ function handleRoute() {
     }
 }
 
-function getPosterUrl(path, title) {
-    if (path && path !== 'null' && path !== 'undefined' && path !== '') {
-        return path.startsWith('http') ? path : `${IMG_PATH}${path}`;
-    }
-    return createFallbackImage(title);
+function getPosterUrl(path) {
+    return `${IMG_PATH}${path}`;
 }
 
 async function renderHomePage() {
@@ -155,7 +146,7 @@ function renderSavedList(list, elementId, isContinueWatching = false) {
         <div class="media-card" onclick="navigateTo('#/watch/${item.type}/${item.id}')">
             ${isContinueWatching ? `<button class="remove-btn" title="Remove" onclick="event.stopPropagation(); removeFromContinueWatching('${item.id}', '${item.type}')"><i class="fa-solid fa-xmark"></i></button>` : ''}
             <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.rating || 'N/A'}</span>
-            <img class="card-poster" src="${getPosterUrl(item.poster, item.title)}" onerror="this.onerror=null; this.src='${createFallbackImage(item.title)}';" alt="${item.title}">
+            <img class="card-poster" src="${getPosterUrl(item.poster)}" alt="${item.title}">
             <div class="card-info">
                 <div class="card-title">${item.title}</div>
             </div>
@@ -182,7 +173,7 @@ async function renderWatchPage(type, id) {
 
         const title = data.title || data.name;
         const poster = data.poster_path;
-        const backdrop = data.backdrop_path ? BACKDROP_PATH + data.backdrop_path : getPosterUrl(poster, title);
+        const backdrop = data.backdrop_path ? BACKDROP_PATH + data.backdrop_path : getPosterUrl(poster);
         const rating = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
         
         saveToContinueWatching({ id, type, title, poster, rating });
@@ -194,10 +185,13 @@ async function renderWatchPage(type, id) {
         const server5 = `https://www.2embed.cc/embed${type === 'movie' ? 'movie' : 'tv'}?id=${id}`;
         const server6 = `https://autoembed.co/${type}/tmdb/${id}`;
 
+        // تصفية اقتراحات العروض لضمان وجود صورة
+        const cleanRecs = (data.recommendations?.results || []).filter(item => item.poster_path);
+
         container.innerHTML = `
             <div class="watch-backdrop-banner" style="background-image: linear-gradient(to bottom, rgba(13, 15, 18, 0.3), #0d0f12), url('${backdrop}');">
                 <div class="watch-backdrop-content">
-                    <img class="watch-poster-img" src="${getPosterUrl(poster, title)}" onerror="this.onerror=null; this.src='${createFallbackImage(title)}';" alt="${title}">
+                    <img class="watch-poster-img" src="${getPosterUrl(poster)}" alt="${title}">
                     <div class="watch-details-info">
                         <h1 class="watch-title">${title}</h1>
                         <div class="watch-meta">
@@ -227,14 +221,14 @@ async function renderWatchPage(type, id) {
                     </div>
                 </div>
 
-                ${data.recommendations && data.recommendations.results.length ? `
+                ${cleanRecs.length ? `
                     <div class="recommendations-section">
                         <h2 class="section-title" style="margin-bottom:15px;"><i class="fa-solid fa-thumbs-up"></i> Recommended For You</h2>
                         <div class="grid-layout">
-                            ${data.recommendations.results.slice(0, 6).map(item => `
+                            ${cleanRecs.slice(0, 6).map(item => `
                                 <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/${type}/${item.id}')">
                                     <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
-                                    <img class="card-poster" src="${getPosterUrl(item.poster_path, item.title || item.name)}" onerror="this.onerror=null; this.src='${createFallbackImage(item.title || item.name)}';" alt="${item.title || item.name}">
+                                    <img class="card-poster" src="${getPosterUrl(item.poster_path)}" alt="${item.title || item.name}">
                                     <div class="card-info">
                                         <div class="card-title">${item.title || item.name}</div>
                                     </div>
@@ -254,14 +248,15 @@ async function loadHeroBanner() {
     try {
         const res = await fetch(`${BASE_URL}/trending/all/week?api_key=${API_KEY}`);
         const data = await res.json();
-        if (!data.results || !data.results.length) return;
+        const validResults = (data.results || []).filter(item => item.backdrop_path || item.poster_path);
+        if (!validResults.length) return;
         
-        const items = data.results.slice(0, 6);
+        const items = validResults.slice(0, 6);
         const heroBanner = document.getElementById('hero-banner');
         if (!heroBanner) return;
 
         heroBanner.innerHTML = items.map((item, idx) => `
-            <div class="hero-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${item.backdrop_path ? BACKDROP_PATH + item.backdrop_path : getPosterUrl(item.poster_path, item.title || item.name)}')">
+            <div class="hero-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${item.backdrop_path ? BACKDROP_PATH + item.backdrop_path : getPosterUrl(item.poster_path)}')">
                 <div class="hero-overlay">
                     <div class="hero-content">
                         <span class="hero-badge">Featured</span>
@@ -294,13 +289,16 @@ async function fetchMediaList(url, containerId, customType = null) {
         const container = document.getElementById(containerId);
         if (!container) return;
         
-        container.innerHTML = data.results.map(item => {
+        // فلترة النتائج لعرض العناصر التي تملك بوستر فقط
+        const validResults = (data.results || []).filter(item => item.poster_path);
+        
+        container.innerHTML = validResults.map(item => {
             const type = customType || item.media_type || (item.title ? 'movie' : 'tv');
             const title = item.title || item.name;
             return `
                 <div class="media-card" onclick="navigateTo('#/watch/${type}/${item.id}')">
                     <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
-                    <img class="card-poster" src="${getPosterUrl(item.poster_path, title)}" onerror="this.onerror=null; this.src='${createFallbackImage(title)}';" alt="${title}">
+                    <img class="card-poster" src="${getPosterUrl(item.poster_path)}" alt="${title}">
                     <div class="card-info">
                         <div class="card-title">${title}</div>
                         <div class="card-meta">
@@ -367,13 +365,16 @@ async function fetchGridMedia(url) {
         const container = document.getElementById('search-results');
         if (!container) return;
         
-        container.innerHTML = data.results.map(item => {
+        // استبعاد العناصر بدون صورة تماماً من نتائج البحث والشبكة
+        const validResults = (data.results || []).filter(item => item.poster_path);
+        
+        container.innerHTML = validResults.map(item => {
             const type = item.media_type || (item.title ? 'movie' : 'tv');
             const title = item.title || item.name;
             return `
                 <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/${type}/${item.id}')">
                     <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
-                    <img class="card-poster" src="${getPosterUrl(item.poster_path, title)}" onerror="this.onerror=null; this.src='${createFallbackImage(title)}';" alt="${title}">
+                    <img class="card-poster" src="${getPosterUrl(item.poster_path)}" alt="${title}">
                     <div class="card-info">
                         <div class="card-title">${title}</div>
                     </div>
