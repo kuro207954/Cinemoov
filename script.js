@@ -5,7 +5,7 @@ const BACKDROP_PATH = 'https://image.tmdb.org/t/p/original';
 
 let heroInterval;
 
-// حقن تنسيقات حماية تصميم البطاقات والسيرفرات
+// حقن تنسيقات حماية تصميم البطاقات والسيرفرات والخيارات الإضافية
 (function injectCardStyles() {
     const style = document.createElement('style');
     style.innerHTML = `
@@ -69,7 +69,7 @@ let heroInterval;
         }
         .servers-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 10px;
             margin-top: 10px;
         }
@@ -88,6 +88,32 @@ let heroInterval;
             background: #e50914;
             border-color: #e50914;
             color: #fff;
+            font-weight: bold;
+        }
+        .custom-link-box {
+            margin-top: 15px;
+            background: #161920;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #2d323f;
+        }
+        .custom-link-box input {
+            width: calc(100% - 110px);
+            padding: 8px 12px;
+            background: #0d0f12;
+            border: 1px solid #2d323f;
+            color: #fff;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .custom-link-box button {
+            padding: 8px 15px;
+            background: #e50914;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
             font-weight: bold;
         }
     `;
@@ -209,10 +235,12 @@ async function renderWatchPage(type, id) {
         const poster = data.poster_path;
         const backdrop = data.backdrop_path ? BACKDROP_PATH + data.backdrop_path : getPosterUrl(poster);
         const rating = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
+        const searchTitle = encodeURIComponent(title);
         
         saveToContinueWatching({ id, type, title, poster, rating });
 
         const servers = [
+            // السيرفرات العالمية الـ 8 الأساسية
             { name: "Server 1 (VidLink)", url: `https://vidlink.pro/${type}/${id}?primaryColor=e50914` },
             { name: "Server 2 (VidSrc Pro)", url: `https://vidsrc.me/embed/${type}?tmdb=${id}` },
             { name: "Server 3 (AutoEmbed)", url: `https://player.autoembed.cc/embed/${type}/${id}` },
@@ -220,7 +248,13 @@ async function renderWatchPage(type, id) {
             { name: "Server 5 (SmashyStream)", url: `https://embed.smashystream.com/playere.php?tmdb=${id}` },
             { name: "Server 6 (2Embed)", url: `https://www.2embed.cc/embed${type === 'movie' ? '' : 'tv'}/${id}` },
             { name: "Server 7 (MultiEmbed)", url: `https://multiembed.mov/?video_id=${id}&tmdb=1` },
-            { name: "Server 8 (NontonGo)", url: `https://www.NontonGo.win/embed/${type}/${id}` }
+            { name: "Server 8 (NontonGo)", url: `https://www.NontonGo.win/embed/${type}/${id}` },
+            
+            // السيرفرات والمصادر العربية المضافة
+            { name: "سيرفر عربي 1 (SuperEmbed)", url: `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1` },
+            { name: "سيرفر عربي 2 (ArabEmbed)", url: `https://vidsrc.icu/embed/${type}/${id}` },
+            { name: "بحث في FaselHD (عربي)", isExternal: true, url: `https://www.faselhd.co/?s=${searchTitle}` },
+            { name: "بحث في CimaNow (عربي)", isExternal: true, url: `https://cimanow.cc/?s=${searchTitle}` }
         ];
 
         const cleanRecs = (data.recommendations?.results || []).filter(item => item.poster_path);
@@ -243,7 +277,7 @@ async function renderWatchPage(type, id) {
 
             <div class="watch-page-container">
                 <div class="server-notice">
-                    <i class="fa-solid fa-circle-info"></i> <strong>ملاحظة:</strong> إذا لم يعمل السيرفر الأول أو واجهتك مشكلة في العرض، يرجى تجربة التبديل بين السيرفرات المتاحة بالأسفل (كل سيرفر يوفر مصادر وقنوات بث مختلفة).
+                    <i class="fa-solid fa-circle-info"></i> <strong>ملاحظة:</strong> تم إضافة سيرفرات عربية إضافية. إذا لم يعمل العمل على السيرفرات التلقائية، يمكنك التجربة أو إدخال رابط مشغل مباشر بالأسفل.
                 </div>
 
                 <div class="player-box-wrapper">
@@ -251,11 +285,23 @@ async function renderWatchPage(type, id) {
                 </div>
 
                 <div class="servers-section">
-                    <h3 class="servers-title"><i class="fa-solid fa-server"></i> اختار السيرفر (Choose Server):</h3>
+                    <h3 class="servers-title"><i class="fa-solid fa-server"></i> اختر السيرفر المناسب:</h3>
                     <div class="servers-grid">
-                        ${servers.map((srv, index) => `
-                            <button class="server-btn ${index === 0 ? 'active' : ''}" onclick="changeServer('${srv.url}', this)">${srv.name}</button>
-                        `).join('')}
+                        ${servers.map((srv, index) => {
+                            if (srv.isExternal) {
+                                return `<a href="${srv.url}" target="_blank" class="server-btn" style="text-decoration:none; display:inline-block;"><i class="fa-solid fa-arrow-up-right-from-square"></i> ${srv.name}</a>`;
+                            }
+                            return `<button class="server-btn ${index === 0 ? 'active' : ''}" onclick="changeServer('${srv.url}', this)">${srv.name}</button>`;
+                        }).join('')}
+                    </div>
+
+                    <!-- خيار تشغيل رابط خاص للأفلام غير المتوفرة -->
+                    <div class="custom-link-box">
+                        <p style="color:#b0b5c1; font-size:12px; margin-bottom:8px;"><i class="fa-solid fa-link"></i> إذا كان لديك رابط مباشر للفيلم/المسلسل (MP4 أو Embed):</p>
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" id="custom-embed-input" placeholder="ضع رابط الفيديو أو السيرفر هنا...">
+                            <button onclick="playCustomLink()"><i class="fa-solid fa-play"></i> تشغيل</button>
+                        </div>
                     </div>
                 </div>
 
@@ -430,6 +476,15 @@ function changeServer(url, btn) {
     if (iframe) iframe.src = url;
     document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
     if (btn) btn.classList.add('active');
+}
+
+function playCustomLink() {
+    const input = document.getElementById('custom-embed-input');
+    if (input && input.value.trim()) {
+        const iframe = document.getElementById('video-iframe');
+        if (iframe) iframe.src = input.value.trim();
+        document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
+    }
 }
 
 function saveToContinueWatching(item) {
