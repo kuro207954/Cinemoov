@@ -2,11 +2,16 @@ const API_KEY = 'e45956e29bfc581e0131eb6710b738c0';
 const BASE_URL = 'https://api.themoviedb.org/3';
 const IMG_PATH = 'https://image.tmdb.org/t/p/w500';
 const BACKDROP_PATH = 'https://image.tmdb.org/t/p/original';
-const NO_IMAGE_URL = 'https://via.placeholder.com/500x750/161920/FFFFFF?text=No+Poster';
 
 let heroInterval;
 
-// إضافة تنسيق حماية للصور والبطاقات مباشرة عبر JavaScript
+// دالة لتوليد صورة احترافية بالاسم بدلاً من الصندوق الفارغ
+function createFallbackImage(title) {
+    const encodedTitle = encodeURIComponent(title || 'Cinemoov');
+    return `https://placehold.co/500x750/1a1d24/ffffff?text=${encodedTitle}`;
+}
+
+// إضافة تنسيق CSS لحماية تجربة المستخدم وحجب الصور المكسورة
 (function injectCardStyles() {
     const style = document.createElement('style');
     style.innerHTML = `
@@ -18,27 +23,34 @@ let heroInterval;
             border-radius: 8px !important;
             overflow: hidden !important;
             min-height: 280px !important;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s ease;
+        }
+        .media-card:hover {
+            transform: translateY(-4px);
         }
         .card-poster {
             width: 100% !important;
             height: 260px !important;
             object-fit: cover !important;
             display: block !important;
-            background-color: #232732 !important;
+            background-color: #1f232d !important;
         }
         .badge-rating {
             position: absolute !important;
             top: 8px !important;
             left: 8px !important;
             z-index: 5 !important;
-            background: rgba(0, 0, 0, 0.75) !important;
-            padding: 2px 6px !important;
+            background: rgba(0, 0, 0, 0.8) !important;
+            padding: 3px 8px !important;
             border-radius: 4px !important;
             color: #ffc107 !important;
-            font-size: 12px !important;
+            font-size: 11px !important;
+            font-weight: bold;
+            backdrop-filter: blur(4px);
         }
         .card-info {
-            padding: 8px !important;
+            padding: 10px !important;
             background: #161920 !important;
             z-index: 2 !important;
         }
@@ -48,6 +60,7 @@ let heroInterval;
             white-space: nowrap !important;
             overflow: hidden !important;
             text-overflow: ellipsis !important;
+            font-weight: 500;
         }
     `;
     document.head.appendChild(style);
@@ -87,11 +100,11 @@ function handleRoute() {
     }
 }
 
-function getPosterUrl(path) {
+function getPosterUrl(path, title) {
     if (path && path !== 'null' && path !== 'undefined' && path !== '') {
         return path.startsWith('http') ? path : `${IMG_PATH}${path}`;
     }
-    return NO_IMAGE_URL;
+    return createFallbackImage(title);
 }
 
 async function renderHomePage() {
@@ -142,7 +155,7 @@ function renderSavedList(list, elementId, isContinueWatching = false) {
         <div class="media-card" onclick="navigateTo('#/watch/${item.type}/${item.id}')">
             ${isContinueWatching ? `<button class="remove-btn" title="Remove" onclick="event.stopPropagation(); removeFromContinueWatching('${item.id}', '${item.type}')"><i class="fa-solid fa-xmark"></i></button>` : ''}
             <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.rating || 'N/A'}</span>
-            <img class="card-poster" src="${getPosterUrl(item.poster)}" onerror="this.onerror=null; this.src='${NO_IMAGE_URL}';" alt="${item.title}">
+            <img class="card-poster" src="${getPosterUrl(item.poster, item.title)}" onerror="this.onerror=null; this.src='${createFallbackImage(item.title)}';" alt="${item.title}">
             <div class="card-info">
                 <div class="card-title">${item.title}</div>
             </div>
@@ -169,7 +182,7 @@ async function renderWatchPage(type, id) {
 
         const title = data.title || data.name;
         const poster = data.poster_path;
-        const backdrop = data.backdrop_path ? BACKDROP_PATH + data.backdrop_path : getPosterUrl(poster);
+        const backdrop = data.backdrop_path ? BACKDROP_PATH + data.backdrop_path : getPosterUrl(poster, title);
         const rating = data.vote_average ? data.vote_average.toFixed(1) : 'N/A';
         
         saveToContinueWatching({ id, type, title, poster, rating });
@@ -184,7 +197,7 @@ async function renderWatchPage(type, id) {
         container.innerHTML = `
             <div class="watch-backdrop-banner" style="background-image: linear-gradient(to bottom, rgba(13, 15, 18, 0.3), #0d0f12), url('${backdrop}');">
                 <div class="watch-backdrop-content">
-                    <img class="watch-poster-img" src="${getPosterUrl(poster)}" onerror="this.onerror=null; this.src='${NO_IMAGE_URL}';" alt="${title}">
+                    <img class="watch-poster-img" src="${getPosterUrl(poster, title)}" onerror="this.onerror=null; this.src='${createFallbackImage(title)}';" alt="${title}">
                     <div class="watch-details-info">
                         <h1 class="watch-title">${title}</h1>
                         <div class="watch-meta">
@@ -221,7 +234,7 @@ async function renderWatchPage(type, id) {
                             ${data.recommendations.results.slice(0, 6).map(item => `
                                 <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/${type}/${item.id}')">
                                     <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
-                                    <img class="card-poster" src="${getPosterUrl(item.poster_path)}" onerror="this.onerror=null; this.src='${NO_IMAGE_URL}';" alt="${item.title || item.name}">
+                                    <img class="card-poster" src="${getPosterUrl(item.poster_path, item.title || item.name)}" onerror="this.onerror=null; this.src='${createFallbackImage(item.title || item.name)}';" alt="${item.title || item.name}">
                                     <div class="card-info">
                                         <div class="card-title">${item.title || item.name}</div>
                                     </div>
@@ -248,7 +261,7 @@ async function loadHeroBanner() {
         if (!heroBanner) return;
 
         heroBanner.innerHTML = items.map((item, idx) => `
-            <div class="hero-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${item.backdrop_path ? BACKDROP_PATH + item.backdrop_path : getPosterUrl(item.poster_path)}')">
+            <div class="hero-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${item.backdrop_path ? BACKDROP_PATH + item.backdrop_path : getPosterUrl(item.poster_path, item.title || item.name)}')">
                 <div class="hero-overlay">
                     <div class="hero-content">
                         <span class="hero-badge">Featured</span>
@@ -283,12 +296,13 @@ async function fetchMediaList(url, containerId, customType = null) {
         
         container.innerHTML = data.results.map(item => {
             const type = customType || item.media_type || (item.title ? 'movie' : 'tv');
+            const title = item.title || item.name;
             return `
                 <div class="media-card" onclick="navigateTo('#/watch/${type}/${item.id}')">
                     <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
-                    <img class="card-poster" src="${getPosterUrl(item.poster_path)}" onerror="this.onerror=null; this.src='${NO_IMAGE_URL}';" alt="${item.title || item.name}">
+                    <img class="card-poster" src="${getPosterUrl(item.poster_path, title)}" onerror="this.onerror=null; this.src='${createFallbackImage(title)}';" alt="${title}">
                     <div class="card-info">
-                        <div class="card-title">${item.title || item.name}</div>
+                        <div class="card-title">${title}</div>
                         <div class="card-meta">
                             <span>${(item.release_date || item.first_air_date || '').substring(0, 4)}</span>
                             <span>${type === 'movie' ? 'Movie' : 'TV Show'}</span>
@@ -352,14 +366,16 @@ async function fetchGridMedia(url) {
         const data = await res.json();
         const container = document.getElementById('search-results');
         if (!container) return;
+        
         container.innerHTML = data.results.map(item => {
             const type = item.media_type || (item.title ? 'movie' : 'tv');
+            const title = item.title || item.name;
             return `
                 <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/${type}/${item.id}')">
                     <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.vote_average ? item.vote_average.toFixed(1) : 'N/A'}</span>
-                    <img class="card-poster" src="${getPosterUrl(item.poster_path)}" onerror="this.onerror=null; this.src='${NO_IMAGE_URL}';" alt="${item.title || item.name}">
+                    <img class="card-poster" src="${getPosterUrl(item.poster_path, title)}" onerror="this.onerror=null; this.src='${createFallbackImage(title)}';" alt="${title}">
                     <div class="card-info">
-                        <div class="card-title">${item.title || item.name}</div>
+                        <div class="card-title">${title}</div>
                     </div>
                 </div>
             `;
