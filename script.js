@@ -5,7 +5,7 @@ const BACKDROP_PATH = 'https://image.tmdb.org/t/p/original';
 
 let heroInterval;
 
-// حقن تنسيقات حماية تصميم البطاقات
+// حقن تنسيقات حماية تصميم البطاقات والسيرفرات
 (function injectCardStyles() {
     const style = document.createElement('style');
     style.innerHTML = `
@@ -19,6 +19,7 @@ let heroInterval;
             min-height: 280px !important;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             transition: transform 0.2s ease;
+            cursor: pointer;
         }
         .media-card:hover {
             transform: translateY(-4px);
@@ -55,6 +56,39 @@ let heroInterval;
             overflow: hidden !important;
             text-overflow: ellipsis !important;
             font-weight: 500;
+        }
+        .server-notice {
+            background: #1a1d24;
+            color: #b0b5c1;
+            padding: 12px 18px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            border-right: 4px solid #e50914;
+            line-height: 1.5;
+        }
+        .servers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .server-btn {
+            background: #1f232d;
+            color: #fff;
+            border: 1px solid #2d323f;
+            padding: 10px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        .server-btn:hover, .server-btn.active {
+            background: #e50914;
+            border-color: #e50914;
+            color: #fff;
+            font-weight: bold;
         }
     `;
     document.head.appendChild(style);
@@ -134,7 +168,7 @@ function createSectionHTML(id, icon, title) {
                     <button class="scroll-btn-nav" onclick="scrollCarousel('${id}', 300)"><i class="fa-solid fa-chevron-right"></i></button>
                 </div>
             </div>
-            <div class="media-carousel" id="${id}">Loading...</div>
+            <div class="media-carousel" id="${id}">جاري التحميل...</div>
         </section>
     `;
 }
@@ -144,7 +178,7 @@ function renderSavedList(list, elementId, isContinueWatching = false) {
     if (!container) return;
     container.innerHTML = list.map(item => `
         <div class="media-card" onclick="navigateTo('#/watch/${item.type}/${item.id}')">
-            ${isContinueWatching ? `<button class="remove-btn" title="Remove" onclick="event.stopPropagation(); removeFromContinueWatching('${item.id}', '${item.type}')"><i class="fa-solid fa-xmark"></i></button>` : ''}
+            ${isContinueWatching ? `<button class="remove-btn" title="حذف" onclick="event.stopPropagation(); removeFromContinueWatching('${item.id}', '${item.type}')"><i class="fa-solid fa-xmark"></i></button>` : ''}
             <span class="badge-rating"><i class="fa-solid fa-star"></i> ${item.rating || 'N/A'}</span>
             <img class="card-poster" src="${getPosterUrl(item.poster)}" alt="${item.title}">
             <div class="card-info">
@@ -165,7 +199,7 @@ async function renderWatchPage(type, id) {
     const container = document.getElementById('app-container');
     if (!container) return;
 
-    container.innerHTML = `<div style="padding: 100px; text-align: center;">Preparing video player...</div>`;
+    container.innerHTML = `<div style="padding: 100px; text-align: center; color: #fff;">جاري تجهيز مشغل الفيديو...</div>`;
 
     try {
         const res = await fetch(`${BASE_URL}/${type}/${id}?api_key=${API_KEY}&append_to_response=recommendations`);
@@ -178,18 +212,22 @@ async function renderWatchPage(type, id) {
         
         saveToContinueWatching({ id, type, title, poster, rating });
 
-        const server1 = `https://vidlink.pro/${type}/${id}?primaryColor=e50914`;
-        const server2 = `https://vidsrc.to/embed/${type}/${id}`;
-        const server3 = `https://vidsrc.me/embed/${type}?tmdb=${id}`;
-        const server4 = `https://player.smashystream.com/video/${type}/${id}`;
-        const server5 = `https://www.2embed.cc/embed${type === 'movie' ? 'movie' : 'tv'}?id=${id}`;
-        const server6 = `https://autoembed.co/${type}/tmdb/${id}`;
+        // قائمة شاملة لأفضل السيرفرات العالمية المتنوعة
+        const servers = [
+            { name: "Server 1 (VidLink)", url: `https://vidlink.pro/${type}/${id}?primaryColor=e50914` },
+            { name: "Server 2 (VidSrc Pro)", url: `https://vidsrc.me/embed/${type}?tmdb=${id}` },
+            { name: "Server 3 (AutoEmbed)", url: `https://player.autoembed.cc/embed/${type}/${id}` },
+            { name: "Server 4 (VidSrc CC)", url: `https://vidsrc.cc/v2/embed/${type}/${id}` },
+            { name: "Server 5 (SmashyStream)", url: `https://embed.smashystream.com/playere.php?tmdb=${id}` },
+            { name: "Server 6 (2Embed)", url: `https://www.2embed.cc/embed${type === 'movie' ? '' : 'tv'}/${id}` },
+            { name: "Server 7 (MultiEmbed)", url: `https://multiembed.mov/?video_id=${id}&tmdb=1` },
+            { name: "Server 8 (NontonGo)", url: `https://www.NontonGo.win/embed/${type}/${id}` }
+        ];
 
-        // تصفية اقتراحات العروض لضمان وجود صورة
         const cleanRecs = (data.recommendations?.results || []).filter(item => item.poster_path);
 
         container.innerHTML = `
-            <div class="watch-backdrop-banner" style="background-image: linear-gradient(to bottom, rgba(13, 15, 18, 0.3), #0d0f12), url('${backdrop}');">
+            <div class="watch-backdrop-banner" style="background-image: linear-gradient(to bottom, rgba(13, 15, 18, 0.4), #0d0f12), url('${backdrop}');">
                 <div class="watch-backdrop-content">
                     <img class="watch-poster-img" src="${getPosterUrl(poster)}" alt="${title}">
                     <div class="watch-details-info">
@@ -199,31 +237,32 @@ async function renderWatchPage(type, id) {
                             <span>${(data.release_date || data.first_air_date || '').substring(0, 4)}</span>
                             <span>${type === 'movie' ? 'Movie' : 'TV Show'}</span>
                         </div>
-                        <p class="watch-overview">${data.overview || 'No overview available.'}</p>
+                        <p class="watch-overview">${data.overview || 'لا يوجد وصف متوفر.'}</p>
                     </div>
                 </div>
             </div>
 
             <div class="watch-page-container">
+                <div class="server-notice">
+                    <i class="fa-solid fa-circle-info"></i> <strong>ملاحظة:</strong> إذا لم يعمل السيرفر الأول أو واجهتك مشكلة في العرض، يرجى تجربة التبديل بين السيرفرات المتاحة بالأسفل (كل سيرفر يوفر مصادر وقنوات بث مختلفة).
+                </div>
+
                 <div class="player-box-wrapper">
-                    <iframe id="video-iframe" src="${server1}" allowfullscreen frameborder="0" scrolling="no"></iframe>
+                    <iframe id="video-iframe" src="${servers[0].url}" allowfullscreen frameborder="0" scrolling="no" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"></iframe>
                 </div>
 
                 <div class="servers-section">
-                    <h3 class="servers-title"><i class="fa-solid fa-server"></i> Choose Server:</h3>
+                    <h3 class="servers-title"><i class="fa-solid fa-server"></i> اختار السيرفر (Choose Server):</h3>
                     <div class="servers-grid">
-                        <button class="server-btn active" onclick="changeServer('${server1}', this)">Server 1 (VidLink)</button>
-                        <button class="server-btn" onclick="changeServer('${server2}', this)">Server 2 (VidSrc)</button>
-                        <button class="server-btn" onclick="changeServer('${server3}', this)">Server 3 (Pro)</button>
-                        <button class="server-btn" onclick="changeServer('${server4}', this)">Server 4 (SmashyStream)</button>
-                        <button class="server-btn" onclick="changeServer('${server5}', this)">Server 5 (2Embed)</button>
-                        <button class="server-btn" onclick="changeServer('${server6}', this)">Server 6 (AutoEmbed)</button>
+                        ${servers.map((srv, index) => `
+                            <button class="server-btn ${index === 0 ? 'active' : ''}" onclick="changeServer('${srv.url}', this)">${srv.name}</button>
+                        `).join('')}
                     </div>
                 </div>
 
                 ${cleanRecs.length ? `
                     <div class="recommendations-section">
-                        <h2 class="section-title" style="margin-bottom:15px;"><i class="fa-solid fa-thumbs-up"></i> Recommended For You</h2>
+                        <h2 class="section-title" style="margin-bottom:15px;"><i class="fa-solid fa-thumbs-up"></i> مقترحات لك</h2>
                         <div class="grid-layout">
                             ${cleanRecs.slice(0, 6).map(item => `
                                 <div class="media-card" style="width:100%" onclick="navigateTo('#/watch/${type}/${item.id}')">
@@ -240,7 +279,7 @@ async function renderWatchPage(type, id) {
             </div>
         `;
     } catch(e) {
-        container.innerHTML = `<div style="padding: 50px; text-align: center; color: red;">Error loading data.</div>`;
+        container.innerHTML = `<div style="padding: 50px; text-align: center; color: red;">حدث خطأ أثناء تحميل البيانات.</div>`;
     }
 }
 
@@ -259,11 +298,11 @@ async function loadHeroBanner() {
             <div class="hero-slide ${idx === 0 ? 'active' : ''}" style="background-image: url('${item.backdrop_path ? BACKDROP_PATH + item.backdrop_path : getPosterUrl(item.poster_path)}')">
                 <div class="hero-overlay">
                     <div class="hero-content">
-                        <span class="hero-badge">Featured</span>
+                        <span class="hero-badge">مميّز</span>
                         <h1 class="hero-title">${item.title || item.name}</h1>
-                        <p class="hero-overview">${item.overview || 'No overview available.'}</p>
+                        <p class="hero-overview">${item.overview || 'لا يوجد وصف متوفر.'}</p>
                         <button class="btn-primary" onclick="navigateTo('#/watch/${item.media_type || 'movie'}/${item.id}')">
-                            <i class="fa-solid fa-play"></i> Watch Now
+                            <i class="fa-solid fa-play"></i> شاهد الآن
                         </button>
                     </div>
                 </div>
@@ -289,7 +328,6 @@ async function fetchMediaList(url, containerId, customType = null) {
         const container = document.getElementById(containerId);
         if (!container) return;
         
-        // فلترة النتائج لعرض العناصر التي تملك بوستر فقط
         const validResults = (data.results || []).filter(item => item.poster_path);
         
         container.innerHTML = validResults.map(item => {
@@ -339,9 +377,9 @@ function renderSearchPage() {
     if (!container) return;
     container.innerHTML = `
         <div class="search-view-container">
-            <input type="text" class="search-bar-input" placeholder="Search movies, TV shows, anime..." oninput="handleSearch(this.value)">
+            <input type="text" class="search-bar-input" placeholder="ابحث عن فيلم، مسلسل، أنمي..." oninput="handleSearch(this.value)">
             <h2 class="section-title" id="search-title">Trending Now</h2>
-            <div id="search-results" class="grid-layout">Loading...</div>
+            <div id="search-results" class="grid-layout">جاري التحميل...</div>
         </div>
     `;
     fetchGridMedia(`${BASE_URL}/trending/all/day?api_key=${API_KEY}`);
@@ -354,7 +392,7 @@ async function handleSearch(query) {
         fetchGridMedia(`${BASE_URL}/trending/all/day?api_key=${API_KEY}`);
         return;
     }
-    if (titleEl) titleEl.innerText = 'Search Results';
+    if (titleEl) titleEl.innerText = 'نتائج البحث';
     fetchGridMedia(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`);
 }
 
@@ -365,7 +403,6 @@ async function fetchGridMedia(url) {
         const container = document.getElementById('search-results');
         if (!container) return;
         
-        // استبعاد العناصر بدون صورة تماماً من نتائج البحث والشبكة
         const validResults = (data.results || []).filter(item => item.poster_path);
         
         container.innerHTML = validResults.map(item => {
