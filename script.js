@@ -212,7 +212,6 @@ async function renderWatchPage(type, id) {
         
         saveToContinueWatching({ id, type, title, poster, rating });
 
-        // قائمة شاملة لأفضل السيرفرات العالمية المتنوعة
         const servers = [
             { name: "Server 1 (VidLink)", url: `https://vidlink.pro/${type}/${id}?primaryColor=e50914` },
             { name: "Server 2 (VidSrc Pro)", url: `https://vidsrc.me/embed/${type}?tmdb=${id}` },
